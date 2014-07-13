@@ -79,13 +79,13 @@ These methods differ in the amount of detail they add to the document: **link** 
     protected function linkAuthor(Post $post)
     {
         $serializer = new PeopleSerializer;
-        return $serializer->item($post->authorId);
+        return $serializer->resource($post->authorId);
     }
 
     protected function includeAuthor(Post $post, $relations)
     {
         $serializer = new PeopleSerializer($relations);
-        return $serializer->item($post->author);
+        return $serializer->resource($post->author);
     }
 ```
 
