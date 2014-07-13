@@ -58,8 +58,8 @@ class PostSerializer extends SerializerAbstract {
     protected function attributes(Post $post)
     {
         return [
-            'title' => $post->title
-            'body'  => $post->body
+            'title' => $post->title,
+            'body'  => $post->body,
         ];
     }
 
