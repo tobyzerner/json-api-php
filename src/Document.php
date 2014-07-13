@@ -24,15 +24,21 @@ class Document
 
             // If the resource doesn't have any attributes, then we don't need to
             // put it into the linked part of the document.
-            if ( ! $resource->getAttributes()) unset($resources[$k]);
+            if ( ! $resource->getAttributes()) {
+                unset($resources[$k]);
+            }
         }
 
         // Filter out any resources that we have already added to the document.
         $resources = $this->uniqueResources($type, $resources);
 
-        if ( ! $resources) return;
+        if ( ! $resources) {
+            return;
+        }
 
-        if ( ! isset($this->linked[$type])) $this->linked[$type] = [];
+        if ( ! isset($this->linked[$type])) {
+            $this->linked[$type] = [];
+        }
         $this->linked[$type] = array_merge($this->linked[$type], $resources);
     }
 
