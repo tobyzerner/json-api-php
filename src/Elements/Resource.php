@@ -1,59 +1,59 @@
 <?php namespace Tobscure\JsonApi\Elements;
 
 class Resource extends ElementAbstract {
-	
-	protected $attributes;
 
-	protected $links = [];
+    protected $attributes;
 
-	public function setId($id)
-	{
-		$this->id = (string) $id;
-	}
+    protected $links = [];
 
-	public function getAttributes()
-	{
-		return $this->attributes;
-	}
+    public function setId($id)
+    {
+        $this->id = (string) $id;
+    }
 
-	public function setAttributes($attributes)
-	{
-		$this->attributes = $attributes;
-	}
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
 
-	public function getLinks()
-	{
-		return $this->links;
-	}
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    }
 
-	public function setLinks($links)
-	{
-		$this->links = $links;
-	}
+    public function getLinks()
+    {
+        return $this->links;
+    }
 
-	public function addLink($type, $element)
-	{
-		$this->links[$type] = $element;
-	}
+    public function setLinks($links)
+    {
+        $this->links = $links;
+    }
 
-	public function getResources()
-	{
-		return [$this];
-	}
+    public function addLink($type, $element)
+    {
+        $this->links[$type] = $element;
+    }
 
-	public function toArray()
-	{
-		$array = ['id' => $this->id] + (array) $this->attributes;
+    public function getResources()
+    {
+        return [$this];
+    }
 
-		if ($this->links) {
-			$array['links'] = [];
+    public function toArray()
+    {
+        $array = ['id' => $this->id] + (array) $this->attributes;
 
-			foreach ($this->links as $type => $link) {
-				$array['links'][$type] = $link->getId();
-			}
-		}
+        if ($this->links) {
+            $array['links'] = [];
 
-		return $array;
-	}
-	
+            foreach ($this->links as $type => $link) {
+                $array['links'][$type] = $link->getId();
+            }
+        }
+
+        return $array;
+    }
+
 }

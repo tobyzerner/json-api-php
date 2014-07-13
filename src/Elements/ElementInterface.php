@@ -2,16 +2,16 @@
 
 interface ElementInterface {
 
-	public function __construct($type, $href);
+    public function __construct($type, $href);
 
-	public function getId();
+    public function getId();
 
-	public function getType();
+    public function getType();
 
-	public function getHref($path);
+    public function getHref($path);
 
-	public function getResources();
+    public function getResources();
 
-	public function toArray();
+    public function toArray();
 
 }
