@@ -2,7 +2,6 @@
 
 class Document
 {
-
     protected $links;
 
     protected $linked;
@@ -113,5 +112,4 @@ class Document
 
         return $document;
     }
-
 }

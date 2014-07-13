@@ -2,7 +2,6 @@
 
 class Collection extends ElementAbstract
 {
-
     protected $resources;
 
     public function getId()
@@ -32,5 +31,4 @@ class Collection extends ElementAbstract
             return $resource->toArray();
         }, $this->resources);
     }
-
 }

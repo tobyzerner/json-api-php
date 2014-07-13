@@ -2,7 +2,6 @@
 
 interface ElementInterface
 {
-
     public function __construct($type, $href);
 
     public function getId();
@@ -14,5 +13,4 @@ interface ElementInterface
     public function getResources();
 
     public function toArray();
-
 }

@@ -2,7 +2,6 @@
 
 class Resource extends ElementAbstract
 {
-
     protected $attributes;
 
     protected $links = [];
@@ -56,5 +55,4 @@ class Resource extends ElementAbstract
 
         return $array;
     }
-
 }

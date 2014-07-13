@@ -2,7 +2,6 @@
 
 abstract class ElementAbstract implements ElementInterface
 {
-
     protected $type;
 
     protected $href;
@@ -32,5 +31,4 @@ abstract class ElementAbstract implements ElementInterface
     {
         $this->type = $type;
     }
-
 }

@@ -5,7 +5,6 @@ use Tobscure\JsonApi\Elements\Collection;
 
 class SerializerAbstract
 {
-
     protected $type;
 
     protected $link = [];
@@ -78,5 +77,4 @@ class SerializerAbstract
 
         return $tree;
     }
-
 }
