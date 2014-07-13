@@ -6,7 +6,7 @@
 
 via Composer:
 
-	"tobscure/json-api": "*"
+    "tobscure/json-api": "*"
 
 ## Usage
 

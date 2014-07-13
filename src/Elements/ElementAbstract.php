@@ -1,35 +1,34 @@
 <?php namespace Tobscure\JsonApi\Elements;
 
-abstract class ElementAbstract implements ElementInterface {
+abstract class ElementAbstract implements ElementInterface
+{
+    protected $type;
 
-	protected $type;
+    protected $href;
 
-	protected $href;
+    public function __construct($type, $href)
+    {
+        $this->type = $type;
+        $this->href = $href;
+    }
 
-	public function __construct($type, $href)
-	{
-		$this->type = $type;
-		$this->href = $href;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	public function getType()
-	{
-		return $this->type;
-	}
+    public function getHref($path)
+    {
+        return $this->href.'/{'.$path.'}';
+    }
 
-	public function getHref($path)
-	{
-		return $this->href.'/{'.$path.'}';
-	}
-
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
-
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 }
