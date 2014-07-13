@@ -1,4 +1,4 @@
-# PHP JSON API
+# PHP JSON-API
 
 [JSON-API](http://jsonapi.org) responses in PHP.
 
@@ -51,8 +51,8 @@ A Serializer is responsible for constructing Element (Resource/Collection) objec
 ```php
 use Tobscure\JsonApi\SerializerAbstract;
 
-class PostSerializer extends SerializerAbstract {
-
+class PostSerializer extends SerializerAbstract
+{
     protected $type = 'posts';
 
     protected function attributes(Post $post)
@@ -67,7 +67,6 @@ class PostSerializer extends SerializerAbstract {
     {
         return 'http://example.com/api/posts';
     }
-
 }
 ```
 
