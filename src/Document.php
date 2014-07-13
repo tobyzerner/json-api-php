@@ -19,8 +19,7 @@ class Document
     {
         $resources = $element->getResources();
 
-        foreach ($resources as $k => $resource)
-        {
+        foreach ($resources as $k => $resource) {
             $this->extractLinks($resource);
 
             // If the resource doesn't have any attributes, then we don't need to
