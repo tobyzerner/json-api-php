@@ -1,6 +1,7 @@
 <?php namespace Tobscure\JsonApi;
 
-interface SerializerInterface {
+interface SerializerInterface
+{
 
     public function __construct($include = []);
 

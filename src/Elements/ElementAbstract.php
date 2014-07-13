@@ -1,6 +1,7 @@
 <?php namespace Tobscure\JsonApi\Elements;
 
-abstract class ElementAbstract implements ElementInterface {
+abstract class ElementAbstract implements ElementInterface
+{
 
     protected $type;
 

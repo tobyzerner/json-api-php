@@ -1,6 +1,7 @@
 <?php namespace Tobscure\JsonApi\Elements;
 
-interface ElementInterface {
+interface ElementInterface
+{
 
     public function __construct($type, $href);
 

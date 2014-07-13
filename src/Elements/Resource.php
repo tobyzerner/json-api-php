@@ -1,6 +1,7 @@
 <?php namespace Tobscure\JsonApi\Elements;
 
-class Resource extends ElementAbstract {
+class Resource extends ElementAbstract
+{
 
     protected $attributes;
 

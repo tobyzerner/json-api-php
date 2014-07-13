@@ -3,7 +3,8 @@
 use Tobscure\JsonApi\Elements\Resource;
 use Tobscure\JsonApi\Elements\Collection;
 
-class SerializerAbstract {
+class SerializerAbstract
+{
 
     protected $type;
 
