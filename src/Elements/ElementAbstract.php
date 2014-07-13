@@ -2,6 +2,8 @@
 
 abstract class ElementAbstract implements ElementInterface {
 
+	protected $id;
+
 	protected $type;
 
 	protected $href;
