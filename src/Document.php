@@ -24,7 +24,7 @@ class Document
 
             // If the resource doesn't have any attributes, then we don't need to
             // put it into the linked part of the document.
-            if ( ! $resource->getAttributes()) {
+            if (! $resource->getAttributes()) {
                 unset($resources[$k]);
             }
         }
@@ -32,11 +32,11 @@ class Document
         // Filter out any resources that we have already added to the document.
         $resources = $this->uniqueResources($type, $resources);
 
-        if ( ! $resources) {
+        if (! $resources) {
             return;
         }
 
-        if ( ! isset($this->linked[$type])) {
+        if (! isset($this->linked[$type])) {
             $this->linked[$type] = [];
         }
         $this->linked[$type] = array_merge($this->linked[$type], $resources);
@@ -46,7 +46,7 @@ class Document
     {
         $ids = [];
 
-        if ( ! empty($this->linked[$type])) {
+        if (! empty($this->linked[$type])) {
             foreach ($this->linked[$type] as $resource) {
                 $ids[] = $resource->getId();
             }
@@ -94,15 +94,15 @@ class Document
     {
         $document = [];
 
-        if ( ! empty($this->links)) {
+        if (! empty($this->links)) {
             $document['links'] = $this->links;
         }
 
-        if ( ! empty($this->primaryElement)) {
+        if (! empty($this->primaryElement)) {
             $document[$this->primaryElement->getType()] = $this->primaryElement->toArray();
         }
 
-        if ( ! empty($this->linked)) {
+        if (! empty($this->linked)) {
             $document['linked'] = [];
 
             foreach ($this->linked as $type => $resources) {
@@ -111,7 +111,7 @@ class Document
             }
         }
 
-        if ( ! empty($this->meta)) {
+        if (! empty($this->meta)) {
             $document['meta'] = $this->meta;
         }
 
