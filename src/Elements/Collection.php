@@ -27,7 +27,7 @@ class Collection extends ElementAbstract
 
     public function toArray()
     {
-        return array_map(function($resource) {
+        return array_map(function ($resource) {
             return $resource->toArray();
         }, $this->resources);
     }

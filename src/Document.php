@@ -58,7 +58,7 @@ class Document
             }
         }
 
-        $resources = array_filter($resources, function($resource) use ($ids) {
+        $resources = array_filter($resources, function ($resource) use ($ids) {
             return ! in_array($resource->getId(), $ids);
         });
 
@@ -106,7 +106,7 @@ class Document
             $document['linked'] = [];
 
             foreach ($this->linked as $type => $resources) {
-                $resources = array_map(function($resource) { return $resource->toArray(); }, $resources);
+                $resources = array_map(function ($resource) { return $resource->toArray(); }, $resources);
                 $document['linked'][$type] = $resources;
             }
         }
