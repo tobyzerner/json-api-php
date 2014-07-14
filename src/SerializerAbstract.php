@@ -11,9 +11,10 @@ class SerializerAbstract
 
     protected $include = [];
 
-    public function __construct($include = [])
+    public function __construct($include = [], $link = [])
     {
         $this->include = array_merge($this->include, $include);
+        $this->link = array_merge($this->link, $link);
     }
 
     public function collection($dataSet)
