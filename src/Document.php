@@ -32,14 +32,18 @@ class Document
         // Filter out any resources that we have already added to the document.
         $resources = $this->uniqueResources($type, $resources);
 
-        if (! $resources) {
-            return;
-        }
+        if ($resources) {
+            // If there are resources to be included (sideloaded), then extract
+            // this element's URL templates. We do this here so that a resource
+            // type's root URL templates, e.g. {"posts": "api/posts/{posts.id}"},
+            // is not included if it doesn't need to be.
+            $this->extractHref($element);
 
-        if (! isset($this->linked[$type])) {
-            $this->linked[$type] = [];
+            if (! isset($this->linked[$type])) {
+                $this->linked[$type] = [];
+            }
+            $this->linked[$type] = array_merge($this->linked[$type], $resources);
         }
-        $this->linked[$type] = array_merge($this->linked[$type], $resources);
     }
 
     protected function uniqueResources($type, $resources)
@@ -91,8 +95,6 @@ class Document
     public function extractLinks($resource)
     {
         foreach ($resource->getLinks() as $name => $element) {
-            $this->extractHref($element);
-
             $linkType = $element->getType();
             $path = $resource->getType().'.'.$name;
             $href = $element->getHref()[$linkType];
