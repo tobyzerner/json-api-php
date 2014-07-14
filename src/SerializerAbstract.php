@@ -19,6 +19,10 @@ class SerializerAbstract
 
     public function collection($dataSet)
     {
+        if (empty($dataSet)) {
+            return;
+        }
+
         $collection = new Collection($this->type, $this->href());
 
         $resources = [];
@@ -32,6 +36,10 @@ class SerializerAbstract
 
     public function resource($data)
     {
+        if (empty($data)) {
+            return;
+        }
+
         $resource = new Resource($this->type, $this->href());
 
         if (is_object($data)) {
@@ -43,7 +51,9 @@ class SerializerAbstract
             foreach ($relations as $name => $nested) {
                 $method = (in_array($name, $this->include) ? 'include' : 'link').ucfirst($name);
                 $linkedElement = $this->$method($data, $nested);
-                $resource->addLink($name, $linkedElement);
+                if ($linkedElement) {
+                    $resource->addLink($name, $linkedElement);
+                }
             }
         } else {
             $resource->setId($data);
