@@ -90,6 +90,11 @@ class Document
         $this->meta[$key] = $value;
     }
 
+    public function setMeta($meta)
+    {
+        $this->meta = $meta;
+    }
+
     public function toArray()
     {
         $document = [];
