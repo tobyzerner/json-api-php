@@ -16,11 +16,6 @@ class SerializerAbstract
         $this->include = array_merge($this->include, $include);
     }
 
-    public function href()
-    {
-        return [];
-    }
-
     public function collection($dataSet)
     {
         $collection = new Collection($this->type, $this->href());
