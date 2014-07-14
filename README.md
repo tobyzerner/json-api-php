@@ -51,7 +51,7 @@ A Serializer is responsible for constructing Element (Resource/Collection) objec
 ```php
 use Tobscure\JsonApi\SerializerAbstract;
 
-class PostsSerializer extends SerializerAbstract
+class PostSerializer extends SerializerAbstract
 {
     protected $type = 'posts';
 
@@ -93,7 +93,7 @@ For each relationship where the resource ID(s) are specified inline, a Serialize
 ```php
     protected function linkComments(Post $post)
     {
-        $serializer = new CommentsSerializer;
+        $serializer = new CommentSerializer;
         return $serializer->collection($post->commentIds);
     }
 ```
@@ -111,7 +111,7 @@ For each relationship where the resource object(s) can be sideloaded, a Serializ
 ```php
     protected function includeAuthor(Post $post, $relations)
     {
-        $serializer = new PeopleSerializer($relations);
+        $serializer = new PersonSerializer($relations);
         return $serializer->resource($post->author);
     }
 ```
