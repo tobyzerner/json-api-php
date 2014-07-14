@@ -8,7 +8,7 @@ interface ElementInterface
 
     public function getType();
 
-    public function getHref($path);
+    public function getHref();
 
     public function getResources();
 

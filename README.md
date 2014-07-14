@@ -46,12 +46,12 @@ A JSON-API Document may contain one primary Element. The primary Element will be
 
 ### Serializers
 
-A Serializer is responsible for constructing Element (Resource/Collection) objects for a certain resource type. Serializers must extend `Tobscure\JsonApi\SerializerAbstract`. At a minimum, a serializer must specify its **type**, provide a method to transform **attributes**, and specify the API URL at which the resource type can be accessed:
+A Serializer is responsible for constructing Element (Resource/Collection) objects for a certain resource type. Serializers must extend `Tobscure\JsonApi\SerializerAbstract`. At a minimum, a serializer must specify its **type**, provide a method to transform **attributes**, and specify the URL template at which the resource type can be accessed:
 
 ```php
 use Tobscure\JsonApi\SerializerAbstract;
 
-class PostSerializer extends SerializerAbstract
+class PostsSerializer extends SerializerAbstract
 {
     protected $type = 'posts';
 
@@ -63,24 +63,52 @@ class PostSerializer extends SerializerAbstract
         ];
     }
 
-    public function getUrl()
+    protected function href()
     {
-        return 'http://example.com/api/posts';
+        return [
+            'posts' => 'http://example.com/api/posts/{posts.id}'
+        ];
     }
 }
 ```
 
-For each **relationship** with another resource, a Serializer should have a method named `link{RelationshipName}` and/or a method named `include{RelationshipName}`. These methods are to return an Element representing the relationship value — a Resource for a to-one relationship, and a Collection for a to-many relationship.
+#### URL Templates
 
-These methods differ in the amount of detail they add to the document: **link** returns an Element only containing the ID(s) of the linked resource(s), whereas **include** returns an Element containing complete representations of the linked resource(s), which are subsequently included in the **linked** section of the Document.
+For each **has-many relationship**, a Serializer should include a URL template in the array returned by the `href` method. This URL template will automatically be included in the top-level `links` section of the Document.
 
 ```php
-    protected function linkAuthor(Post $post)
+    protected function href()
     {
-        $serializer = new PeopleSerializer;
-        return $serializer->resource($post->authorId);
+        return [
+            'posts'    => 'http://example.com/api/posts/{posts.id}',
+            'comments' => 'http://example.com/api/posts/{posts.id}/comments'
+        ];
     }
+```
 
+#### Links 
+
+For each relationship where the resource ID(s) are specified inline, a Serializer should have a method named `link{RelationshipName}`. This method should return an Element representing the relationship value: a Resource for a to-one relationship, and a Collection for a to-many relationship. The Resources should not contain any attributes — only IDs.
+
+```php
+    protected function linkComments(Post $post)
+    {
+        $serializer = new CommentsSerializer;
+        return $serializer->collection($post->commentIds);
+    }
+```
+
+Relations to link in this manner should be specified on the serializer:
+
+```php
+    protected $link = ['comments'];
+```
+
+#### Includes
+
+For each relationship where the resource object(s) can be sideloaded, a Serializer should have a method named `include{RelationshipName}`. This method should return an Element representing the relationship value: a Resource for a to-one relationship, and a Collection for a to-many relationship.
+
+```php
     protected function includeAuthor(Post $post, $relations)
     {
         $serializer = new PeopleSerializer($relations);
@@ -88,12 +116,10 @@ These methods differ in the amount of detail they add to the document: **link** 
     }
 ```
 
-When a Serializer is instantiated, a list of relations to **include** may be passed as a constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include= query param.)
+When a Serializer is instantiated, a list of relations to **include** may be passed as a constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include query param.)
 
-Default relations to **link** and **include** can be specified on the serializer:
+Default relations to **include** can be specified on the serializer:
 
 ```php
-    protected $link = ['comments'];
-
     protected $include = ['author'];
 ```

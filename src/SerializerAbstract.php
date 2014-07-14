@@ -16,14 +16,14 @@ class SerializerAbstract
         $this->include = array_merge($this->include, $include);
     }
 
-    public function getUrl()
+    public function href()
     {
-        return url($this->type);
+        return [];
     }
 
     public function collection($dataSet)
     {
-        $collection = new Collection($this->type, $this->getUrl());
+        $collection = new Collection($this->type, $this->href());
 
         $resources = [];
         foreach ($dataSet as $data) {
@@ -36,7 +36,7 @@ class SerializerAbstract
 
     public function resource($data)
     {
-        $resource = new Resource($this->type, $this->getUrl());
+        $resource = new Resource($this->type, $this->href());
 
         if (is_object($data)) {
             $resource->setId($data->id);

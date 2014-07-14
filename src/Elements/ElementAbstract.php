@@ -24,9 +24,9 @@ abstract class ElementAbstract implements ElementInterface
         return $this->type;
     }
 
-    public function getHref($path)
+    public function getHref()
     {
-        return $this->href.'/{'.$path.'}';
+        return $this->href;
     }
 
     public function setType($type)

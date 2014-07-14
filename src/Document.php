@@ -71,15 +71,33 @@ class Document
         $this->primaryElement = $element;
 
         foreach ($element->getResources() as $resource) {
+            $this->extractHref($resource);
             $this->extractLinks($resource);
+        }
+    }
+
+    public function extractHref($resource)
+    {
+        foreach ($resource->getHref() as $type => $href) {
+            if ($type == $resource->getType()) {
+                $path = $type;
+            } else {
+                $path = $resource->getType().'.'.$type;
+            }
+            $this->addLink($path, $href, $type);
         }
     }
 
     public function extractLinks($resource)
     {
-        foreach ($resource->getLinks() as $type => $element) {
-            $path = $resource->getType().'.'.$type;
-            $this->addLink($path, $element->getHref($path), $element->getType());
+        foreach ($resource->getLinks() as $name => $element) {
+            $this->extractHref($element);
+
+            $linkType = $element->getType();
+            $path = $resource->getType().'.'.$name;
+            $href = $element->getHref()[$linkType];
+            $href = str_replace('{'.$linkType.'.id}', '{'.$path.'}', $href);
+            $this->addLink($path, $href, $linkType);
 
             $this->addLinked($element->getType(), $element);
         }
@@ -100,6 +118,7 @@ class Document
         $document = [];
 
         if (! empty($this->links)) {
+            ksort($this->links);
             $document['links'] = $this->links;
         }
 
