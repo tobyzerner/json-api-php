@@ -11,10 +11,26 @@ class SerializerAbstract
 
     protected $include = [];
 
-    public function __construct($include = [], $link = [])
+    public function __construct($include = null, $link = [])
     {
-        $this->include = array_merge($this->include, $include);
+        // Override the defaults if includes are specified, as per the JSON-API
+        // spec: "If this parameter is used, ONLY the requested linked resources
+        // should be returned alongside the primary resource(s)."
+        if ($include) {
+            $this->include = $include;
+        }
+
         $this->link = array_merge($this->link, $link);
+    }
+
+    public function setInclude($include)
+    {
+        $this->include = $include;
+    }
+
+    public function setLink($link)
+    {
+        $this->link = $link;
     }
 
     public function collection($dataSet)
