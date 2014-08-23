@@ -74,9 +74,11 @@ class Document
     {
         $this->primaryElement = $element;
 
-        foreach ($element->getResources() as $resource) {
-            $this->extractHref($resource);
-            $this->extractLinks($resource);
+        if ($element) {
+            foreach ($element->getResources() as $resource) {
+                $this->extractHref($resource);
+                $this->extractLinks($resource);
+            }
         }
     }
 
