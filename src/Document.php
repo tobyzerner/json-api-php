@@ -102,7 +102,8 @@ class Document
             $href = $element->getHref()[$linkType];
             $href = str_replace('{'.$linkType.'.id}', '{'.$path.'}', $href);
             $this->addLink($path, $href, $linkType);
-
+        }
+        foreach ($resource->getIncludes() as $name => $element) {
             $this->addLinked($element->getType(), $element);
         }
     }

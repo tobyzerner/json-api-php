@@ -64,13 +64,19 @@ class SerializerAbstract
             $resource->setId($data->id);
             $resource->setAttributes($this->attributes($data));
 
-            $relations = $this->parseRelations(array_merge($this->link, $this->include));
-
+            $relations = $this->parseRelations($this->link);
             foreach ($relations as $name => $nested) {
-                $method = (in_array($name, $this->include) ? 'include' : 'link').ucfirst($name);
-                $linkedElement = $this->$method($data, $nested);
-                if ($linkedElement) {
-                    $resource->addLink($name, $linkedElement);
+                $method = 'link'.ucfirst($name);
+                if ($element = $this->$method($data, $nested)) {
+                    $resource->addLink($name, $element);
+                }
+            }
+
+            $relations = $this->parseRelations($this->include);
+            foreach ($relations as $name => $nested) {
+                $method = 'include'.ucfirst($name);
+                if ($element = $this->$method($data, $nested)) {
+                    $resource->addInclude($name, $element);
                 }
             }
         } else {
