@@ -39,7 +39,7 @@ class Document
             // this element's URL templates. We do this here so that a resource
             // type's root URL templates, e.g. {"posts": "api/posts/{posts.id}"},
             // is not included if it doesn't need to be.
-            $this->extractHref($element);
+            // $this->extractHref($element);
 
             if (! isset($this->linked[$type])) {
                 $this->linked[$type] = [];
@@ -80,7 +80,7 @@ class Document
 
         if ($element) {
             foreach ($element->getResources() as $resource) {
-                $this->extractHref($resource);
+                // $this->extractHref($resource);
                 $this->extractLinks($resource);
             }
         }
