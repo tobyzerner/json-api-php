@@ -13,6 +13,8 @@ class Document
     public function addLink($path, $href, $type = null)
     {
         $this->links[$path] = $type ? compact('href', 'type') : $href;
+
+        return $this;
     }
 
     public function addLinked($type, $element)
@@ -44,6 +46,8 @@ class Document
             }
             $this->linked[$type] = array_merge($this->linked[$type], $resources);
         }
+
+        return $this;
     }
 
     protected function uniqueResources($type, $resources)
@@ -80,6 +84,8 @@ class Document
                 $this->extractLinks($resource);
             }
         }
+
+        return $this;
     }
 
     public function extractHref($resource)
@@ -111,11 +117,15 @@ class Document
     public function addMeta($key, $value)
     {
         $this->meta[$key] = $value;
+
+        return $this;
     }
 
     public function setMeta($meta)
     {
         $this->meta = $meta;
+
+        return $this;
     }
 
     public function toArray()
