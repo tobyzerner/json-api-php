@@ -4,114 +4,80 @@ class Document
 {
     protected $links;
 
-    protected $linked;
+    protected $included = [];
 
     protected $meta;
 
-    protected $primaryElement;
+    protected $data;
 
-    public function addLink($path, $href, $type = null)
+    public function addIncluded($link)
     {
-        $this->links[$path] = $type ? compact('href', 'type') : $href;
-
-        return $this;
-    }
-
-    public function addLinked($type, $element)
-    {
-        $resources = $element->getResources();
+        $resources = $link->getLinkage()->getResources();
 
         foreach ($resources as $k => $resource) {
-            $this->extractLinks($resource);
-
             // If the resource doesn't have any attributes, then we don't need to
-            // put it into the linked part of the document.
+            // put it into the included part of the document.
             if (! $resource->getAttributes()) {
                 unset($resources[$k]);
             }
         }
 
         // Filter out any resources that we have already added to the document.
-        $resources = $this->uniqueResources($type, $resources);
+        $resources = $this->uniqueResources($resources);
+
+        foreach ($resources as $resource) {
+            foreach ($resource->getLinks() as $link) {
+                $this->addIncluded($link);
+            }
+        }
 
         if ($resources) {
-            // If there are resources to be included (sideloaded), then extract
-            // this element's URL templates. We do this here so that a resource
-            // type's root URL templates, e.g. {"posts": "api/posts/{posts.id}"},
-            // is not included if it doesn't need to be.
-            // $this->extractHref($element);
-
-            if (! isset($this->linked[$type])) {
-                $this->linked[$type] = [];
-            }
-            $this->linked[$type] = array_merge($this->linked[$type], $resources);
+            $this->included = array_merge($this->included, $resources);
         }
 
         return $this;
     }
 
-    protected function uniqueResources($type, $resources)
+    protected function uniqueResources($resources)
     {
         $ids = [];
 
-        if (! empty($this->linked[$type])) {
-            foreach ($this->linked[$type] as $resource) {
-                $ids[] = $resource->getId();
-            }
+        foreach ($this->included as $resource) {
+            $included[] = [$resource->getType(), $resource->getId()];
         }
 
-        if ($type == $this->primaryElement->getType()) {
-            foreach ($this->primaryElement->getResources() as $resource) {
-                $ids[] = $resource->getId();
-            }
+        foreach ($this->data->getResources() as $resource) {
+            $included[] = [$resource->getType(), $resource->getId()];
         }
 
-        $resources = array_filter($resources, function ($resource) use ($ids) {
-            return ! in_array($resource->getId(), $ids);
+        $resources = array_filter($resources, function ($resource) use ($included) {
+            return ! in_array([$resource->getType(), $resource->getId()], $included);
         });
 
         return $resources;
     }
 
 
-    public function setPrimaryElement($element)
+    public function setData($element)
     {
-        $this->primaryElement = $element;
+        $this->data = $element;
 
         if ($element) {
             foreach ($element->getResources() as $resource) {
-                // $this->extractHref($resource);
-                $this->extractLinks($resource);
+                foreach ($resource->getLinks() as $link) {
+                    $this->addIncluded($link);
+                }
             }
         }
 
         return $this;
     }
 
-    public function extractHref($resource)
+    public function addLink($key, $value)
     {
-        foreach ($resource->getHref() as $type => $href) {
-            if ($type == $resource->getType()) {
-                $path = $type;
-            } else {
-                $path = $resource->getType().'.'.$type;
-            }
-            $this->addLink($path, $href, $type);
-        }
-    }
+        $this->links[$key] = $value;
 
-    public function extractLinks($resource)
-    {
-        foreach ($resource->getLinks() as $name => $element) {
-            $linkType = $element->getType();
-            $path = $resource->getType().'.'.$name;
-            $href = $element->getHref()[$linkType];
-            $href = str_replace('{'.$linkType.'.id}', '{'.$path.'}', $href);
-            $this->addLink($path, $href, $linkType);
-        }
-        foreach ($resource->getIncludes() as $name => $element) {
-            $this->addLinked($element->getType(), $element);
-        }
+        return $this;
     }
 
     public function addMeta($key, $value)
@@ -137,21 +103,14 @@ class Document
             $document['links'] = $this->links;
         }
 
-        if (! empty($this->primaryElement)) {
-            $document[$this->primaryElement->getType()] = $this->primaryElement->toArray();
+        if (! empty($this->data)) {
+            $document['data'] = $this->data->toArray();
         }
 
-        if (! empty($this->linked)) {
-            $document['linked'] = [];
-
-            foreach ($this->linked as $type => $resources) {
-                $resources = array_map(
-                    function ($resource) {
-                        return $resource->toArray();
-                    },
-                    $resources
-                );
-                $document['linked'][$type] = $resources;
+        if (! empty($this->included)) {
+            $document['included'] = [];
+            foreach ($this->included as $resource) {
+                $document['included'][] = $resource->toArray();
             }
         }
 

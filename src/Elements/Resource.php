@@ -2,11 +2,25 @@
 
 class Resource extends ElementAbstract
 {
-    protected $attributes;
+    protected $id;
+
+    protected $attributes = [];
 
     protected $links = [];
 
-    protected $includes = [];
+    public function __construct($type, $id, $attributes = [], $links = [])
+    {
+        $this->type = $type;
+        $this->attributes = $attributes;
+        $this->links = $links;
+
+        $this->setId($id);
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function setId($id)
     {
@@ -28,29 +42,14 @@ class Resource extends ElementAbstract
         return $this->links;
     }
 
-    public function getIncludes()
-    {
-        return $this->includes;
-    }
-
     public function setLinks($links)
     {
         $this->links = $links;
     }
 
-    public function setIncludes($includes)
+    public function addLink($name, $relationship)
     {
-        $this->includes = $includes;
-    }
-
-    public function addLink($type, $element)
-    {
-        $this->links[$type] = $element;
-    }
-
-    public function addInclude($type, $element)
-    {
-        $this->includes[$type] = $element;
+        $this->links[$name] = $relationship;
     }
 
     public function getResources()
@@ -58,18 +57,19 @@ class Resource extends ElementAbstract
         return [$this];
     }
 
-    public function toArray()
+    public function toArray($full = true)
     {
-        $array = ['id' => $this->id] + (array) $this->attributes;
+        $array = ['type' => $this->type, 'id' => $this->id];
 
-        if ($this->includes || $this->links) {
-            $array['links'] = [];
+        if ($full) {
+            $array += (array) $this->attributes;
 
-            foreach ($this->includes as $type => $element) {
-                $array['links'][$type] = $element->getId();
-            }
-            foreach ($this->links as $type => $element) {
-                $array['links'][$type] = $element->getId();
+            if ($this->links) {
+                $array['links'] = [];
+
+                foreach ($this->links as $name => $link) {
+                    $array['links'][$name] = $link->toArray();
+                }
             }
         }
 

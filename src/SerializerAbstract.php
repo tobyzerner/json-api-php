@@ -3,7 +3,7 @@
 use Tobscure\JsonApi\Elements\Resource;
 use Tobscure\JsonApi\Elements\Collection;
 
-class SerializerAbstract
+abstract class SerializerAbstract
 {
     protected $type;
 
@@ -13,17 +13,20 @@ class SerializerAbstract
 
     public function __construct($include = null, $link = null)
     {
-        // Override the defaults if includes are specified, as per the JSON-API
-        // spec: "If this parameter is used, ONLY the requested linked resources
-        // should be returned alongside the primary resource(s)."
-        if (! is_null($include)) {
+        // Override the defaults if includes are specified, as per the JSON-
+        // API spec: "If a client supplies an include parameter, the server
+        // MUST NOT include other resource objects in the included section of
+        // the compound document."
+        if (! empty($include)) {
             $this->include = $include;
         }
 
-        if (! is_null($link)) {
+        if (! empty($link)) {
             $this->link = $link;
         }
     }
+
+    abstract protected function attributes($model);
 
     public function setInclude($include)
     {
@@ -35,21 +38,18 @@ class SerializerAbstract
         $this->link = $link;
     }
 
-    public function collection($dataSet)
+    public function collection($data)
     {
-        if (empty($dataSet)) {
+        if (empty($data)) {
             return;
         }
 
-        $collection = new Collection($this->type, $this->href());
-
         $resources = [];
-        foreach ($dataSet as $data) {
-            $resources[] = $this->resource($data);
+        foreach ($data as $record) {
+            $resources[] = $this->resource($record);
         }
-        $collection->setResources($resources);
 
-        return $collection;
+        return new Collection($this->type, $resources);
     }
 
     public function resource($data)
@@ -58,42 +58,40 @@ class SerializerAbstract
             return;
         }
 
-        $resource = new Resource($this->type, $this->href());
-
-        if (is_object($data)) {
-            $resource->setId($data->id);
-            $resource->setAttributes($this->attributes($data));
-
-            $relations = $this->parseRelations($this->link);
-            foreach ($relations as $name => $nested) {
-                $method = 'link'.ucfirst($name);
-                if ($element = $this->$method($data, $nested)) {
-                    $resource->addLink($name, $element);
-                }
-            }
-
-            $relations = $this->parseRelations($this->include);
-            foreach ($relations as $name => $nested) {
-                $method = 'include'.ucfirst($name);
-                if ($element = $this->$method($data, $nested)) {
-                    $resource->addInclude($name, $element);
-                }
-            }
+        if (! is_object($data)) {
+            return new Resource($this->type, $data);
         } else {
-            $resource->setId($data);
-        }
+            $links = [];
 
-        return $resource;
+            foreach (['link', 'include'] as $type) {
+                $include = $type === 'include';
+
+                $relationships = $this->parseRelationshipPaths($this->$type);
+                foreach ($relationships as $name => $nested) {
+                    $method = $this->$name();
+                    if ($element = $method($data, $include, $include ? $nested : null)) {
+                        if (! ($element instanceof Link)) {
+                            $element = new Link($element);
+                        }
+                        $links[$name] = $element;
+                    }
+                }
+            }
+
+            return new Resource($this->type, $data->id, $this->attributes($data), $links);
+        }
     }
 
-    // Given a flat array of relation paths (e.g. ['user', 'user.employer', 'user.employer.country', 'comments']),
-    // create a nested array of relations one-level deep that can be passed on to other serializers.
-    // e.g. ['user' => ['employer', 'employer.country'], 'comments' => []]
-    protected function parseRelations($relations)
+    // Given a flat array of relationship paths (e.g. ['user',
+    // 'user.employer', 'user.employer.country', 'comments']), create a nested
+    // array of relationship paths one-level deep that can be passed on to
+    // other serializers. e.g. ['user' => ['employer', 'employer.country'],
+    // 'comments' => []]
+    protected function parseRelationshipPaths($paths)
     {
         $tree = [];
 
-        foreach ($relations as $path) {
+        foreach ($paths as $path) {
             list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
 
             if (! isset($tree[$primary])) {
