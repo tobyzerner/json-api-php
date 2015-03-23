@@ -15,7 +15,7 @@ Works with version 1.0 RC3 of the spec. Todo:
 
 via Composer:
 
-    "tobscure/json-api": "*"
+    composer require tobscure/json-api
 
 ## Usage
 
