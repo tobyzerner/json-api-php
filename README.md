@@ -7,6 +7,9 @@ Works with version 1.0 RC3 of the spec. Todo:
 - [ ] Support for hyperlinks (`self`, `related`, etc.)
 - [ ] Eloquent adapter to make relationships easier
 - [ ] Something to automate pagination?
+- [ ] Docblocks
+- [ ] Tests
+- [ ] Release and semver
 
 ## Install
 
