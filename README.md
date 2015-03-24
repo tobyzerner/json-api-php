@@ -86,15 +86,17 @@ A Serializer should have a method for each relationship that can be linked or in
 The Closure should return a `Tobscure\JsonApi\Link` object, which represents a **link object**. When all of this is put together, it might look something like this:
 
 ```php
-    protected function comments($post, $include, $included)
+    protected function comments()
     {
-        $serializer = new CommentSerializer($included);
-        $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
+        return function ($post, $include, $included) {
+            $serializer = new CommentSerializer($included);
+            $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
 
-        $link = new Link($comments);
-        $link->setMeta('key', 'value');
+            $link = new Link($comments);
+            $link->setMeta('key', 'value');
 
-        return $link;
+            return $link;
+        };
     }
 ```
 
