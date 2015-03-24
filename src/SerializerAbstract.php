@@ -68,8 +68,7 @@ abstract class SerializerAbstract
 
                 $relationships = $this->parseRelationshipPaths($this->$type);
                 foreach ($relationships as $name => $nested) {
-                    $method = $this->$name();
-                    if ($element = $method($data, $include, $include ? $nested : null)) {
+                    if (($method = $this->$name()) && ($element = $method($data, $include, $include ? $nested : null))) {
                         if (! ($element instanceof Link)) {
                             $element = new Link($element);
                         }
