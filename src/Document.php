@@ -26,7 +26,7 @@ class Document
         $resources = $this->uniqueResources($resources);
 
         foreach ($resources as $resource) {
-            foreach ($resource->getLinks() as $link) {
+            foreach ($resource->getIncluded() as $link) {
                 $this->addIncluded($link);
             }
         }
@@ -64,7 +64,7 @@ class Document
 
         if ($element) {
             foreach ($element->getResources() as $resource) {
-                foreach ($resource->getLinks() as $link) {
+                foreach ($resource->getIncluded() as $link) {
                     $this->addIncluded($link);
                 }
             }

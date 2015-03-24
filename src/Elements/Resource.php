@@ -8,11 +8,14 @@ class Resource extends ElementAbstract
 
     protected $links = [];
 
-    public function __construct($type, $id, $attributes = [], $links = [])
+    protected $included = [];
+
+    public function __construct($type, $id, $attributes = [], $links = [], $included = [])
     {
         $this->type = $type;
         $this->attributes = $attributes;
         $this->links = $links;
+        $this->included = $included;
 
         $this->setId($id);
     }
@@ -52,6 +55,21 @@ class Resource extends ElementAbstract
         $this->links[$name] = $relationship;
     }
 
+    public function getIncluded()
+    {
+        return $this->included;
+    }
+
+    public function setIncluded($included)
+    {
+        $this->included = $included;
+    }
+
+    public function addIncluded($name, $relationship)
+    {
+        $this->included[$name] = $relationship;
+    }
+
     public function getResources()
     {
         return [$this];
@@ -64,9 +82,12 @@ class Resource extends ElementAbstract
         if ($full) {
             $array += (array) $this->attributes;
 
-            if ($this->links) {
+            if ($this->links || $this->included) {
                 $array['links'] = [];
 
+                foreach ($this->included as $name => $link) {
+                    $array['links'][$name] = $link->toArray();
+                }
                 foreach ($this->links as $name => $link) {
                     $array['links'][$name] = $link->toArray();
                 }

@@ -61,7 +61,7 @@ abstract class SerializerAbstract
         if (! is_object($data)) {
             return new Resource($this->type, $data);
         } else {
-            $links = [];
+            $links = $included = [];
 
             foreach (['link', 'include'] as $type) {
                 $include = $type === 'include';
@@ -72,12 +72,16 @@ abstract class SerializerAbstract
                         if (! ($element instanceof Link)) {
                             $element = new Link($element);
                         }
-                        $links[$name] = $element;
+                        if ($include) {
+                            $included[$name] = $element;
+                        } else {
+                            $links[$name] = $element;
+                        }
                     }
                 }
             }
 
-            return new Resource($this->type, $data->id, $this->attributes($data), $links);
+            return new Resource($this->type, $data->id, $this->attributes($data), $links, $included);
         }
     }
 
