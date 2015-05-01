@@ -75,6 +75,15 @@ class PostSerializer extends SerializerAbstract
 }
 ```
 
+By default, a Resource object's **id** attribute will be set as the `id` property on the model. A serializer can provide a method to override this:
+
+```php
+protected function id($post)
+{
+    return $post->someOtherKey;
+}
+```
+
 #### Relationships 
 
 A Serializer should have a method for each relationship that can be linked or included on a resource. This method should return a Closure which accepts three arguments:
