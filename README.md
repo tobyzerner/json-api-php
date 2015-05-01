@@ -108,3 +108,19 @@ Relationships to link or include by default may be specified on the serializer:
 ```
 
 When a Serializer is instantiated, a list of relationships to **include** may be passed as the first constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include query param.) A list of relationships to **link** may be passed as the second constructor argument. If specified, these arguments will override the default relationships defined on the serializer.
+
+### Criteria
+
+```php
+use Tobscure\JsonApi\Criteria;
+
+$criteria = new Criteria($_GET);
+
+$include = $criteria->getInclude(); // ?include=foo,bar => ['foo', 'bar']
+
+$sort = $criteria->getSort(); // ?sort=+foo,-bar => ['foo' => 'asc', 'bar' => 'desc']
+
+$offset = $criteria->getOffset(); // ?page[offset]=10 => 10 (defaults to 0)
+
+$limit = $criteria->getLimit();  // ?page[limit]=50 => 50 (defaults to null)
+```
