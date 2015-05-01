@@ -28,6 +28,11 @@ abstract class SerializerAbstract
 
     abstract protected function attributes($model);
 
+    protected function id($model)
+    {
+        return $model->id;
+    }
+
     public function setInclude($include)
     {
         $this->include = $include;
@@ -81,7 +86,7 @@ abstract class SerializerAbstract
                 }
             }
 
-            return new Resource($this->type, $data->id, $this->attributes($data), $links, $included);
+            return new Resource($this->type, $this->id($data), $this->attributes($data), $links, $included);
         }
     }
 
