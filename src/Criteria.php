@@ -24,28 +24,21 @@ class Criteria
         return $this->getPage('limit');
     }
 
-    /**
-     * [getSort description]
-     *
-     * @todo require + prefix for ascending order
-     * @todo add support for multiple sorts (+foo,-bar)
-     * @return [type] [description]
-     */
     public function getSort()
     {
-        $field = $this->getInput('sort');
-        $order = null;
+        $sort = [];
 
-        if (substr($field, 0, 1) === '-') {
-            $order = 'desc';
-            $field = substr($field, 1);
+        $fields = explode(',', $this->getInput('sort'));
+
+        foreach ($fields as $field) {
+            $order = substr($field, 0, 1);
+
+            if ($order === '+' || $order === '-') {
+                $sort[substr($field, 1)] = $order === '+' ? 'asc' : 'desc';
+            }
         }
 
-        if ($field && ! $order) {
-            $order = 'asc';
-        }
-
-        return [$field => $order];
+        return $sort;
     }
 
     protected function getInput($key)
