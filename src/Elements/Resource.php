@@ -75,6 +75,13 @@ class Resource extends ElementAbstract
         return [$this];
     }
 
+    public function merge(Resource $resource)
+    {
+        $this->attributes = array_merge($this->attributes, $resource->attributes);
+        $this->links = array_merge($this->links, $resource->links);
+        $this->included = array_merge($this->included, $resource->included);
+    }
+
     public function toArray($full = true)
     {
         $array = ['type' => $this->type, 'id' => $this->id];
