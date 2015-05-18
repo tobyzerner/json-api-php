@@ -26,6 +26,9 @@ class Document
             foreach ($resource->getIncluded() as $link) {
                 $this->addIncluded($link);
             }
+        }
+
+        foreach ($resources as $k => $resource) {
             foreach ($this->included as $includedResource) {
                 if ($includedResource->getType() === $resource->getType() && $includedResource->getId() === $resource->getId()) {
                     $includedResource->merge($resource);
