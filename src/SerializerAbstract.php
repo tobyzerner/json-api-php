@@ -66,22 +66,27 @@ abstract class SerializerAbstract implements SerializerInterface
         if (! is_object($data)) {
             return new Resource($this->type, $data);
         } else {
-            $links = $included = [];
+            $included = $links = [];
 
-            foreach (['link', 'include'] as $type) {
-                $include = $type === 'include';
+            $linkRelationships = $this->parseRelationshipPaths($this->link);
+            $includeRelationships = $this->parseRelationshipPaths($this->include);
 
-                $relationships = $this->parseRelationshipPaths($this->$type);
-                foreach ($relationships as $name => $nested) {
-                    if (($method = $this->$name()) && ($element = $method($data, $include, $include ? $nested : null))) {
-                        if (! ($element instanceof Link)) {
-                            $element = new Link($element);
-                        }
-                        if ($include) {
-                            $included[$name] = $element;
-                        } else {
-                            $links[$name] = $element;
-                        }
+            $relationships = array_merge_recursive($linkRelationships, $includeRelationships);
+
+            foreach ($relationships as $name => $nested) {
+                $include = array_search($name, $this->include) !== false;
+
+                $nestedInclude = isset($includeRelationships[$name]) ? $includeRelationships[$name] : [];
+                $nestedLink = isset($linkRelationships[$name]) ? $linkRelationships[$name] : [];
+
+                if (($method = $this->$name()) && ($element = $method($data, $include, $nestedInclude, $nestedLink))) {
+                    if (! ($element instanceof Link)) {
+                        $element = new Link($element);
+                    }
+                    if ($include) {
+                        $included[$name] = $element;
+                    } else {
+                        $links[$name] = $element;
                     }
                 }
             }

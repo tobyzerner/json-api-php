@@ -89,16 +89,17 @@ protected function id($post)
 A Serializer should have a method for each relationship that can be linked or included on a resource. This method should return a Closure which accepts three arguments:
 
 - `$model` (object) The parent model that is being serialized
-- `$include` (boolean) Whether or not this relationship's resources are being included, or just linked
+- `$include` (boolean) Whether or not this relationship's resource(s) are being included, or just linked
 - `$included` (array) The relationships that are to be included on the this resource
+- `$linked` (array) The relationships that are to be linked on the this resource
 
 The Closure should return a `Tobscure\JsonApi\Link` object, which represents a **link object**. When all of this is put together, it might look something like this:
 
 ```php
     protected function comments()
     {
-        return function ($post, $include, $included) {
-            $serializer = new CommentSerializer($included);
+        return function ($post, $include, $included, $linked) {
+            $serializer = new CommentSerializer($included, $linked);
             $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
 
             $link = new Link($comments);
@@ -109,14 +110,7 @@ The Closure should return a `Tobscure\JsonApi\Link` object, which represents a *
     }
 ```
 
-Relationships to link or include by default may be specified on the serializer:
-
-```php
-    protected $link = ['comments'];
-    protected $include = ['author'];
-```
-
-When a Serializer is instantiated, a list of relationships to **include** may be passed as the first constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include query param.) A list of relationships to **link** may be passed as the second constructor argument. If specified, these arguments will override the default relationships defined on the serializer.
+When a Serializer is instantiated, a list of relationships to **include** may be passed as the first constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include query param.) A list of relationships to **link** may be passed as the second constructor argument.
 
 ### Criteria
 
