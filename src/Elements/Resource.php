@@ -77,7 +77,7 @@ class Resource extends ElementAbstract
 
     public function merge(Resource $resource)
     {
-        $this->attributes = array_merge($this->attributes, $resource->attributes);
+        $this->attributes = array_merge((array) $this->attributes, (array) $resource->attributes);
         $this->links = array_merge($this->links, $resource->links);
         $this->included = array_merge($this->included, $resource->included);
     }
