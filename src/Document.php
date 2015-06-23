@@ -19,12 +19,10 @@ class Document
             // put it into the included part of the document.
             if (! $resource->getAttributes()) {
                 unset($resources[$k]);
-            }
-        }
-
-        foreach ($resources as $k => $resource) {
-            foreach ($resource->getIncluded() as $link) {
-                $this->addIncluded($link);
+            } else {
+                foreach ($resource->getIncluded() as $link) {
+                    $this->addIncluded($link);
+                }
             }
         }
 
