@@ -1,6 +1,6 @@
 <?php namespace Tobscure\JsonApi;
 
-class Document
+class Document implements JsonSerializable
 {
     protected $links;
 
@@ -109,5 +109,10 @@ class Document
     public function __toString()
     {
         return json_encode($this->toArray());
+    }
+    
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }
