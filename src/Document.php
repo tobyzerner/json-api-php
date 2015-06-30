@@ -1,5 +1,7 @@
 <?php namespace Tobscure\JsonApi;
 
+use JsonSerializable;
+
 class Document implements JsonSerializable
 {
     protected $links;
