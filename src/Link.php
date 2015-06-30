@@ -59,6 +59,7 @@ class Link
     {
         $link = [];
 
+	    $link['linkage'] = [];
         if (! empty($this->linkage)) {
             $link['linkage'] = $this->linkage->toArray(false);
         }
