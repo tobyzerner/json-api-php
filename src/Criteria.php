@@ -19,6 +19,8 @@ class Criteria
 			    unset($includes[$i]);
 		    }
 	    }
+
+	    return $includes;
     }
 
     public function getOffset()
