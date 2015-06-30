@@ -11,7 +11,14 @@ class Criteria
 
     public function getInclude()
     {
-        return explode(',', $this->getInput('include'));
+	    $includes = explode(',', $this->getInput('include'));
+	    foreach ($includes as $i => $include)
+	    {
+		    if (!trim($include))
+		    {
+			    unset($includes[$i]);
+		    }
+	    }
     }
 
     public function getOffset()
