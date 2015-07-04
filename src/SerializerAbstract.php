@@ -105,7 +105,7 @@ abstract class SerializerAbstract implements SerializerInterface
             $include = $type === 'include';
 
             foreach ($relationships[$type] as $name => $nested) {
-                if (($method = $this->$name()) && ($element = $method($data, $include, array_get($relationships['include'], $name, []), array_get($relationships['link'], $name, [])))) {
+                if (($method = $this->getRelationshipFromMethod($name)) && ($element = $method($data, $include, array_get($relationships['include'], $name, []), array_get($relationships['link'], $name, [])))) {
                     if (! ($element instanceof Relationship)) {
                         $element = new Relationship($element);
                     }
@@ -119,6 +119,13 @@ abstract class SerializerAbstract implements SerializerInterface
         }
 
         return new Resource($this->type, $this->getId($data), $this->getAttributes($data), $links, $included);
+    }
+
+    protected function getRelationshipFromMethod($name)
+    {
+        if (method_exists($this, $name)) {
+            return $this->$name();
+        }
     }
 
     /**
