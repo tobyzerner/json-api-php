@@ -87,16 +87,16 @@ class Resource extends ElementAbstract
         $array = ['type' => $this->type, 'id' => $this->id];
 
         if ($full) {
-            $array += (array) $this->attributes;
+            $array['attributes'] = (array) $this->attributes;
 
             if ($this->links || $this->included) {
-                $array['links'] = [];
+                $array['relationships'] = [];
 
-                foreach ($this->included as $name => $link) {
-                    $array['links'][$name] = $link->toArray();
+                foreach ($this->included as $name => $relationship) {
+                    $array['relationships'][$name] = $relationship->toArray();
                 }
-                foreach ($this->links as $name => $link) {
-                    $array['links'][$name] = $link->toArray();
+                foreach ($this->links as $name => $relationship) {
+                    $array['relationships'][$name] = $relationship->toArray();
                 }
             }
         }

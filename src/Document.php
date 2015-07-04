@@ -14,7 +14,7 @@ class Document implements JsonSerializable
 
     public function addIncluded($link)
     {
-        $resources = $link->getLinkage()->getResources();
+        $resources = $link->getData()->getResources();
 
         foreach ($resources as $k => $resource) {
             // If the resource doesn't have any attributes, then we don't need to
