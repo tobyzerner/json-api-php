@@ -5,51 +5,74 @@ use Tobscure\JsonApi\Elements\Collection;
 
 abstract class SerializerAbstract implements SerializerInterface
 {
+    /**
+     * @var string
+     */
     protected $type;
 
-    protected $link = [];
+    /**
+     * @var array|null
+     */
+    protected $link;
 
-    protected $include = [];
+    /**
+     * @var array|null
+     */
+    protected $include;
 
-    public function __construct($include = null, $link = null)
+    /**
+     * @param array|null $include
+     * @param array|null $link
+     */
+    public function __construct(array $include = [], array $link = [])
     {
-        // Override the defaults if includes are specified, as per the JSON-
-        // API spec: "If a client supplies an include parameter, the server
-        // MUST NOT include other resource objects in the included section of
-        // the compound document."
-        if (! empty($include)) {
-            $this->include = $include;
-        }
-
-        if (! empty($link)) {
-            $this->link = $link;
-        }
+        $this->include = $include;
+        $this->link = $link;
     }
 
-    abstract protected function attributes($model);
+    /**
+     * @param $model
+     * @return mixed
+     */
+    abstract protected function getAttributes($model);
 
-    protected function id($model)
+    /**
+     * @param $model
+     * @return mixed
+     */
+    protected function getId($model)
     {
         return $model->id;
     }
 
+    /**
+     * @param $include
+     */
     public function setInclude($include)
     {
         $this->include = $include;
     }
 
+    /**
+     * @param $link
+     */
     public function setLink($link)
     {
         $this->link = $link;
     }
 
+    /**
+     * @param $data
+     * @return Collection|null
+     */
     public function collection($data)
     {
         if (empty($data)) {
-            return;
+            return null;
         }
 
         $resources = [];
+
         foreach ($data as $record) {
             $resources[] = $this->resource($record);
         }
@@ -57,49 +80,68 @@ abstract class SerializerAbstract implements SerializerInterface
         return new Collection($this->type, $resources);
     }
 
+    /**
+     * @param object|array $data
+     * @return Resource|null
+     */
     public function resource($data)
     {
         if (empty($data)) {
-            return;
+            return null;
         }
 
         if (! is_object($data)) {
             return new Resource($this->type, $data);
-        } else {
-            $included = $links = [];
+        }
 
-            $relationships = [
-                'link' => $this->parseRelationshipPaths($this->link),
-                'include' => $this->parseRelationshipPaths($this->include)
-            ];
+        $included = $links = [];
 
-            foreach (['link', 'include'] as $type) {
-                $include = $type === 'include';
+        $relationships = [
+            'link' => $this->parseRelationshipPaths($this->link),
+            'include' => $this->parseRelationshipPaths($this->include)
+        ];
 
-                foreach ($relationships[$type] as $name => $nested) {
-                    if (($method = $this->$name()) && ($element = $method($data, $include, @$relationships['include'][$name], @$relationships['link'][$name]))) {
-                        if (! ($element instanceof Link)) {
-                            $element = new Link($element);
-                        }
-                        if ($include) {
-                            $included[$name] = $element;
-                        } else {
-                            $links[$name] = $element;
-                        }
+        foreach (['link', 'include'] as $type) {
+            $include = $type === 'include';
+
+            foreach ($relationships[$type] as $name => $nested) {
+                if (($method = $this->getRelationshipFromMethod($name)) && ($element = $method($data, $include, array_get($relationships['include'], $name, []), array_get($relationships['link'], $name, [])))) {
+                    if (! ($element instanceof Relationship)) {
+                        $element = new Relationship($element);
+                    }
+                    if ($include) {
+                        $included[$name] = $element;
+                    } else {
+                        $links[$name] = $element;
                     }
                 }
             }
+        }
 
-            return new Resource($this->type, $this->id($data), $this->attributes($data), $links, $included);
+        return new Resource($this->type, $this->getId($data), $this->getAttributes($data), $links, $included);
+    }
+
+    protected function getRelationshipFromMethod($name)
+    {
+        if (method_exists($this, $name)) {
+            return $this->$name();
         }
     }
 
-    // Given a flat array of relationship paths (e.g. ['user',
-    // 'user.employer', 'user.employer.country', 'comments']), create a nested
-    // array of relationship paths one-level deep that can be passed on to
-    // other serializers. e.g. ['user' => ['employer', 'employer.country'],
-    // 'comments' => []]
-    protected function parseRelationshipPaths($paths)
+    /**
+     * Given a flat array of relationship paths like:
+     *
+     *     ['user', 'user.employer', 'user.employer.country', 'comments']
+     *
+     * ... create a nested array of relationship paths one-level deep that can
+     * be passed on to other serializers:
+     *
+     *     ['user' => ['employer', 'employer.country'], 'comments' => []]
+     *
+     * @param array $paths
+     * @return array
+     */
+    protected function parseRelationshipPaths(array $paths)
     {
         $tree = [];
 

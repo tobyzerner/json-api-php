@@ -14,10 +14,14 @@ class Document implements JsonSerializable
 
     public function addIncluded($link)
     {
+<<<<<<< HEAD
 	    $resources = [];
 	    if ($linkage = $link->getLinkage()) {
 		    $resources = $linkage->getResources();
 	    }
+=======
+        $resources = $link->getData()->getResources();
+>>>>>>> 194c730df0695326a91ff74d72f9486abb46cb39
 
         foreach ($resources as $k => $resource) {
             // If the resource doesn't have any attributes, then we don't need to

@@ -4,7 +4,9 @@
 
 Works with version 1.0 RC3 of the spec. Todo:
 
+- [ ] Upgrade to 1.0 (WIP)
 - [ ] Support for hyperlinks (`self`, `related`, etc.)
+- [ ] Support for sparse fieldsets
 - [ ] Eloquent adapter to make relationships easier
 - [ ] Something to automate pagination?
 - [ ] Docblocks
@@ -65,7 +67,7 @@ class PostSerializer extends SerializerAbstract
 {
     protected $type = 'posts';
 
-    protected function attributes($post)
+    protected function getAttributes($post)
     {
         return [
             'title' => $post->title,
@@ -78,7 +80,7 @@ class PostSerializer extends SerializerAbstract
 By default, a Resource object's **id** attribute will be set as the `id` property on the model. A serializer can provide a method to override this:
 
 ```php
-protected function id($post)
+protected function getId($post)
 {
     return $post->someOtherKey;
 }
@@ -86,26 +88,26 @@ protected function id($post)
 
 #### Relationships 
 
-A Serializer should have a method for each relationship that can be linked or included on a resource. This method should return a Closure which accepts three arguments:
+A Serializer should have a method for each relationship that can be linked or included on a resource. This method should return a Closure which accepts four arguments:
 
 - `$model` (object) The parent model that is being serialized
 - `$include` (boolean) Whether or not this relationship's resource(s) are being included, or just linked
-- `$included` (array) The relationships that are to be included on the this resource
-- `$linked` (array) The relationships that are to be linked on the this resource
+- `$included` (array) The relationships that are to be included on this resource
+- `$linked` (array) The relationships that are to be linked on this resource
 
-The Closure should return a `Tobscure\JsonApi\Link` object, which represents a **link object**. When all of this is put together, it might look something like this:
+The Closure should return a `Tobscure\JsonApi\Relationship` object, which represents a **relationship object**. When all of this is put together, it might look something like this:
 
 ```php
     protected function comments()
     {
-        return function ($post, $include, $included, $linked) {
+        return function ($post, $include, array $included, array $linked) {
             $serializer = new CommentSerializer($included, $linked);
             $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
 
-            $link = new Link($comments);
-            $link->setMeta('key', 'value');
+            $relationship = new Relationship($comments);
+            $relationship->setMeta('key', 'value');
 
-            return $link;
+            return $relationship;
         };
     }
 ```

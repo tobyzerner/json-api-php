@@ -1,8 +1,10 @@
 <?php namespace Tobscure\JsonApi;
 
-class Link
+use Tobscure\JsonApi\Elements\ElementInterface;
+
+class Relationship
 {
-    protected $linkage;
+    protected $data;
 
     protected $self;
 
@@ -10,19 +12,22 @@ class Link
 
     protected $meta;
 
-    public function __construct($linkage)
+    /**
+     * @param ElementInterface $data
+     */
+    public function __construct(ElementInterface $data)
     {
-        $this->linkage = $linkage;
+        $this->data = $data;
     }
 
-    public function getLinkage()
+    public function getData()
     {
-        return $this->linkage;
+        return $this->data;
     }
 
-    public function setLinkage($linkage)
+    public function setData($data)
     {
-        $this->linkage = $linkage;
+        $this->data = $data;
 
         return $this;
     }
@@ -59,9 +64,8 @@ class Link
     {
         $link = [];
 
-	    $link['linkage'] = [];
-        if (! empty($this->linkage)) {
-            $link['linkage'] = $this->linkage->toArray(false);
+        if (! empty($this->data)) {
+            $link['data'] = $this->data->toArray(false);
         }
 
         if (! empty($this->self)) {
