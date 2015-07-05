@@ -9,6 +9,14 @@ class Criteria
         $this->input = $input;
     }
 
+	public function getFilter()
+	{
+		if ($filter = $this->getInput('filter'))
+		{
+			return explode(',', $filter);
+		}
+	}
+
     public function getInclude()
     {
         return explode(',', $this->getInput('include'));

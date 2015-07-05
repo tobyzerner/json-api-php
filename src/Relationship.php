@@ -15,7 +15,7 @@ class Relationship
     /**
      * @param ElementInterface $data
      */
-    public function __construct(ElementInterface $data)
+    public function __construct(ElementInterface $data = null)
     {
         $this->data = $data;
     }
@@ -64,6 +64,7 @@ class Relationship
     {
         $link = [];
 
+	    $link['data'] = [];
         if (! empty($this->data)) {
             $link['data'] = $this->data->toArray(false);
         }
