@@ -19,7 +19,16 @@ class Criteria
 
     public function getInclude()
     {
-        return explode(',', $this->getInput('include'));
+	    $includes = explode(',', $this->getInput('include'));
+	    foreach ($includes as $i => $include)
+	    {
+		    if (!trim($include))
+		    {
+			    unset($includes[$i]);
+		    }
+	    }
+
+	    return $includes;
     }
 
     public function getOffset()
@@ -31,6 +40,11 @@ class Criteria
     {
         return $this->getPage('limit');
     }
+
+	public function getFilter()
+	{
+		return $this->getInput('filter');
+	}
 
     public function getSort()
     {
