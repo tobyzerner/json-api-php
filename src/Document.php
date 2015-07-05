@@ -10,6 +10,8 @@ class Document implements JsonSerializable
 
     protected $meta;
 
+    protected $errors;
+
     protected $data;
 
     public function addIncluded($link)
@@ -81,6 +83,13 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
+
+        return $this;
+    }
+
     public function toArray()
     {
         $document = [];
@@ -103,6 +112,10 @@ class Document implements JsonSerializable
 
         if (! empty($this->meta)) {
             $document['meta'] = $this->meta;
+        }
+
+        if (! empty($this->errors)) {
+            $document['errors'] = $this->errors;
         }
 
         return $document;
