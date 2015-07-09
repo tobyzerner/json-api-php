@@ -106,12 +106,15 @@ abstract class SerializerAbstract implements SerializerInterface
 
             foreach ($relationships[$type] as $name => $nested) {
                 $method = $this->getRelationshipFromMethod($name);
-                $element = $method(
-                    $data,
-                    $include,
-                    isset($relationships['include'][$name]) ? $relationships['include'][$name] : [],
-                    isset($relationships['link'][$name]) ? $relationships['link'][$name] : []
-                );
+
+                if ($method) {
+                    $element = $method(
+                        $data,
+                        $include,
+                        isset($relationships['include'][$name]) ? $relationships['include'][$name] : [],
+                        isset($relationships['link'][$name]) ? $relationships['link'][$name] : []
+                    );
+                }
 
                 if ($method && $element)
                      {
