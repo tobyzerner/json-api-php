@@ -41,11 +41,6 @@ class Criteria
         return $this->getPage('limit');
     }
 
-	public function getFilter()
-	{
-		return $this->getInput('filter');
-	}
-
     public function getSort()
     {
         $sort = [];
