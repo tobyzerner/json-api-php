@@ -15,7 +15,7 @@ class Relationship
     /**
      * @param ElementInterface $data
      */
-    public function __construct(ElementInterface $data)
+    public function __construct(ElementInterface $data = null)
     {
         $this->data = $data;
     }
