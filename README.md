@@ -17,7 +17,9 @@ Works with version 1.0 RC3 of the spec. Todo:
 
 via Composer:
 
-    composer require tobscure/json-api
+```bash
+composer require tobscure/json-api
+```
 
 ## Usage
 
@@ -25,7 +27,7 @@ via Composer:
 use Tobscure\JsonApi\Document;
 
 // Create a new JSON API Document
-$document = new Document;
+$document = new Document();
 
 // Create a new serializer (see below), passing an array of 
 // relationships to include
@@ -98,18 +100,18 @@ A Serializer should have a method for each relationship that can be linked or in
 The Closure should return a `Tobscure\JsonApi\Relationship` object, which represents a **relationship object**. When all of this is put together, it might look something like this:
 
 ```php
-    protected function comments()
-    {
-        return function ($post, $include, array $included, array $linked) {
-            $serializer = new CommentSerializer($included, $linked);
-            $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
+protected function comments()
+{
+    return function ($post, $include, array $included, array $linked) {
+        $serializer = new CommentSerializer($included, $linked);
+        $comments = $serializer->collection($include ? $post->comments : $post->commentIds);
 
-            $relationship = new Relationship($comments);
-            $relationship->setMeta('key', 'value');
+        $relationship = new Relationship($comments);
+        $relationship->setMeta('key', 'value');
 
-            return $relationship;
-        };
-    }
+        return $relationship;
+    };
+}
 ```
 
 When a Serializer is instantiated, a list of relationships to **include** may be passed as the first constructor argument. (In the case of the primary Element's serializer, you will probably want this to be the exploded value of the ?include query param.) A list of relationships to **link** may be passed as the second constructor argument.
