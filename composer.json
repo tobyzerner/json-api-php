@@ -1,7 +1,8 @@
 {
     "name": "tobscure/json-api",
-    "description": "JSON-API responses in PHP.",
-    "version": "0.1.0",
+    "description": "JSON-API responses in PHP",
+    "keywords": ["json", "api", "standard"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Toby Zerner",
@@ -19,5 +20,11 @@
             "Tobscure\\JsonApi\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "extra": {
+    	"branch-alias": {
+    		"dev-master": "1.0-dev"
+    	}
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
