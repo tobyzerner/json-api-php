@@ -129,3 +129,8 @@ $offset = $criteria->getOffset(); // ?page[offset]=10 => 10 (defaults to 0)
 
 $limit = $criteria->getLimit();  // ?page[limit]=50 => 50 (defaults to null)
 ```
+
+## License
+
+PHP JSON-API is licensed under [The MIT License (MIT)](LICENSE).
+
