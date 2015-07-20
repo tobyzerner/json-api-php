@@ -2,16 +2,7 @@
 
 [JSON-API](http://jsonapi.org) responses in PHP.
 
-Works with version 1.0 RC3 of the spec. Todo:
-
-- [ ] Upgrade to 1.0 (WIP)
-- [ ] Support for hyperlinks (`self`, `related`, etc.)
-- [ ] Support for sparse fieldsets
-- [ ] Eloquent adapter to make relationships easier
-- [ ] Something to automate pagination?
-- [ ] Docblocks
-- [ ] Tests
-- [ ] Release and semver
+Works with version 1.0 RC3 of the spec.
 
 ## Install
 
