@@ -33,8 +33,8 @@ class Criteria
         foreach ($fields as $field) {
             $order = substr($field, 0, 1);
 
-            if ($order === '+' || $order === '-') {
-                $sort[substr($field, 1)] = $order === '+' ? 'asc' : 'desc';
+            if ($order === '+' || $order === '-' || $order === ' ') {
+                $sort[substr($field, 1)] = $order === '+' || $order === ' ' ? 'asc' : 'desc';
             }
         }
 
