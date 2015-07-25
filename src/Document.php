@@ -32,7 +32,8 @@ class Document implements JsonSerializable
 
         foreach ($resources as $k => $resource) {
             foreach ($this->included as $includedResource) {
-                if ($includedResource->getType() === $resource->getType() && $includedResource->getId() === $resource->getId()) {
+                if ($includedResource->getType() === $resource->getType()
+                    && $includedResource->getId() === $resource->getId()) {
                     $includedResource->merge($resource);
                     unset($resources[$k]);
                     break;
