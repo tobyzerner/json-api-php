@@ -125,7 +125,7 @@ class Document implements JsonSerializable
     {
         return json_encode($this->toArray());
     }
-    
+
     public function jsonSerialize()
     {
         return $this->toArray();
