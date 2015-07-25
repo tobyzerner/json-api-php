@@ -1,4 +1,4 @@
-<?php
+<?php namespace Tobscure\JsonApi;
 
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Elements\Resource;
