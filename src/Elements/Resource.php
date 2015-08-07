@@ -16,7 +16,7 @@ namespace Tobscure\JsonApi\Elements;
  *
  * @author Toby Zerner <toby.zerner@gmail.com>
  */
-class Resource extends ElementAbstract
+class Resource extends AbstractElement
 {
     protected $id;
 

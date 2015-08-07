@@ -16,7 +16,7 @@ namespace Tobscure\JsonApi\Elements;
  *
  * @author Toby Zerner <toby.zerner@gmail.com>
  */
-class Collection extends ElementAbstract
+class Collection extends AbstractElement
 {
     protected $resources;
 

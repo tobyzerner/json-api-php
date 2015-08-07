@@ -16,7 +16,7 @@ namespace Tobscure\JsonApi\Elements;
  *
  * @author Toby Zerner <toby.zerner@gmail.com>
  */
-abstract class ElementAbstract implements ElementInterface
+abstract class AbstractElement implements ElementInterface
 {
     protected $type;
 
