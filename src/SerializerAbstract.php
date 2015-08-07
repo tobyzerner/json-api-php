@@ -1,8 +1,24 @@
-<?php namespace Tobscure\JsonApi;
+<?php
+
+/*
+ * This file is part of JSON-API.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Tobscure\JsonApi;
 
 use Tobscure\JsonApi\Elements\Resource;
 use Tobscure\JsonApi\Elements\Collection;
 
+/**
+ * This is the abstract serializer class.
+ *
+ * @author Toby Zerner <toby.zerner@gmail.com>
+ */
 abstract class SerializerAbstract implements SerializerInterface
 {
     /**

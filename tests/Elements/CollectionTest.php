@@ -1,9 +1,26 @@
-<?php namespace Tobscure\JsonApi\Elements;
+<?php
+
+/*
+ * This file is part of JSON-API.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Tobscure\Tests\JsonApi\Elements;
 
 use Tobscure\JsonApi\Elements\Collection;
 use Tobscure\JsonApi\Elements\Resource;
+use Tobscure\Tests\JsonApi\AbstractTestCase;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+/**
+ * This is the collection test class.
+ *
+ * @author Toby Zerner <toby.zerner@gmail.com>
+ */
+class CollectionTest extends AbstractTestCase
 {
     public function testToArrayReturnsArrayOfResources()
     {
