@@ -116,8 +116,7 @@ abstract class SerializerAbstract implements SerializerInterface
                     );
                 }
 
-                if ($method && $element)
-                     {
+                if ($method && $element) {
                     if (! ($element instanceof Relationship)) {
                         $element = new Relationship($element);
                     }
