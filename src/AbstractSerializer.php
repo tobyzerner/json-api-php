@@ -11,8 +11,8 @@
 
 namespace Tobscure\JsonApi;
 
-use Tobscure\JsonApi\Elements\Resource;
 use Tobscure\JsonApi\Elements\Collection;
+use Tobscure\JsonApi\Elements\Resource;
 
 /**
  * This is the abstract serializer class.
@@ -48,12 +48,14 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * @param $model
+     *
      * @return mixed
      */
     abstract protected function getAttributes($model);
 
     /**
      * @param $model
+     *
      * @return mixed
      */
     protected function getId($model)
@@ -79,12 +81,13 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * @param $data
+     *
      * @return Collection|null
      */
     public function collection($data)
     {
         if (empty($data)) {
-            return null;
+            return;
         }
 
         $resources = [];
@@ -98,15 +101,16 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * @param object|array $data
+     *
      * @return Resource|null
      */
     public function resource($data)
     {
         if (empty($data)) {
-            return null;
+            return;
         }
 
-        if (! is_object($data)) {
+        if (!is_object($data)) {
             return new Resource($this->type, $data);
         }
 
@@ -114,7 +118,7 @@ abstract class AbstractSerializer implements SerializerInterface
 
         $relationships = [
             'link' => $this->parseRelationshipPaths($this->link),
-            'include' => $this->parseRelationshipPaths($this->include)
+            'include' => $this->parseRelationshipPaths($this->include),
         ];
 
         foreach (['link', 'include'] as $type) {
@@ -133,7 +137,7 @@ abstract class AbstractSerializer implements SerializerInterface
                 }
 
                 if ($method && $element) {
-                    if (! ($element instanceof Relationship)) {
+                    if (!($element instanceof Relationship)) {
                         $element = new Relationship($element);
                     }
                     if ($include) {
@@ -161,7 +165,7 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Given a flat array of relationship paths like:
+     * Given a flat array of relationship paths like:.
      *
      *     ['user', 'user.employer', 'user.employer.country', 'comments']
      *
@@ -171,6 +175,7 @@ abstract class AbstractSerializer implements SerializerInterface
      *     ['user' => ['employer', 'employer.country'], 'comments' => []]
      *
      * @param array $paths
+     *
      * @return array
      */
     protected function parseRelationshipPaths(array $paths)
@@ -180,7 +185,7 @@ abstract class AbstractSerializer implements SerializerInterface
         foreach ($paths as $path) {
             list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
 
-            if (! isset($tree[$primary])) {
+            if (!isset($tree[$primary])) {
                 $tree[$primary] = [];
             }
 
