@@ -51,12 +51,12 @@ A JSON-API Document may contain one primary Element. The primary Element will be
 
 ### Serializers
 
-A Serializer is responsible for constructing Element (Resource/Collection) objects for a certain resource type. Serializers should extend `Tobscure\JsonApi\SerializerAbstract`. At a minimum, a serializer must specify its **type** and provide a method to transform **attributes**:
+A Serializer is responsible for constructing Element (Resource/Collection) objects for a certain resource type. Serializers should extend `Tobscure\JsonApi\AbstractSerializer`. At a minimum, a serializer must specify its **type** and provide a method to transform **attributes**:
 
 ```php
-use Tobscure\JsonApi\SerializerAbstract;
+use Tobscure\JsonApi\AbstractSerializer;
 
-class PostSerializer extends SerializerAbstract
+class PostSerializer extends AbstractSerializer
 {
     protected $type = 'posts';
 
