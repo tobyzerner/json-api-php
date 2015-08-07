@@ -19,7 +19,7 @@ use Tobscure\JsonApi\Elements\Collection;
  *
  * @author Toby Zerner <toby.zerner@gmail.com>
  */
-abstract class SerializerAbstract implements SerializerInterface
+abstract class AbstractSerializer implements SerializerInterface
 {
     /**
      * @var string
@@ -148,6 +148,11 @@ abstract class SerializerAbstract implements SerializerInterface
         return new Resource($this->type, $this->getId($data), $this->getAttributes($data), $links, $included);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     protected function getRelationshipFromMethod($name)
     {
         if (method_exists($this, $name)) {
