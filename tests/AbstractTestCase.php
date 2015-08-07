@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Tobscure\JsonApi;
+namespace Tobscure\Tests\JsonApi;
+
+use PHPUnit_Framework_TestCase;
 
 /**
- * This is the serializer interface.
+ * This is the abstract test case class.
  *
- * @author Toby Zerner <toby.zerner@gmail.com>
+ * @author Vincent Klaiber <hello@vinkla.com>
  */
-interface SerializerInterface
+abstract class AbstractTestCase extends PHPUnit_Framework_TestCase
 {
-    public function collection($data);
-
-    public function resource($data);
+    //
 }

@@ -1,7 +1,7 @@
 {
     "name": "tobscure/json-api",
     "description": "JSON-API responses in PHP",
-    "keywords": ["json", "api", "standard"],
+    "keywords": ["json", "api", "standard", "jsonapi"],
     "license": "MIT",
     "authors": [
         {
@@ -10,20 +10,25 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.5.9"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "1.5.3"
+        "phpunit/phpunit": "^4.8.0"
     },
     "autoload": {
         "psr-4": {
             "Tobscure\\JsonApi\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tobscure\\Tests\\JsonApi\\": "tests/"
+        }
+    },
     "extra": {
-    	"branch-alias": {
-    		"dev-master": "1.0-dev"
-    	}
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
