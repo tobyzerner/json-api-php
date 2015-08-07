@@ -32,7 +32,10 @@ class Document implements JsonSerializable
 
     public function addIncluded($link)
     {
-        $resources = $link->getData()->getResources();
+	    $resources = [];
+	    if ($data = $link->getData()) {
+		    $resources = $data->getResources();
+	    }
 
         foreach ($resources as $k => $resource) {
             // If the resource doesn't have any attributes, then we don't need to
