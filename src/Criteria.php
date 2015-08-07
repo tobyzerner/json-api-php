@@ -18,28 +18,58 @@ namespace Tobscure\JsonApi;
  */
 class Criteria
 {
+    /**
+     * The input array.
+     *
+     * @var array
+     */
     protected $input;
 
+    /**
+     * Create a new criteria instance.
+     *
+     * @param array $input
+     */
     public function __construct($input)
     {
         $this->input = $input;
     }
 
+    /**
+     * Get the includes.
+     *
+     * @return array
+     */
     public function getInclude()
     {
         return explode(',', $this->getInput('include'));
     }
 
+    /**
+     * Get number of offset.
+     *
+     * @return int
+     */
     public function getOffset()
     {
         return max(0, $this->getPage('offset'));
     }
 
+    /**
+     * Get the limit.
+     *
+     * @return string
+     */
     public function getLimit()
     {
         return $this->getPage('limit');
     }
 
+    /**
+     * Get the sort.
+     *
+     * @return array
+     */
     public function getSort()
     {
         $sort = [];
@@ -57,11 +87,25 @@ class Criteria
         return $sort;
     }
 
+    /**
+     * Get an input item.
+     *
+     * @param string $key
+     *
+     * @return string|null
+     */
     protected function getInput($key)
     {
         return isset($this->input[$key]) ? $this->input[$key] : null;
     }
 
+    /**
+     * Get the page.
+     *
+     * @param string $key
+     *
+     * @return string
+     */
     protected function getPage($key)
     {
         $page = $this->getInput('page');

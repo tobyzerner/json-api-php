@@ -22,23 +22,31 @@ use Tobscure\JsonApi\Elements\Resource;
 abstract class AbstractSerializer implements SerializerInterface
 {
     /**
+     * The type.
+     *
      * @var string
      */
     protected $type;
 
     /**
+     * The link|links.
+     *
      * @var array|null
      */
     protected $link;
 
     /**
+     * The include|includes.
+     *
      * @var array|null
      */
     protected $include;
 
     /**
-     * @param array|null $include
-     * @param array|null $link
+     * Create a new abstract serializer instance.
+     *
+     * @param array $include
+     * @param array $link
      */
     public function __construct(array $include = [], array $link = [])
     {
@@ -47,16 +55,20 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
+     * Get the attributes array.
+     *
      * @param $model
      *
-     * @return mixed
+     * @return array
      */
     abstract protected function getAttributes($model);
 
     /**
+     * Get the id.
+     *
      * @param $model
      *
-     * @return mixed
+     * @return string
      */
     protected function getId($model)
     {
@@ -64,6 +76,8 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
+     * Set the include|includes.
+     *
      * @param $include
      */
     public function setInclude($include)
@@ -72,6 +86,8 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
+     * Set the link|links.
+     *
      * @param $link
      */
     public function setLink($link)
@@ -80,9 +96,11 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * @param $data
+     * Create a new collection.
      *
-     * @return Collection|null
+     * @param array $data
+     *
+     * @return \Tobscure\JsonApi\Elements\Collection|null
      */
     public function collection($data)
     {
@@ -100,9 +118,11 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * @param object|array $data
+     * Create a new resource.
      *
-     * @return Resource|null
+     * @param array $data
+     *
+     * @return \Tobscure\JsonApi\Elements\Resource|null
      */
     public function resource($data)
     {
@@ -153,6 +173,8 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
+     * Get relationship from method name.
+     *
      * @param string $name
      *
      * @return mixed
@@ -165,14 +187,14 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Given a flat array of relationship paths like:.
+     * Given a flat array of relationship paths like ...
      *
-     *     ['user', 'user.employer', 'user.employer.country', 'comments']
+     * ['user', 'user.employer', 'user.employer.country', 'comments']
      *
      * ... create a nested array of relationship paths one-level deep that can
      * be passed on to other serializers:
      *
-     *     ['user' => ['employer', 'employer.country'], 'comments' => []]
+     * ['user' => ['employer', 'employer.country'], 'comments' => []]
      *
      * @param array $paths
      *
