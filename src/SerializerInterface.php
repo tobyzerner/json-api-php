@@ -18,7 +18,21 @@ namespace Tobscure\JsonApi;
  */
 interface SerializerInterface
 {
+    /**
+     * Create a new collection.
+     *
+     * @param array $data
+     *
+     * @return @return \Tobscure\JsonApi\Elements\Collection|null
+     */
     public function collection($data);
 
+    /**
+     * Create a new collection.
+     *
+     * @param array $data
+     *
+     * @return @return \Tobscure\JsonApi\Elements\Resource|null
+     */
     public function resource($data);
 }

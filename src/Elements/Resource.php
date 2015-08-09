@@ -18,14 +18,43 @@ namespace Tobscure\JsonApi\Elements;
  */
 class Resource extends AbstractElement
 {
+    /**
+     * The resource id.
+     *
+     * @var int
+     */
     protected $id;
 
+    /**
+     * The attributes array.
+     *
+     * @var array
+     */
     protected $attributes = [];
 
+    /**
+     * The links array.
+     *
+     * @var array
+     */
     protected $links = [];
 
+    /**
+     * The included array.
+     *
+     * @var array
+     */
     protected $included = [];
 
+    /**
+     * Create a new resource instance.
+     *
+     * @param string $type
+     * @param int $id
+     * @param array $attributes
+     * @param array $links
+     * @param array $included
+     */
     public function __construct($type, $id, $attributes = [], $links = [], $included = [])
     {
         $this->type = $type;
@@ -36,61 +65,135 @@ class Resource extends AbstractElement
         $this->setId($id);
     }
 
+    /**
+     * Get the id.
+     *
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * Set the id.
+     *
+     * @param string|int $id
+     */
     public function setId($id)
     {
         $this->id = (string) $id;
     }
 
+    /**
+     * Get the attributes.
+     *
+     * @return array
+     */
     public function getAttributes()
     {
         return $this->attributes;
     }
 
+    /**
+     * Set the attributes.
+     *
+     * @param array $attributes
+     *
+     * @return void
+     */
     public function setAttributes($attributes)
     {
         $this->attributes = $attributes;
     }
 
+    /**
+     * Get the links.
+     *
+     * @return array
+     */
     public function getLinks()
     {
         return $this->links;
     }
 
+    /**
+     * Set the links.
+     *
+     * @param array $links
+     *
+     * @return void
+     */
     public function setLinks($links)
     {
         $this->links = $links;
     }
 
+    /**
+     * Add a link.
+     *
+     * @param string $name
+     * @param \Tobscure\JsonApi\Relationship $relationship
+     *
+     * @return void
+     */
     public function addLink($name, $relationship)
     {
         $this->links[$name] = $relationship;
     }
 
+    /**
+     * Get the included array.
+     *
+     * @return array
+     */
     public function getIncluded()
     {
         return $this->included;
     }
 
+    /**
+     * Set the included array.
+     *
+     * @param array $included
+     *
+     * @return void
+     */
     public function setIncluded($included)
     {
         $this->included = $included;
     }
 
+    /**
+     * Add an include.
+     *
+     * @param string $name
+     * @param \Tobscure\JsonApi\Relationship $relationship
+     *
+     * @return void
+     */
     public function addIncluded($name, $relationship)
     {
         $this->included[$name] = $relationship;
     }
 
+    /**
+     * Get the resources array.
+     *
+     * @return array
+     */
     public function getResources()
     {
         return [$this];
     }
 
+    /**
+     * Merge resources.
+     *
+     * @param \Tobscure\JsonApi\Elements\Resource $resource
+     *
+     * @return void.
+     */
     public function merge(Resource $resource)
     {
         $this->attributes = array_merge($this->attributes, $resource->attributes);
@@ -98,6 +201,13 @@ class Resource extends AbstractElement
         $this->included = array_merge($this->included, $resource->included);
     }
 
+    /**
+     * Map to an array.
+     *
+     * @param bool $full
+     *
+     * @return array
+     */
     public function toArray($full = true)
     {
         $array = ['type' => $this->type, 'id' => $this->id];

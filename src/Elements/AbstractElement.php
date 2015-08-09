@@ -18,15 +18,37 @@ namespace Tobscure\JsonApi\Elements;
  */
 abstract class AbstractElement implements ElementInterface
 {
+    /**
+     * The type.
+     *
+     * @var string
+     */
     protected $type;
 
+    /**
+     * Get an id or an array of ids.
+     *
+     * @return string|array
+     */
     abstract public function getId();
 
+    /**
+     * Get the type.
+     *
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * Set the type.
+     *
+     * @param string $type
+     *
+     * @return void
+     */
     public function setType($type)
     {
         $this->type = $type;

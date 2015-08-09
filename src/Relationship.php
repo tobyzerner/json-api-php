@@ -20,27 +20,61 @@ use Tobscure\JsonApi\Elements\ElementInterface;
  */
 class Relationship
 {
+    /**
+     * The data object.
+     *
+     * @var \Tobscure\JsonApi\Elements\ElementInterface
+     */
     protected $data;
 
+    /**
+     * The self variable.
+     *
+     * @var array
+     */
     protected $self;
 
+    /**
+     * The related array.
+     *
+     * @var array
+     */
     protected $related;
 
+    /**
+     * The meta data array.
+     *
+     * @var array
+     */
     protected $meta;
 
     /**
-     * @param ElementInterface $data
+     * Create a new relationship.
+     *
+     * @param \Tobscure\JsonApi\Elements\ElementInterface $data
      */
     public function __construct(ElementInterface $data)
     {
         $this->data = $data;
     }
 
+    /**
+     * Get the data object.
+     *
+     * @return \Tobscure\JsonApi\Elements\ElementInterface
+     */
     public function getData()
     {
         return $this->data;
     }
 
+    /**
+     * Set the data object.
+     *
+     * @param \Tobscure\JsonApi\Elements\ElementInterface $data
+     *
+     * @return $this
+     */
     public function setData($data)
     {
         $this->data = $data;
@@ -48,6 +82,14 @@ class Relationship
         return $this;
     }
 
+    /**
+     * Add meta data.
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
+     */
     public function addMeta($key, $value)
     {
         $this->meta[$key] = $value;
@@ -55,6 +97,13 @@ class Relationship
         return $this;
     }
 
+    /**
+     * Set meta data.
+     *
+     * @param array $meta
+     *
+     * @return $this
+     */
     public function setMeta($meta)
     {
         $this->meta = $meta;
@@ -62,6 +111,13 @@ class Relationship
         return $this;
     }
 
+    /**
+     * Set self.
+     *
+     * @param array $self
+     *
+     * @return $this
+     */
     public function setSelf($self)
     {
         $this->self = $self;
@@ -69,6 +125,13 @@ class Relationship
         return $this;
     }
 
+    /**
+     * Set related data.
+     *
+     * @param array $related
+     *
+     * @return $this
+     */
     public function setRelated($related)
     {
         $this->related = $related;
@@ -76,6 +139,11 @@ class Relationship
         return $this;
     }
 
+    /**
+     * Map everything to an array.
+     *
+     * @return array
+     */
     public function toArray()
     {
         $link = [];

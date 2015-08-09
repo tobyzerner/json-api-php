@@ -20,16 +20,48 @@ use JsonSerializable;
  */
 class Document implements JsonSerializable
 {
+    /**
+     * The links array.
+     *
+     * @var array
+     */
     protected $links;
 
+    /**
+     * The included array.
+     *
+     * @var array
+     */
     protected $included = [];
 
+    /**
+     * The meta data array.
+     *
+     * @var array
+     */
     protected $meta;
 
+    /**
+     * The errors array.
+     *
+     * @var array
+     */
     protected $errors;
 
+    /**
+     * The data object.
+     *
+     * @var \Tobscure\JsonApi\Elements\ElementInterface
+     */
     protected $data;
 
+    /**
+     * Add included.
+     *
+     * @param $link
+     *
+     * @return $this
+     */
     public function addIncluded($link)
     {
         $resources = $link->getData()->getResources();
@@ -64,6 +96,13 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Set the data object.
+     *
+     * @param $element
+     *
+     * @return $this
+     */
     public function setData($element)
     {
         $this->data = $element;
@@ -79,6 +118,14 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Add a link.
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
+     */
     public function addLink($key, $value)
     {
         $this->links[$key] = $value;
@@ -86,6 +133,14 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Add meta data.
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
+     */
     public function addMeta($key, $value)
     {
         $this->meta[$key] = $value;
@@ -93,6 +148,13 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Set the meta data array.
+     *
+     * @param array $meta
+     *
+     * @return $this
+     */
     public function setMeta($meta)
     {
         $this->meta = $meta;
@@ -100,6 +162,13 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Set the errors array.
+     *
+     * @param array $errors
+     *
+     * @return $this
+     */
     public function setErrors($errors)
     {
         $this->errors = $errors;
@@ -107,6 +176,11 @@ class Document implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Map everything to arrays.
+     *
+     * @return array
+     */
     public function toArray()
     {
         $document = [];
@@ -138,11 +212,21 @@ class Document implements JsonSerializable
         return $document;
     }
 
+    /**
+     * Map to string.
+     *
+     * @return string
+     */
     public function __toString()
     {
         return json_encode($this->toArray());
     }
 
+    /**
+     * Serialize for JSON usage.
+     *
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
