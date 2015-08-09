@@ -165,11 +165,13 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Given a flat array of relationship paths like:.
+     * Parse relationship paths.
+     * 
+     * Given a flat array of relationship paths like:
      *
      *     ['user', 'user.employer', 'user.employer.country', 'comments']
      *
-     * ... create a nested array of relationship paths one-level deep that can
+     * create a nested array of relationship paths one-level deep that can
      * be passed on to other serializers:
      *
      *     ['user' => ['employer', 'employer.country'], 'comments' => []]
