@@ -44,7 +44,7 @@ class Collection extends AbstractElement
      */
     public function getId()
     {
-        $ids = [];
+        $ids = array();
 
         foreach ($this->resources as $resource) {
             $ids[] = $resource->getId();
