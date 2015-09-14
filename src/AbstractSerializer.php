@@ -48,7 +48,7 @@ abstract class AbstractSerializer implements SerializerInterface
      * @param array $include
      * @param array $link
      */
-    public function __construct(array $include = [], array $link = [])
+    public function __construct(array $include = array(), array $link = array())
     {
         $this->include = $include;
         $this->link = $link;
@@ -108,7 +108,7 @@ abstract class AbstractSerializer implements SerializerInterface
             return;
         }
 
-        $resources = [];
+        $resources = array();
 
         foreach ($data as $record) {
             $resources[] = $this->resource($record);
@@ -134,14 +134,14 @@ abstract class AbstractSerializer implements SerializerInterface
             return new Resource($this->type, $data);
         }
 
-        $included = $links = [];
+        $included = $links = array();
 
-        $relationships = [
+        $relationships = array(
             'link' => $this->parseRelationshipPaths($this->link),
             'include' => $this->parseRelationshipPaths($this->include),
-        ];
+        );
 
-        foreach (['link', 'include'] as $type) {
+        foreach (array('link', 'include') as $type) {
             $include = $type === 'include';
 
             foreach ($relationships[$type] as $name => $nested) {
@@ -151,8 +151,8 @@ abstract class AbstractSerializer implements SerializerInterface
                     $element = $method(
                         $data,
                         $include,
-                        isset($relationships['include'][$name]) ? $relationships['include'][$name] : [],
-                        isset($relationships['link'][$name]) ? $relationships['link'][$name] : []
+                        isset($relationships['include'][$name]) ? $relationships['include'][$name] : array(),
+                        isset($relationships['link'][$name]) ? $relationships['link'][$name] : array()
                     );
                 }
 
@@ -204,13 +204,13 @@ abstract class AbstractSerializer implements SerializerInterface
      */
     protected function parseRelationshipPaths(array $paths)
     {
-        $tree = [];
+        $tree = array();
 
         foreach ($paths as $path) {
             list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
 
             if (!isset($tree[$primary])) {
-                $tree[$primary] = [];
+                $tree[$primary] = array();
             }
 
             if ($nested) {

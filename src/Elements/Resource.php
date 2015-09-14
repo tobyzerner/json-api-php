@@ -30,21 +30,21 @@ class Resource extends AbstractElement
      *
      * @var array
      */
-    protected $attributes = [];
+    protected $attributes = array();
 
     /**
      * The links array.
      *
      * @var array
      */
-    protected $links = [];
+    protected $links = array();
 
     /**
      * The included array.
      *
      * @var array
      */
-    protected $included = [];
+    protected $included = array();
 
     /**
      * Create a new resource instance.
@@ -55,7 +55,7 @@ class Resource extends AbstractElement
      * @param array $links
      * @param array $included
      */
-    public function __construct($type, $id, $attributes = [], $links = [], $included = [])
+    public function __construct($type, $id, $attributes = array(), $links = array(), $included = array())
     {
         $this->type = $type;
         $this->attributes = $attributes;
@@ -184,7 +184,7 @@ class Resource extends AbstractElement
      */
     public function getResources()
     {
-        return [$this];
+        return array($this);
     }
 
     /**
@@ -210,13 +210,13 @@ class Resource extends AbstractElement
      */
     public function toArray($full = true)
     {
-        $array = ['type' => $this->type, 'id' => $this->id];
+        $array = array('type' => $this->type, 'id' => $this->id);
 
         if ($full) {
             $array['attributes'] = (array) $this->attributes;
 
             if ($this->links || $this->included) {
-                $array['relationships'] = [];
+                $array['relationships'] = array();
 
                 foreach ($this->included as $name => $relationship) {
                     $array['relationships'][$name] = $relationship->toArray();
