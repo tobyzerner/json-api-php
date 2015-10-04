@@ -27,6 +27,13 @@ class CriteriaTest extends AbstractTestCase
         $this->assertEquals(['posts', 'images'], $criteria->getInclude());
     }
 
+    public function testGetIncludeReturnsEmptyArray()
+    {
+        $criteria = new Criteria(['include' => '']);
+
+        $this->assertEquals([], $criteria->getInclude());
+    }
+
     public function testGetSortReturnsArrayOfFieldToSortDirection()
     {
         $criteria = new Criteria(['sort' => '+firstname']);

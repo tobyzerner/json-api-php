@@ -42,7 +42,9 @@ class Criteria
      */
     public function getInclude()
     {
-        return explode(',', $this->getInput('include'));
+        $include = $this->getInput('include');
+
+        return $include ? explode(',', $include) : [];
     }
 
     /**
