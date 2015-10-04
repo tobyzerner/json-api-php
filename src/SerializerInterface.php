@@ -22,17 +22,19 @@ interface SerializerInterface
      * Create a new collection.
      *
      * @param array $data
-     *
-     * @return @return \Tobscure\JsonApi\Elements\Collection|null
+     * @param array $include
+     * @param array $link
+     * @return \Tobscure\JsonApi\Elements\Collection|null
      */
-    public function collection($data);
+    public function collection($data, array $include = [], array $link = []);
 
     /**
      * Create a new collection.
      *
      * @param array $data
-     *
-     * @return @return \Tobscure\JsonApi\Elements\Resource|null
+     * @param array $include
+     * @param array $link
+     * @return \Tobscure\JsonApi\Elements\Resource|null
      */
-    public function resource($data);
+    public function resource($data, array $include = [], array $link = []);
 }

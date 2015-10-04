@@ -48,33 +48,9 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Set the include|includes.
-     *
-     * @param $include
+     * {@inheritdoc}
      */
-    public function setInclude($include)
-    {
-        $this->include = $include;
-    }
-
-    /**
-     * Set the link|links.
-     *
-     * @param $link
-     */
-    public function setLink($link)
-    {
-        $this->link = $link;
-    }
-
-    /**
-     * Create a new collection.
-     *
-     * @param array $data
-     *
-     * @return \Tobscure\JsonApi\Elements\Collection|null
-     */
-    public function collection($data)
+    public function collection($data, array $include = [], array $link = [])
     {
         if (empty($data)) {
             return;
@@ -83,20 +59,16 @@ abstract class AbstractSerializer implements SerializerInterface
         $resources = [];
 
         foreach ($data as $record) {
-            $resources[] = $this->resource($record);
+            $resources[] = $this->resource($record, $include, $link);
         }
 
         return new Collection($this->type, $resources);
     }
 
     /**
-     * Create a new resource.
-     *
-     * @param array $data
-     *
-     * @return \Tobscure\JsonApi\Elements\Resource|null
+     * {@inheritdoc}
      */
-    public function resource($data)
+    public function resource($data, array $include = [], array $link = [])
     {
         if (empty($data)) {
             return;
@@ -109,8 +81,8 @@ abstract class AbstractSerializer implements SerializerInterface
         $included = $links = [];
 
         $relationships = [
-            'link' => $this->parseRelationshipPaths($this->link),
-            'include' => $this->parseRelationshipPaths($this->include),
+            'link' => $this->parseRelationshipPaths($link),
+            'include' => $this->parseRelationshipPaths($include),
         ];
 
         foreach (['link', 'include'] as $type) {
