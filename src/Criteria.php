@@ -93,7 +93,6 @@ class Criteria
      * Get an input item.
      *
      * @param string $key
-     *
      * @return string|null
      */
     protected function getInput($key)
@@ -105,7 +104,6 @@ class Criteria
      * Get the page.
      *
      * @param string $key
-     *
      * @return string
      */
     protected function getPage($key)

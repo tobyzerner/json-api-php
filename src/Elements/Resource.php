@@ -99,8 +99,6 @@ class Resource extends AbstractElement
      * Set the attributes.
      *
      * @param array $attributes
-     *
-     * @return void
      */
     public function setAttributes($attributes)
     {
@@ -121,8 +119,6 @@ class Resource extends AbstractElement
      * Set the links.
      *
      * @param array $links
-     *
-     * @return void
      */
     public function setLinks($links)
     {
@@ -134,8 +130,6 @@ class Resource extends AbstractElement
      *
      * @param string $name
      * @param \Tobscure\JsonApi\Relationship $relationship
-     *
-     * @return void
      */
     public function addLink($name, $relationship)
     {
@@ -156,8 +150,6 @@ class Resource extends AbstractElement
      * Set the included array.
      *
      * @param array $included
-     *
-     * @return void
      */
     public function setIncluded($included)
     {
@@ -169,8 +161,6 @@ class Resource extends AbstractElement
      *
      * @param string $name
      * @param \Tobscure\JsonApi\Relationship $relationship
-     *
-     * @return void
      */
     public function addIncluded($name, $relationship)
     {
@@ -191,8 +181,6 @@ class Resource extends AbstractElement
      * Merge resources.
      *
      * @param \Tobscure\JsonApi\Elements\Resource $resource
-     *
-     * @return void.
      */
     public function merge(Resource $resource)
     {
@@ -205,7 +193,6 @@ class Resource extends AbstractElement
      * Map to an array.
      *
      * @param bool $full
-     *
      * @return array
      */
     public function toArray($full = true)

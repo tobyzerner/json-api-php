@@ -59,7 +59,6 @@ class Document implements JsonSerializable
      * Add included.
      *
      * @param $link
-     *
      * @return $this
      */
     public function addIncluded($link)
@@ -100,7 +99,6 @@ class Document implements JsonSerializable
      * Set the data object.
      *
      * @param $element
-     *
      * @return $this
      */
     public function setData($element)
@@ -123,7 +121,6 @@ class Document implements JsonSerializable
      *
      * @param string $key
      * @param string $value
-     *
      * @return $this
      */
     public function addLink($key, $value)
@@ -138,7 +135,6 @@ class Document implements JsonSerializable
      *
      * @param string $key
      * @param string $value
-     *
      * @return $this
      */
     public function addMeta($key, $value)
@@ -152,7 +148,6 @@ class Document implements JsonSerializable
      * Set the meta data array.
      *
      * @param array $meta
-     *
      * @return $this
      */
     public function setMeta($meta)
@@ -166,7 +161,6 @@ class Document implements JsonSerializable
      * Set the errors array.
      *
      * @param array $errors
-     *
      * @return $this
      */
     public function setErrors($errors)

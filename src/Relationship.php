@@ -72,7 +72,6 @@ class Relationship
      * Set the data object.
      *
      * @param \Tobscure\JsonApi\Elements\ElementInterface $data
-     *
      * @return $this
      */
     public function setData($data)
@@ -87,7 +86,6 @@ class Relationship
      *
      * @param string $key
      * @param string $value
-     *
      * @return $this
      */
     public function addMeta($key, $value)
@@ -101,7 +99,6 @@ class Relationship
      * Set meta data.
      *
      * @param array $meta
-     *
      * @return $this
      */
     public function setMeta($meta)
@@ -115,7 +112,6 @@ class Relationship
      * Set self.
      *
      * @param array $self
-     *
      * @return $this
      */
     public function setSelf($self)
@@ -129,7 +125,6 @@ class Relationship
      * Set related data.
      *
      * @param array $related
-     *
      * @return $this
      */
     public function setRelated($related)

@@ -67,8 +67,6 @@ class Collection extends AbstractElement
      * Set the resources array.
      *
      * @param array $resources
-     *
-     * @return void
      */
     public function setResources($resources)
     {
@@ -79,7 +77,6 @@ class Collection extends AbstractElement
      * Map resources to an array.
      *
      * @param bool $full
-     *
      * @return array
      */
     public function toArray($full = true)

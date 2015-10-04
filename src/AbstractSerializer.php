@@ -29,36 +29,9 @@ abstract class AbstractSerializer implements SerializerInterface
     protected $type;
 
     /**
-     * The link|links.
-     *
-     * @var array|null
-     */
-    protected $link;
-
-    /**
-     * The include|includes.
-     *
-     * @var array|null
-     */
-    protected $include;
-
-    /**
-     * Create a new abstract serializer instance.
-     *
-     * @param array $include
-     * @param array $link
-     */
-    public function __construct(array $include = [], array $link = [])
-    {
-        $this->include = $include;
-        $this->link = $link;
-    }
-
-    /**
      * Get the attributes array.
      *
      * @param $model
-     *
      * @return array
      */
     abstract protected function getAttributes($model);
@@ -67,7 +40,6 @@ abstract class AbstractSerializer implements SerializerInterface
      * Get the id.
      *
      * @param $model
-     *
      * @return string
      */
     protected function getId($model)
@@ -176,7 +148,6 @@ abstract class AbstractSerializer implements SerializerInterface
      * Get relationship from method name.
      *
      * @param string $name
-     *
      * @return mixed
      */
     protected function getRelationshipFromMethod($name)
@@ -199,7 +170,6 @@ abstract class AbstractSerializer implements SerializerInterface
      * ['user' => ['employer', 'employer.country'], 'comments' => []]
      *
      * @param array $paths
-     *
      * @return array
      */
     protected function parseRelationshipPaths(array $paths)

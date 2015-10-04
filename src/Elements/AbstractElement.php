@@ -46,8 +46,6 @@ abstract class AbstractElement implements ElementInterface
      * Set the type.
      *
      * @param string $type
-     *
-     * @return void
      */
     public function setType($type)
     {
