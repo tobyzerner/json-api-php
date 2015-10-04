@@ -29,12 +29,15 @@ abstract class AbstractSerializer implements SerializerInterface
     protected $type;
 
     /**
-     * Get the attributes array.
+     * Get the type.
      *
      * @param $model
-     * @return array
+     * @return string
      */
-    abstract protected function getAttributes($model);
+    protected function getType($model)
+    {
+        return $this->type;
+    }
 
     /**
      * Get the id.
@@ -46,6 +49,14 @@ abstract class AbstractSerializer implements SerializerInterface
     {
         return $model->id;
     }
+
+    /**
+     * Get the attributes array.
+     *
+     * @param $model
+     * @return array
+     */
+    abstract protected function getAttributes($model);
 
     /**
      * {@inheritdoc}
@@ -62,7 +73,7 @@ abstract class AbstractSerializer implements SerializerInterface
             $resources[] = $this->resource($record, $include, $link);
         }
 
-        return new Collection($this->type, $resources);
+        return new Collection($this->getType($record), $resources);
     }
 
     /**
@@ -75,7 +86,7 @@ abstract class AbstractSerializer implements SerializerInterface
         }
 
         if (!is_object($data)) {
-            return new Resource($this->type, $data);
+            return new Resource($this->getType($data), $data);
         }
 
         $included = $links = [];
@@ -113,7 +124,7 @@ abstract class AbstractSerializer implements SerializerInterface
             }
         }
 
-        return new Resource($this->type, $this->getId($data), $this->getAttributes($data), $links, $included);
+        return new Resource($this->getType($data), $this->getId($data), $this->getAttributes($data), $links, $included);
     }
 
     /**
