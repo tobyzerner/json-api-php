@@ -26,12 +26,12 @@ interface SerializerInterface
      * @param array $link
      * @return \Tobscure\JsonApi\Elements\Collection|null
      */
-    public function collection($data, array $include = [], array $link = []);
+    public function collection(array $data, array $include = [], array $link = []);
 
     /**
-     * Create a new collection.
+     * Create a new resource.
      *
-     * @param array $data
+     * @param mixed $data
      * @param array $include
      * @param array $link
      * @return \Tobscure\JsonApi\Elements\Resource|null

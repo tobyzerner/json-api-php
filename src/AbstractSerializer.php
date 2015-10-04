@@ -50,7 +50,7 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function collection($data, array $include = [], array $link = [])
+    public function collection(array $data, array $include = [], array $link = [])
     {
         if (empty($data)) {
             return;
