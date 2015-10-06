@@ -56,7 +56,7 @@ abstract class AbstractSerializer implements SerializerInterface
     public function getRelationshipBuilder($name)
     {
         if (! method_exists($this, $name)) {
-            throw new InvalidArgumentException('No method found for ['.$name.']');
+            throw new InvalidArgumentException("No method found for relationship [$name]");
         }
 
         $builder = $this->$name();
