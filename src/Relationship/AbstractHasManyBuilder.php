@@ -11,8 +11,8 @@
 
 namespace Tobscure\JsonApi\Relationship;
 
-use Tobscure\JsonApi\SerializerInterface;
 use Tobscure\JsonApi\Element\Collection;
+use Tobscure\JsonApi\SerializerInterface;
 
 abstract class AbstractHasManyBuilder extends AbstractBuilder
 {

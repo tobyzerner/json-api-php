@@ -86,7 +86,7 @@ abstract class AbstractBuilder implements BuilderInterface
 
         if (! ($serializer instanceof SerializerInterface)) {
             throw new InvalidArgumentException('Serializer must be an instance of '
-                . SerializerInterface::class);
+                .SerializerInterface::class);
         }
 
         return $serializer;

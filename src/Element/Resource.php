@@ -11,9 +11,9 @@
 
 namespace Tobscure\JsonApi\Element;
 
-use Tobscure\JsonApi\Util;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\SerializerInterface;
+use Tobscure\JsonApi\Util;
 
 class Resource implements ElementInterface
 {

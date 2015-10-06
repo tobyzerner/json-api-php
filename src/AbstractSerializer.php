@@ -11,12 +11,9 @@
 
 namespace Tobscure\JsonApi;
 
-use Closure;
-use Tobscure\JsonApi\Element\Collection;
-use Tobscure\JsonApi\Element\Resource;
-use Tobscure\JsonApi\Relationship\BuilderInterface;
 use InvalidArgumentException;
 use LogicException;
+use Tobscure\JsonApi\Relationship\BuilderInterface;
 
 abstract class AbstractSerializer implements SerializerInterface
 {
@@ -59,14 +56,14 @@ abstract class AbstractSerializer implements SerializerInterface
     public function getRelationshipBuilder($name)
     {
         if (! method_exists($this, $name)) {
-            throw new InvalidArgumentException('No method found for [' . $name . ']');
+            throw new InvalidArgumentException('No method found for ['.$name.']');
         }
 
         $builder = $this->$name();
 
         if (! ($builder instanceof BuilderInterface)) {
             throw new LogicException('Relationship method must return an instance of '
-                . BuilderInterface::class);
+                .BuilderInterface::class);
         }
 
         return $builder;

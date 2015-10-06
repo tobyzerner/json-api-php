@@ -35,7 +35,7 @@ class Util
         foreach ($paths as $path) {
             list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
 
-            if (!isset($tree[$primary])) {
+            if (! isset($tree[$primary])) {
                 $tree[$primary] = [];
             }
 

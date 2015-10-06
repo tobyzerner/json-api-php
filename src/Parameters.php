@@ -42,7 +42,7 @@ class Parameters
             $invalid = array_diff($relationships, $available);
 
             if (count($invalid)) {
-                throw new InvalidParameterException('Invalid includes [' . implode(',', $invalid) . ']');
+                throw new InvalidParameterException('Invalid includes ['.implode(',', $invalid).']');
             }
 
             return $relationships;
@@ -125,7 +125,7 @@ class Parameters
             $invalid = array_diff(array_keys($sort), $available);
 
             if (count($invalid)) {
-                throw new InvalidParameterException('Invalid sort fields [' . implode(',', $invalid) . ']');
+                throw new InvalidParameterException('Invalid sort fields ['.implode(',', $invalid).']');
             }
         }
 
