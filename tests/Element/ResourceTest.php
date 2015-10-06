@@ -120,10 +120,10 @@ class PostSerializer4 extends AbstractSerializer
     {
         $attributes = [];
 
-        if ($post->foo) {
+        if (isset($post->foo)) {
             $attributes['foo'] = $post->foo;
         }
-        if ($post->baz) {
+        if (isset($post->baz)) {
             $attributes['baz'] = $post->baz;
         }
 

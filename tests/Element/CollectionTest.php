@@ -27,8 +27,8 @@ class CollectionTest extends AbstractTestCase
     {
         $serializer = new PostSerializer3;
 
-        $post1 = (object) ['foo' => 'bar'];
-        $post2 = (object) ['foo' => 'baz'];
+        $post1 = (object) ['id' => 1, 'foo' => 'bar'];
+        $post2 = (object) ['id' => 2, 'foo' => 'baz'];
 
         $collection = new Collection([$post1, $post2], $serializer);
 
