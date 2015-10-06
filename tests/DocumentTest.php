@@ -11,11 +11,9 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\AbstractSerializer;
+use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Element\Resource;
-use Tobscure\JsonApi\Relationship\ClosureHasManyBuilder;
-use Tobscure\JsonApi\Relationship\ClosureHasOneBuilder;
 
 /**
  * This is the document test class.

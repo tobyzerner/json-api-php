@@ -12,8 +12,8 @@
 namespace Tobscure\JsonApi;
 
 use JsonSerializable;
-use Tobscure\JsonApi\Element\Resource;
 use Tobscure\JsonApi\Element\ElementInterface;
+use Tobscure\JsonApi\Element\Resource;
 
 class Document implements JsonSerializable
 {

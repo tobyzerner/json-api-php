@@ -72,7 +72,7 @@ class PostSerializer1 extends AbstractSerializer
 
     public function comments()
     {
-        return new ClosureHasManyBuilder(new PostSerializer1, function ($post) {});
+        return new ClosureHasManyBuilder(new self, function ($post) {});
     }
 
     public function invalid()

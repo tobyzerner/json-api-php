@@ -11,14 +11,13 @@
 
 namespace Tobscure\JsonApi;
 
-use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Exception\JsonApiSerializableInterface;
 use Exception;
+use Tobscure\JsonApi\Exception\JsonApiSerializableInterface;
 
 class ExceptionHandler
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $debug = false;
 
