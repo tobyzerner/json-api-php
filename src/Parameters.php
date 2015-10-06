@@ -72,6 +72,12 @@ class Parameters
         return $offset;
     }
 
+    /**
+     * Calculate the offset based on the page[number] parameter.
+     *
+     * @param int $perPage
+     * @return int
+     */
     protected function getOffsetFromNumber($perPage)
     {
         $page = (int) $this->getPage('number');
