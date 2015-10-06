@@ -21,7 +21,7 @@ trait ClosureTrait
     protected $closure;
 
     /**
-     * @param mixed $serializer
+     * @param string|Closure|\Tobscure\JsonApi\SerializerInterface $serializer
      * @param Closure $closure
      */
     public function __construct($serializer, Closure $closure)

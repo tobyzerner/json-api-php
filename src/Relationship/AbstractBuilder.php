@@ -19,7 +19,7 @@ use Tobscure\JsonApi\SerializerInterface;
 abstract class AbstractBuilder implements BuilderInterface
 {
     /**
-     * @var mixed
+     * @var string|Closure|SerializerInterface
      */
     protected $serializer;
 
@@ -29,8 +29,7 @@ abstract class AbstractBuilder implements BuilderInterface
     protected $configureCallbacks = [];
 
     /**
-     * @param mixed $serializer
-     * @param mixed $relation
+     * @param string|Closure|SerializerInterface $serializer
      */
     public function __construct($serializer)
     {
