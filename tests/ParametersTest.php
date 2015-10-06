@@ -85,4 +85,15 @@ class ParametersTest extends AbstractTestCase
 
         $this->assertEquals(['posts' => ['title', 'content'], 'users' => ['name']], $parameters->getFields());
     }
+
+    public function testGetFieldsReturnsEmptyArray()
+    {
+        $parameters = new Parameters([]);
+
+        $this->assertEquals([], $parameters->getFields());
+
+        $parameters = new Parameters(['fields' => 'string']);
+
+        $this->assertEquals([], $parameters->getFields());
+    }
 }
