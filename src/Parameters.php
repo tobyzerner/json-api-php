@@ -139,7 +139,7 @@ class Parameters
      */
     public function getFields()
     {
-        $fields = $this->getInput('fields');
+        $fields = $this->getInput('fields', []);
 
         return array_map(function ($fields) {
             return explode(',', $fields);
