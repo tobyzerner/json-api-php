@@ -11,14 +11,10 @@
 
 namespace Tobscure\JsonApi;
 
-use Tobscure\JsonApi\Elements\Collection;
-use Tobscure\JsonApi\Elements\Resource;
+use InvalidArgumentException;
+use LogicException;
+use Tobscure\JsonApi\Relationship\BuilderInterface;
 
-/**
- * This is the abstract serializer class.
- *
- * @author Toby Zerner <toby.zerner@gmail.com>
- */
 abstract class AbstractSerializer implements SerializerInterface
 {
     /**
@@ -29,148 +25,47 @@ abstract class AbstractSerializer implements SerializerInterface
     protected $type;
 
     /**
-     * Get the type.
-     *
-     * @param $model
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getType($model)
+    public function getType($model)
     {
         return $this->type;
     }
 
     /**
-     * Get the id.
-     *
-     * @param $model
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getId($model)
+    public function getId($model)
     {
         return $model->id;
     }
 
     /**
-     * Get the attributes array.
-     *
-     * @param $model
-     * @return array
-     */
-    abstract protected function getAttributes($model);
-
-    /**
      * {@inheritdoc}
      */
-    public function collection(array $data, array $include = [], array $link = [])
+    public function getAttributes($model, array $fields = null)
     {
-        if (empty($data)) {
-            return;
-        }
-
-        $resources = [];
-
-        foreach ($data as $record) {
-            $resources[] = $this->resource($record, $include, $link);
-        }
-
-        return new Collection($this->getType($record), $resources);
+        return [];
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws LogicException
      */
-    public function resource($data, array $include = [], array $link = [])
+    public function getRelationshipBuilder($name)
     {
-        if (empty($data)) {
-            return;
+        if (! method_exists($this, $name)) {
+            throw new InvalidArgumentException('No method found for ['.$name.']');
         }
 
-        if (!is_object($data)) {
-            return new Resource($this->getType($data), $data);
+        $builder = $this->$name();
+
+        if (! ($builder instanceof BuilderInterface)) {
+            throw new LogicException('Relationship method must return an instance of '
+                .BuilderInterface::class);
         }
 
-        $included = $links = [];
-
-        $relationships = [
-            'link' => $this->parseRelationshipPaths($link),
-            'include' => $this->parseRelationshipPaths($include),
-        ];
-
-        foreach (['link', 'include'] as $type) {
-            $include = $type === 'include';
-
-            foreach ($relationships[$type] as $name => $nested) {
-                $method = $this->getRelationshipFromMethod($name);
-
-                if ($method) {
-                    $element = $method(
-                        $data,
-                        $include,
-                        isset($relationships['include'][$name]) ? $relationships['include'][$name] : [],
-                        isset($relationships['link'][$name]) ? $relationships['link'][$name] : []
-                    );
-                }
-
-                if ($method && $element) {
-                    if (!($element instanceof Relationship)) {
-                        $element = new Relationship($element);
-                    }
-                    if ($include) {
-                        $included[$name] = $element;
-                    } else {
-                        $links[$name] = $element;
-                    }
-                }
-            }
-        }
-
-        return new Resource($this->getType($data), $this->getId($data), $this->getAttributes($data), $links, $included);
-    }
-
-    /**
-     * Get relationship from method name.
-     *
-     * @param string $name
-     * @return mixed
-     */
-    protected function getRelationshipFromMethod($name)
-    {
-        if (method_exists($this, $name)) {
-            return $this->$name();
-        }
-    }
-
-    /**
-     * Parse relationship paths.
-     *
-     * Given a flat array of relationship paths like:
-     *
-     * ['user', 'user.employer', 'user.employer.country', 'comments']
-     *
-     * create a nested array of relationship paths one-level deep that can
-     * be passed on to other serializers:
-     *
-     * ['user' => ['employer', 'employer.country'], 'comments' => []]
-     *
-     * @param array $paths
-     * @return array
-     */
-    protected function parseRelationshipPaths(array $paths)
-    {
-        $tree = [];
-
-        foreach ($paths as $path) {
-            list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
-
-            if (!isset($tree[$primary])) {
-                $tree[$primary] = [];
-            }
-
-            if ($nested) {
-                $tree[$primary][] = $nested;
-            }
-        }
-
-        return $tree;
+        return $builder;
     }
 }

@@ -11,30 +11,38 @@
 
 namespace Tobscure\JsonApi;
 
-/**
- * This is the serializer interface.
- *
- * @author Toby Zerner <toby.zerner@gmail.com>
- */
 interface SerializerInterface
 {
     /**
-     * Create a new collection.
+     * Get the type.
      *
-     * @param array $data
-     * @param array $include
-     * @param array $link
-     * @return \Tobscure\JsonApi\Elements\Collection|null
+     * @param mixed $model
+     * @return string
      */
-    public function collection(array $data, array $include = [], array $link = []);
+    public function getType($model);
 
     /**
-     * Create a new resource.
+     * Get the id.
      *
-     * @param mixed $data
-     * @param array $include
-     * @param array $link
-     * @return \Tobscure\JsonApi\Elements\Resource|null
+     * @param mixed $model
+     * @return string
      */
-    public function resource($data, array $include = [], array $link = []);
+    public function getId($model);
+
+    /**
+     * Get the attributes array.
+     *
+     * @param mixed $model
+     * @param array|null $fields
+     * @return array
+     */
+    public function getAttributes($model, array $fields = null);
+
+    /**
+     * Get a relationship builder for the given relationship.
+     *
+     * @param string $name
+     * @return \Tobscure\JsonApi\Relationship\BuilderInterface|null
+     */
+    public function getRelationshipBuilder($name);
 }

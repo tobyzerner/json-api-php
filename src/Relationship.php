@@ -11,19 +11,14 @@
 
 namespace Tobscure\JsonApi;
 
-use Tobscure\JsonApi\Elements\ElementInterface;
+use Tobscure\JsonApi\Element\ElementInterface;
 
-/**
- * This is the relationship class.
- *
- * @author Toby Zerner <toby.zerner@gmail.com>
- */
 class Relationship
 {
     /**
      * The data object.
      *
-     * @var \Tobscure\JsonApi\Elements\ElementInterface
+     * @var ElementInterface
      */
     protected $data;
 
@@ -51,7 +46,7 @@ class Relationship
     /**
      * Create a new relationship.
      *
-     * @param \Tobscure\JsonApi\Elements\ElementInterface $data
+     * @param ElementInterface $data
      */
     public function __construct(ElementInterface $data)
     {
@@ -61,7 +56,7 @@ class Relationship
     /**
      * Get the data object.
      *
-     * @return \Tobscure\JsonApi\Elements\ElementInterface
+     * @return ElementInterface
      */
     public function getData()
     {
@@ -71,7 +66,7 @@ class Relationship
     /**
      * Set the data object.
      *
-     * @param \Tobscure\JsonApi\Elements\ElementInterface $data
+     * @param ElementInterface $data
      * @return $this
      */
     public function setData($data)
@@ -141,24 +136,24 @@ class Relationship
      */
     public function toArray()
     {
-        $link = [];
+        $array = [];
 
-        if (!empty($this->data)) {
-            $link['data'] = $this->data->toArray(false);
+        if (! empty($this->data)) {
+            $array['data'] = $this->data->toIdentifier();
         }
 
-        if (!empty($this->self)) {
-            $link['self'] = $this->self;
+        if (! empty($this->self)) {
+            $array['self'] = $this->self;
         }
 
-        if (!empty($this->related)) {
-            $link['related'] = $this->related;
+        if (! empty($this->related)) {
+            $array['related'] = $this->related;
         }
 
-        if (!empty($this->meta)) {
-            $link['meta'] = $this->meta;
+        if (! empty($this->meta)) {
+            $array['meta'] = $this->meta;
         }
 
-        return $link;
+        return $array;
     }
 }
