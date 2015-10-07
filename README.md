@@ -33,7 +33,7 @@ $document = new Document($collection);
 
 // Add metadata and links.
 $document->addMeta('total', count($posts));
-$document->addLink('next', 'http://example.com/posts?page[offset]=2');
+$document->addLink('self', 'http://example.com/api/posts');
 
 // Output the document as JSON.
 echo json_encode($document);
@@ -147,17 +147,6 @@ $document->addPaginationLinks(
     20,    // The current limit
     100    // The total number of results
 );
-```
-
-```
-{
-  "links": {
-    "first": "url",
-    "prev": "url?page%5Boffset%5D=20",
-    "prev": "url?page%5Boffset%5D=60",
-    "last": "url?page%5Boffset%5D=80"
-  }
-}
 ```
 
 ### Parameters
