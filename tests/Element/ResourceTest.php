@@ -12,8 +12,8 @@
 namespace Tobscure\Tests\JsonApi\Element;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Resource;
 use Tobscure\JsonApi\Relationship\ClosureHasManyBuilder;
+use Tobscure\JsonApi\Resource;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 
 class ResourceTest extends AbstractTestCase
