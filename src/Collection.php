@@ -16,15 +16,15 @@ class Collection implements ElementInterface
     /**
      * @var array
      */
-    protected $resources;
+    protected $resources = [];
 
     /**
      * Create a new collection instance.
      *
-     * @param array $data
+     * @param mixed $data
      * @param SerializerInterface $serializer
      */
-    public function __construct(array $data, SerializerInterface $serializer)
+    public function __construct($data, SerializerInterface $serializer)
     {
         $this->resources = $this->buildResources($data, $serializer);
     }
@@ -32,19 +32,23 @@ class Collection implements ElementInterface
     /**
      * Convert an array of raw data to Resource objects.
      *
-     * @param array $data
+     * @param mixed $data
      * @param SerializerInterface $serializer
      * @return Resource[]
      */
-    protected function buildResources(array $data, SerializerInterface $serializer)
+    protected function buildResources($data, SerializerInterface $serializer)
     {
-        return array_map(function ($data) use ($serializer) {
-            if (! ($data instanceof Resource)) {
-                $data = new Resource($data, $serializer);
+        $resources = [];
+
+        foreach ($data as $resource) {
+            if (! ($resource instanceof Resource)) {
+                $resource = new Resource($resource, $serializer);
             }
 
-            return $data;
-        }, $data);
+            $resources[] = $resource;
+        }
+
+        return $resources;
     }
 
     /**
