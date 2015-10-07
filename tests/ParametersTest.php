@@ -72,6 +72,13 @@ class ParametersTest extends AbstractTestCase
         $this->assertEquals(0, $parameters->getOffset());
     }
 
+    public function testGetOffsetParsesThePageNumber()
+    {
+        $parameters = new Parameters(['page' => ['number' => 2]]);
+
+        $this->assertEquals(20, $parameters->getOffset(20));
+    }
+
     public function testGetLimitParsesThePageLimit()
     {
         $parameters = new Parameters(['page' => ['limit' => 100]]);

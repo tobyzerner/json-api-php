@@ -33,8 +33,9 @@ class Parameters
      *
      * @param array $available
      * @return array
+     * @throws InvalidParameterException
      */
-    public function getInclude($available = [])
+    public function getInclude(array $available = [])
     {
         if ($include = $this->getInput('include')) {
             $relationships = explode(',', $include);
@@ -56,11 +57,12 @@ class Parameters
      *
      * @param int|null $perPage
      * @return int
+     * @throws InvalidParameterException
      */
     public function getOffset($perPage = null)
     {
-        if ($perPage) {
-            return $this->getOffsetFromNumber($perPage);
+        if ($perPage && ($offset = $this->getOffsetFromNumber($perPage))) {
+            return $offset;
         }
 
         $offset = (int) $this->getPage('offset');
@@ -77,13 +79,14 @@ class Parameters
      *
      * @param int $perPage
      * @return int
+     * @throws InvalidParameterException
      */
     protected function getOffsetFromNumber($perPage)
     {
         $page = (int) $this->getPage('number');
 
-        if ($page < 1) {
-            throw new InvalidParameterException('page[number] must be >=1');
+        if ($page <= 1) {
+            return 0;
         }
 
         return ($page - 1) * $perPage;
@@ -92,6 +95,7 @@ class Parameters
     /**
      * Get the limit.
      *
+     * @param int|null $max
      * @return string
      */
     public function getLimit($max = null)
@@ -108,9 +112,11 @@ class Parameters
     /**
      * Get the sort.
      *
+     * @param array $available
      * @return array
+     * @throws InvalidParameterException
      */
-    public function getSort($available = [])
+    public function getSort(array $available = [])
     {
         $sort = [];
 
@@ -159,8 +165,7 @@ class Parameters
     /**
      * Get a filter item.
      *
-     * @param string $key
-     * @return string|null
+     * @return mixed
      */
     public function getFilter()
     {
@@ -171,7 +176,8 @@ class Parameters
      * Get an input item.
      *
      * @param string $key
-     * @return string|null
+     * @param null $default
+     * @return mixed
      */
     protected function getInput($key, $default = null)
     {
