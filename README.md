@@ -113,7 +113,7 @@ If you need to customize the resulting **relationship object** (`Tobscure\JsonAp
 
 ```php
 $builder->configure(function (Relationship $relationship) {
-    $relationship->setMeta('key', 'value');
+    $relationship->addMeta('key', 'value');
 });
 ```
 
