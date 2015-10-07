@@ -59,7 +59,7 @@ class Resource implements ElementInterface
     protected $links = [];
 
     /**
-     * @param mixed $model
+     * @param mixed $data
      * @param SerializerInterface $serializer
      */
     public function __construct($data, SerializerInterface $serializer)
