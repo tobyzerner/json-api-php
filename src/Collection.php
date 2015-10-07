@@ -17,12 +17,7 @@ class Collection implements ElementInterface
      * @var array
      */
     protected $resources;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
-
+    
     /**
      * Create a new collection instance.
      *
@@ -32,7 +27,6 @@ class Collection implements ElementInterface
     public function __construct(array $data, SerializerInterface $serializer)
     {
         $this->resources = $this->buildResources($data, $serializer);
-        $this->serializer = $serializer;
     }
 
     /**
