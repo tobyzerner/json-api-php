@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tobscure\JsonApi\Element;
-
-use Tobscure\JsonApi\SerializerInterface;
+namespace Tobscure\JsonApi;
 
 class Collection implements ElementInterface
 {

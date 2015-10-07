@@ -12,17 +12,11 @@
 namespace Tobscure\JsonApi;
 
 use JsonSerializable;
-use Tobscure\JsonApi\Element\ElementInterface;
-use Tobscure\JsonApi\Element\Resource;
 
 class Document implements JsonSerializable
 {
-    /**
-     * The links array.
-     *
-     * @var array
-     */
-    protected $links;
+    use LinksTrait;
+    use MetaTrait;
 
     /**
      * The included array.
@@ -30,13 +24,6 @@ class Document implements JsonSerializable
      * @var array
      */
     protected $included = [];
-
-    /**
-     * The meta data array.
-     *
-     * @var array
-     */
-    protected $meta;
 
     /**
      * The errors array.
@@ -129,47 +116,6 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Add a link.
-     *
-     * @param string $key
-     * @param string $value
-     * @return $this
-     */
-    public function addLink($key, $value)
-    {
-        $this->links[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Add meta data.
-     *
-     * @param string $key
-     * @param string $value
-     * @return $this
-     */
-    public function addMeta($key, $value)
-    {
-        $this->meta[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Set the meta data array.
-     *
-     * @param array $meta
-     * @return $this
-     */
-    public function setMeta($meta)
-    {
-        $this->meta = $meta;
-
-        return $this;
-    }
-
-    /**
      * Set the errors array.
      *
      * @param array $errors
@@ -205,8 +151,6 @@ class Document implements JsonSerializable
         $document = [];
 
         if (! empty($this->links)) {
-            ksort($this->links);
-
             $document['links'] = $this->links;
         }
 

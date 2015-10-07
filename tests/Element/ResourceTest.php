@@ -12,7 +12,7 @@
 namespace Tobscure\Tests\JsonApi\Element;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Element\Resource;
+use Tobscure\JsonApi\Resource;
 use Tobscure\JsonApi\Relationship\ClosureHasManyBuilder;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 

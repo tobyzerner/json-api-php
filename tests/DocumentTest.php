@@ -13,7 +13,7 @@ namespace Tobscure\Tests\JsonApi;
 
 use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Element\Resource;
+use Tobscure\JsonApi\Resource;
 
 /**
  * This is the document test class.

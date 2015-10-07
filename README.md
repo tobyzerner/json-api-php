@@ -43,8 +43,8 @@ echo json_encode($document);
 
 The JSON-API spec describes *resource objects* as objects containing information about a single resource, and *collection objects* as objects containing information about many resources. In this package:
 
-- `Tobscure\JsonApi\Element\Resource` represents a *resource object*
-- `Tobscure\JsonApi\Element\Collection` represents a *collection object*
+- `Tobscure\JsonApi\Resource` represents a *resource object*
+- `Tobscure\JsonApi\Collection` represents a *collection object*
 
 Both Resources and Collections are termed as *Elements*. In conceptually the same way that the JSON-API spec describes, a Resource may have **relationships** with any number of other Elements (Resource for has-one relationships, Collection for has-many). Similarly, a Collection may contain many Resources.
 
@@ -118,6 +118,47 @@ $builder->configure(function (Relationship $relationship) {
 ```
 
 > An example of an alternative implementation, optimized for use with Eloquent models, can be found [here]().
+
+### Meta & Links
+
+The `Document`, `Resource`, and `Relationship` classes allow you to add meta information:
+
+```php
+$document = new Document;
+$document->addMeta('key', 'value');
+$document->setMeta(['key' => 'value']);
+```
+
+They also allow you to add links in a similar way:
+
+```php
+$resource = new Resource;
+$resource->addLink('self', 'url');
+$resource->setLinks(['key' => 'value']);
+```
+
+You can also easily add pagination links:
+
+```php
+$document->addPaginationLinks(
+    'url', // The base URL for the links
+    [],    // The query params provided in the request
+    40,    // The current offset
+    20,    // The current limit
+    100    // The total number of results
+);
+```
+
+```
+{
+  "links": {
+    "first": "url",
+    "prev": "url?page%5Boffset%5D=20",
+    "prev": "url?page%5Boffset%5D=60",
+    "last": "url?page%5Boffset%5D=80"
+  }
+}
+```
 
 ### Parameters
 

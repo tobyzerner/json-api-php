@@ -12,8 +12,8 @@
 namespace Tobscure\Tests\JsonApi\Element;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Element\Collection;
-use Tobscure\JsonApi\Element\Resource;
+use Tobscure\JsonApi\Collection;
+use Tobscure\JsonApi\Resource;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 
 /**

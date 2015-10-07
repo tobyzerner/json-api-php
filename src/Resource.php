@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Tobscure\JsonApi\Element;
-
-use Tobscure\JsonApi\Relationship;
-use Tobscure\JsonApi\SerializerInterface;
-use Tobscure\JsonApi\Util;
+namespace Tobscure\JsonApi;
 
 class Resource implements ElementInterface
 {
+    use LinksTrait;
+    use MetaTrait;
+
     /**
      * @var mixed
      */
@@ -47,16 +46,6 @@ class Resource implements ElementInterface
      * @var Resource[]
      */
     protected $merged = [];
-
-    /**
-     * @var array
-     */
-    protected $meta = [];
-
-    /**
-     * @var array
-     */
-    protected $links = [];
 
     /**
      * @param mixed $data
@@ -92,11 +81,11 @@ class Resource implements ElementInterface
         }
 
         if (! empty($this->links)) {
-            $array['links'] = $links;
+            $array['links'] = $this->links;
         }
 
         if (! empty($this->meta)) {
-            $array['meta'] = $meta;
+            $array['meta'] = $this->meta;
         }
 
         return $array;
@@ -301,25 +290,5 @@ class Resource implements ElementInterface
         $this->fields = $fields;
 
         return $this;
-    }
-
-    /**
-     * Set the resource's links object.
-     *
-     * @param array $links
-     */
-    public function setLinks(array $links)
-    {
-        $this->links = $links;
-    }
-
-    /**
-     * Set the resource's meta object.
-     *
-     * @param array $meta
-     */
-    public function setMeta(array $meta)
-    {
-        $this->meta = $meta;
     }
 }
