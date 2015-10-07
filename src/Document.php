@@ -79,14 +79,14 @@ class Document implements JsonSerializable
 
         foreach ($element->getResources() as $resource) {
             if (! $first) {
-                $this->mergeResource($included, $resource);
+                $included = $this->mergeResource($included, $resource);
             }
 
             foreach ($resource->getRelationships() as $relationship) {
                 $includedElement = $relationship->getData();
 
                 foreach ($this->getIncluded($includedElement, false) as $child) {
-                    $this->mergeResource($included, $child);
+                    $included = $this->mergeResource($included, $child);
                 }
             }
         }
@@ -94,7 +94,12 @@ class Document implements JsonSerializable
         return $included;
     }
 
-    protected function mergeResource(array &$resources, Resource $newResource)
+    /**
+     * @param Resource[] $resources
+     * @param Resource $newResource
+     * @return Resource[]
+     */
+    protected function mergeResource(array $resources, Resource $newResource)
     {
         $type = $newResource->getType();
         $id = $newResource->getId();
