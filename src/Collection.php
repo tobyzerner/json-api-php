@@ -17,7 +17,7 @@ class Collection implements ElementInterface
      * @var array
      */
     protected $resources;
-    
+
     /**
      * Create a new collection instance.
      *
