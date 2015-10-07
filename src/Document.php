@@ -58,19 +58,22 @@ class Document implements JsonSerializable
      * Get included resources.
      *
      * @param ElementInterface $element
+     * @param bool $includeParent
      * @return Resource[]
      */
-    protected function getIncluded(ElementInterface $element)
+    protected function getIncluded(ElementInterface $element, $includeParent = false)
     {
         $included = [];
 
         foreach ($element->getResources() as $resource) {
-            $included = $this->mergeResource($included, $resource);
+            if ($includeParent) {
+                $included = $this->mergeResource($included, $resource);
+            }
 
             foreach ($resource->getRelationships() as $relationship) {
                 $includedElement = $relationship->getData();
 
-                foreach ($this->getIncluded($includedElement, false) as $child) {
+                foreach ($this->getIncluded($includedElement, true) as $child) {
                     $included = $this->mergeResource($included, $child);
                 }
             }
@@ -155,9 +158,9 @@ class Document implements JsonSerializable
         }
 
         if (! empty($this->data)) {
-            $resources = $this->getIncluded($this->data);
+            $document['data'] = $this->data->toArray();
 
-            $document['data'] = array_shift($resources)->toArray();
+            $resources = $this->getIncluded($this->data);
 
             if (count($resources)) {
                 $document['included'] = array_map(function (Resource $resource) {

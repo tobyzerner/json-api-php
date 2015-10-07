@@ -74,7 +74,7 @@ class Resource implements ElementInterface
 
         $array['attributes'] = $this->getAttributes();
 
-        $relationships = $this->getRelationships();
+        $relationships = $this->getRelationshipsAsArray();
 
         if (count($relationships)) {
             $array['relationships'] = $relationships;
@@ -190,21 +190,29 @@ class Resource implements ElementInterface
     }
 
     /**
-     * Get the resource relationships as an array.
+     * Get the resource relationships.
      *
-     * @return array
+     * @return Relationship[]
      */
     public function getRelationships()
     {
         $relationships = $this->buildRelationships();
 
-        $relationships = $this->filterFields($relationships);
+        return $this->filterFields($relationships);
+    }
+
+    /**
+     * Get the resource relationships as an array.
+     *
+     * @return array
+     */
+    public function getRelationshipsAsArray()
+    {
+        $relationships = $this->getRelationships();
 
         $relationships = $this->convertRelationshipsToArray($relationships);
 
-        $relationships = $this->mergeRelationships($relationships);
-
-        return $relationships;
+        return $this->mergeRelationships($relationships);
     }
 
     /**
@@ -245,7 +253,7 @@ class Resource implements ElementInterface
     protected function mergeRelationships(array $relationships)
     {
         foreach ($this->merged as $resource) {
-            $relationships = array_replace_recursive($relationships, $resource->getRelationships());
+            $relationships = array_replace_recursive($relationships, $resource->getRelationshipsAsArray());
         }
 
         return $relationships;
