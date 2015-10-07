@@ -28,12 +28,12 @@ class CollectionTest extends AbstractTestCase
         $serializer = new PostSerializer3;
 
         $post1 = (object) ['id' => 1, 'foo' => 'bar'];
-        $post2 = (object) ['id' => 2, 'foo' => 'baz'];
+        $post2 = new Resource((object) ['id' => 2, 'foo' => 'baz'], $serializer);
 
         $collection = new Collection([$post1, $post2], $serializer);
 
         $resource1 = new Resource($post1, $serializer);
-        $resource2 = new Resource($post2, $serializer);
+        $resource2 = $post2;
 
         $this->assertEquals([$resource1->toArray(), $resource2->toArray()], $collection->toArray());
     }

@@ -31,11 +31,26 @@ class Collection implements ElementInterface
      */
     public function __construct(array $data, SerializerInterface $serializer)
     {
-        $this->resources = array_map(function ($data) use ($serializer) {
-            return new Resource($data, $serializer);
-        }, $data);
-
+        $this->resources = $this->buildResources($data, $serializer);
         $this->serializer = $serializer;
+    }
+
+    /**
+     * Convert an array of raw data to Resource objects.
+     *
+     * @param array $data
+     * @param SerializerInterface $serializer
+     * @return Resource[]
+     */
+    protected function buildResources(array $data, SerializerInterface $serializer)
+    {
+        return array_map(function ($data) use ($serializer) {
+            if (! ($data instanceof Resource)) {
+                $data = new Resource($data, $serializer);
+            }
+
+            return $data;
+        }, $data);
     }
 
     /**
