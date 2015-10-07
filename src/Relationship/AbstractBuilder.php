@@ -43,6 +43,10 @@ abstract class AbstractBuilder implements BuilderInterface
     {
         $data = $this->getRelationshipData($model);
 
+        if (! $data) {
+            return null;
+        }
+
         $serializer = $this->resolveSerializer($this->serializer, $model, $data);
 
         $element = $this->createElement($data, $serializer);
@@ -57,13 +61,12 @@ abstract class AbstractBuilder implements BuilderInterface
     /**
      * @param mixed $data
      * @param SerializerInterface $serializer
-     * @return ElementInterface
+     * @return \Tobscure\JsonApi\ElementInterface
      */
     abstract protected function createElement($data, SerializerInterface $serializer);
 
     /**
      * @param mixed $model
-     * @param bool $included
      * @return mixed
      */
     abstract protected function getRelationshipData($model);
