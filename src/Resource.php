@@ -84,10 +84,6 @@ class Resource implements ElementInterface
             $array['links'] = $this->links;
         }
 
-        if (! empty($this->meta)) {
-            $array['meta'] = $this->meta;
-        }
-
         return $array;
     }
 
@@ -96,10 +92,16 @@ class Resource implements ElementInterface
      */
     public function toIdentifier()
     {
-        return [
+        $array = [
             'type' => $this->getType(),
             'id' => $this->getId()
         ];
+
+        if (! empty($this->meta)) {
+            $array['meta'] = $this->meta;
+        }
+
+        return $array;
     }
 
     /**

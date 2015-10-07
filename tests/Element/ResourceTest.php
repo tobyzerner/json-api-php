@@ -44,6 +44,14 @@ class ResourceTest extends AbstractTestCase
             'type' => 'posts',
             'id' => '123'
         ], $resource->toIdentifier());
+
+        $resource->addMeta('foo', 'bar');
+
+        $this->assertEquals([
+            'type' => 'posts',
+            'id' => '123',
+            'meta' => ['foo' => 'bar']
+        ], $resource->toIdentifier());
     }
 
     public function testGetIdReturnsString()
