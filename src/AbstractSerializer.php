@@ -11,7 +11,6 @@
 
 namespace Tobscure\JsonApi;
 
-use InvalidArgumentException;
 use LogicException;
 use Tobscure\JsonApi\Relationship\BuilderInterface;
 
@@ -60,7 +59,7 @@ abstract class AbstractSerializer implements SerializerInterface
 
             if (! ($builder instanceof BuilderInterface)) {
                 throw new LogicException('Relationship method must return an instance of '
-                    . BuilderInterface::class);
+                    .BuilderInterface::class);
             }
 
             return $builder;
