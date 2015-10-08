@@ -117,7 +117,7 @@ $builder->configure(function (Relationship $relationship) {
 });
 ```
 
-> An example of an alternative implementation, optimized for use with Eloquent models, can be found [here]().
+> An example of an alternative implementation, optimized for use with Eloquent models, can be found [here](https://github.com/flarum/core/blob/composer/src/Api/Relationship/BuilderTrait.php).
 
 ### Meta & Links
 
