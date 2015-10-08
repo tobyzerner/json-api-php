@@ -41,10 +41,8 @@ abstract class AbstractBuilder implements BuilderInterface
      */
     public function build($model)
     {
-        $data = $this->getRelationshipData($model);
-
-        if (! $data) {
-            return null;
+        if (is_null($data = $this->getRelationshipData($model))) {
+            return;
         }
 
         $serializer = $this->resolveSerializer($this->serializer, $model, $data);

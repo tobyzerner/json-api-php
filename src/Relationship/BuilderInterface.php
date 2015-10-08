@@ -17,7 +17,7 @@ interface BuilderInterface
 {
     /**
      * @param mixed $model
-     * @return Relationship
+     * @return Relationship|null
      */
     public function build($model);
 }
