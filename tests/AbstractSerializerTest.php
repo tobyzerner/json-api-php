@@ -41,16 +41,6 @@ class AbstractSerializerTest extends AbstractTestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetRelationshipBuilderValidatesMethod()
-    {
-        $serializer = new PostSerializer1;
-
-        $serializer->getRelationshipBuilder('absent');
-    }
-
-    /**
      * @expectedException \LogicException
      */
     public function testGetRelationshipBuilderValidatesBuilder()
