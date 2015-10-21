@@ -68,7 +68,7 @@ class Document implements JsonSerializable
         foreach ($resources as $k => $resource) {
             // If the resource doesn't have any attributes, then we don't need to
             // put it into the included part of the document.
-            if (!$resource->getAttributes()) {
+            if (! $resource->getAttributes()) {
                 unset($resources[$k]);
             } else {
                 foreach ($resource->getIncluded() as $link) {
@@ -179,27 +179,27 @@ class Document implements JsonSerializable
     {
         $document = [];
 
-        if (!empty($this->links)) {
+        if (! empty($this->links)) {
             ksort($this->links);
             $document['links'] = $this->links;
         }
 
-        if (!empty($this->data)) {
+        if (! empty($this->data)) {
             $document['data'] = $this->data->toArray();
         }
 
-        if (!empty($this->included)) {
+        if (! empty($this->included)) {
             $document['included'] = [];
             foreach ($this->included as $resource) {
                 $document['included'][] = $resource->toArray();
             }
         }
 
-        if (!empty($this->meta)) {
+        if (! empty($this->meta)) {
             $document['meta'] = $this->meta;
         }
 
-        if (!empty($this->errors)) {
+        if (! empty($this->errors)) {
             $document['errors'] = $this->errors;
         }
 
