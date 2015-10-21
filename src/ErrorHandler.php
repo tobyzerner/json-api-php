@@ -1,4 +1,5 @@
 <?php
+
 namespace Tobscure\JsonApi;
 
 use Exception;
