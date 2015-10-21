@@ -85,7 +85,7 @@ abstract class AbstractSerializer implements SerializerInterface
             return;
         }
 
-        if (!is_object($data)) {
+        if (! is_object($data)) {
             return new Resource($this->getType($data), $data);
         }
 
@@ -112,7 +112,7 @@ abstract class AbstractSerializer implements SerializerInterface
                 }
 
                 if ($method && $element) {
-                    if (!($element instanceof Relationship)) {
+                    if (! ($element instanceof Relationship)) {
                         $element = new Relationship($element);
                     }
                     if ($include) {
@@ -162,7 +162,7 @@ abstract class AbstractSerializer implements SerializerInterface
         foreach ($paths as $path) {
             list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
 
-            if (!isset($tree[$primary])) {
+            if (! isset($tree[$primary])) {
                 $tree[$primary] = [];
             }
 
