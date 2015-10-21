@@ -9,14 +9,14 @@ class FallbackExceptionHandler implements ExceptionHandler
     /**
      * Set the debug mode.
      *
-     * @var boolean
+     * @var bool
      */
     private $debug;
 
     /**
      * Set the debug mode for the default handler.
      *
-     * @param boolean $debugMode
+     * @param bool $debugMode
      */
     public function __construct($debugMode)
     {
@@ -28,7 +28,7 @@ class FallbackExceptionHandler implements ExceptionHandler
      * then the implementation should return true.
      *
      * @param Exception $e
-     * @return boolean
+     * @return bool
      */
     public function manages(Exception $e)
     {

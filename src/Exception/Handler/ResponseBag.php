@@ -11,7 +11,7 @@ class ResponseBag
     private $errors;
 
     /**
-     * @param integer $status
+     * @param int $status
      * @param array $errors
      */
     public function __construct($status, array $errors)
@@ -29,7 +29,7 @@ class ResponseBag
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getStatus()
     {
