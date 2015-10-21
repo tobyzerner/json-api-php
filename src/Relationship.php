@@ -143,19 +143,19 @@ class Relationship
     {
         $link = [];
 
-        if (!empty($this->data)) {
+        if (! empty($this->data)) {
             $link['data'] = $this->data->toArray(false);
         }
 
-        if (!empty($this->self)) {
+        if (! empty($this->self)) {
             $link['self'] = $this->self;
         }
 
-        if (!empty($this->related)) {
+        if (! empty($this->related)) {
             $link['related'] = $this->related;
         }
 
-        if (!empty($this->meta)) {
+        if (! empty($this->meta)) {
             $link['meta'] = $this->meta;
         }
 
