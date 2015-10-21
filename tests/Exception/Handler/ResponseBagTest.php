@@ -1,4 +1,5 @@
 <?php
+
 namespace Tobscure\Tests\Exception\Handler;
 
 use Tobscure\JsonApi\Exception\Handler\ResponseBag;
