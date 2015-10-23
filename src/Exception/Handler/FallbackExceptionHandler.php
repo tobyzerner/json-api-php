@@ -2,7 +2,6 @@
 namespace Tobscure\JsonApi\Exception\Handler;
 
 use Exception;
-use Flarum\Core;
 
 class FallbackExceptionHandler implements ExceptionHandler
 {
