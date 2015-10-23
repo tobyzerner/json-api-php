@@ -22,7 +22,7 @@ class FallbackExceptionHandler implements ExceptionHandler
      * then the implementation should return true.
      *
      * @param Exception $e
-     * @return boolean
+     * @return bool
      */
     public function manages(Exception $e)
     {
