@@ -13,21 +13,6 @@ namespace Tobscure\JsonApi\Exception;
 
 use Exception;
 
-class InvalidParameterException extends Exception implements JsonApiSerializableInterface
+class InvalidParameterException extends Exception
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getStatusCode()
-    {
-        return 400;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getErrors()
-    {
-        return [];
-    }
 }

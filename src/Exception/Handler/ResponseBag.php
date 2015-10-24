@@ -1,4 +1,14 @@
 <?php
+
+/*
+ * This file is part of JSON-API.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Tobscure\JsonApi\Exception\Handler;
 
 /**
@@ -10,7 +20,7 @@ class ResponseBag
     private $errors;
 
     /**
-     * @param integer $status
+     * @param int $status
      * @param array $errors
      */
     public function __construct($status, array $errors)
@@ -28,7 +38,7 @@ class ResponseBag
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getStatus()
     {

@@ -200,28 +200,6 @@ $limit = $parameters->getLimit(100); // 100
 $offset = $parameters->getOffset(); // 20
 ```
 
-### Exceptions
-
-PHP JSON-API provides an Exception handler so you can serialize exceptions as JSON-API error documents.
-
-```php
-use Tobscure\JsonApi\ExceptionHandler;
-
-try {
-    // Your API endpoint code...
-} catch (Exception $e) {
-    $handler = new ExceptionHandler;
-
-    $document = $handler->handle($exception);
-
-    echo json_encode($document);
-}
-```
-
-Exceptions can implement `Tobscure\JsonApi\Exception\JsonApiSerializableInterface` to specify a custom status code and error object. An example of this is the `Tobscure\JsonApi\Exception\InvalidParameterException` class, which corresponds to a 400 Bad Request error as per the specification.
-
-Caught Exceptions that do not implement this interface will cause a 500 Internal Server Error to be displayed.
-
 ## Contributing
 
 Feel free to send pull requests or create issues if you come across problems or have great ideas. Any input is appreciated!

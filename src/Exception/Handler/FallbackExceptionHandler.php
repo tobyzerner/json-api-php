@@ -1,9 +1,19 @@
 <?php
+
+/*
+ * This file is part of JSON-API.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Tobscure\JsonApi\Exception\Handler;
 
 use Exception;
 
-class FallbackExceptionHandler implements ExceptionHandler
+class FallbackExceptionHandler implements ExceptionHandlerInterface
 {
     /**
      * @var bool
@@ -17,12 +27,9 @@ class FallbackExceptionHandler implements ExceptionHandler
     {
         $this->debug = $debug;
     }
+
     /**
-     * If the exception handler is able to format a response for the provided exception,
-     * then the implementation should return true.
-     *
-     * @param Exception $e
-     * @return bool
+     * {@inheritdoc}
      */
     public function manages(Exception $e)
     {
@@ -30,10 +37,7 @@ class FallbackExceptionHandler implements ExceptionHandler
     }
 
     /**
-     * Handle the provided exception.
-     *
-     * @param Exception $e
-     * @return mixed
+     * {@inheritdoc}
      */
     public function handle(Exception $e)
     {
