@@ -29,7 +29,7 @@ class InvalidParameterExceptionHandler implements ExceptionHandlerInterface
     public function handle(Exception $e)
     {
         $status = 400;
-        $error = []);
+        $error = [];
 
         return new ResponseBag($status, [$error]);
     }
