@@ -200,6 +200,28 @@ $limit = $parameters->getLimit(100); // 100
 $offset = $parameters->getOffset(); // 20
 ```
 
+### Error Handling
+
+You can transform caught exceptions into JSON-API error documents using the `Tobscure\JsonApi\ErrorHandler` class. You must register the appropriate `Tobscure\JsonApi\Exception\Handler\ExceptionHandlerInterface` instances.
+
+```php
+try {
+    // API handling code
+} catch (Exception $e) {
+    $errors = new ErrorHandler;
+
+    $errors->registerHandler(new InvalidParameterExceptionHandler);
+    $errors->registerHandler(new FallbackExceptionHandler);
+
+    $response = $errors->handle($e);
+
+    $document = new Document;
+    $document->setErrors($response->getErrors());
+
+    return new JsonResponse($document, $response->getStatus());
+}
+```
+
 ## Contributing
 
 Feel free to send pull requests or create issues if you come across problems or have great ideas. Any input is appreciated!
