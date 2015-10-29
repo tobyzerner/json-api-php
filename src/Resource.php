@@ -227,16 +227,12 @@ class Resource implements ElementInterface
         $relationships = [];
 
         foreach ($paths as $name => $nested) {
-            $builder = $this->serializer->getRelationshipBuilder($name);
+            $relationship = $this->serializer->getRelationship($this->data, $name);
 
-            if ($builder) {
-                $relationship = $builder->build($this->data);
+            if ($relationship) {
+                $relationship->getData()->with($nested)->fields($this->fields);
 
-                if ($relationship) {
-                    $relationship->getData()->with($nested)->fields($this->fields);
-
-                    $relationships[$name] = $relationship;
-                }
+                $relationships[$name] = $relationship;
             }
         }
 

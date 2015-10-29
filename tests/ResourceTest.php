@@ -12,7 +12,8 @@
 namespace Tobscure\Tests\JsonApi\Element;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Relationship\ClosureHasManyBuilder;
+use Tobscure\JsonApi\Collection;
+use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 
@@ -137,11 +138,9 @@ class PostSerializer4 extends AbstractSerializer
         return $attributes;
     }
 
-    public function comments()
+    public function comments($post)
     {
-        return new ClosureHasManyBuilder(new CommentSerializer, function ($post) {
-            return $post->comments;
-        });
+        return new Relationship(new Collection($post->comments, new CommentSerializer));
     }
 }
 

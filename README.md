@@ -91,33 +91,16 @@ protected function getId($post)
 
 #### Relationships 
 
-The `AbstractSerializer` allows you to define a public method for each relationship that exists for a resource. A relationship method should return an object implementing `Tobscure\JsonApi\Relationship\BuilderInterface`.
-
-There are a couple of implementations of this interface included which allow you to build simple relationships:
-
-* `Tobscure\JsonApi\Relationship\ClosureHasOneBuilder` for **has-one** relationships
-* `Tobscure\JsonApi\Relationship\ClosureHasManyBuilder` for **has-many** relationships
-
-These concrete classes should be constructed with a serializer and a Closure which returns the relationship data for the given model.
+The `AbstractSerializer` allows you to define a public method for each relationship that exists for a resource. A relationship method should return a `Tobscure\JsonApi\Relationship` instance.
 
 ```php
-public function comments()
+public function comments($post)
 {
-    return new ClosureHasManyBuilder(new CommentSerializer, function ($post) {
-        return $post->comments;
-    });
+    $element = new Collection($post->comments, new CommentSerializer);
+
+    return new Relationship($element);
 }
 ```
-
-If you need to customize the resulting **relationship object** (`Tobscure\JsonApi\Relationship`), you can use the `configure` method:
-
-```php
-$builder->configure(function (Relationship $relationship) {
-    $relationship->addMeta('key', 'value');
-});
-```
-
-> An example of an alternative implementation, optimized for use with Eloquent models, can be found [here](https://github.com/flarum/core/blob/master/src/Api/Relationship/BuilderTrait.php).
 
 ### Meta & Links
 

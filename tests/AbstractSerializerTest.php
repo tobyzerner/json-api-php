@@ -12,7 +12,8 @@
 namespace Tobscure\Tests\JsonApi;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Relationship\ClosureHasManyBuilder;
+use Tobscure\JsonApi\Collection;
+use Tobscure\JsonApi\Relationship;
 
 class AbstractSerializerTest extends AbstractTestCase
 {
@@ -31,23 +32,23 @@ class AbstractSerializerTest extends AbstractTestCase
         $this->assertEquals(['foo' => 'bar'], $serializer->getAttributes($post));
     }
 
-    public function testGetRelationshipBuilderReturnsBuilderFromMethod()
+    public function testGetRelationshipReturnsRelationshipFromMethod()
     {
         $serializer = new PostSerializer1;
 
-        $builder = $serializer->getRelationshipBuilder('comments');
+        $relationship = $serializer->getRelationship(null, 'comments');
 
-        $this->assertTrue($builder instanceof ClosureHasManyBuilder);
+        $this->assertTrue($relationship instanceof Relationship);
     }
 
     /**
      * @expectedException \LogicException
      */
-    public function testGetRelationshipBuilderValidatesBuilder()
+    public function testGetRelationshipValidatesRelationship()
     {
         $serializer = new PostSerializer1;
 
-        $serializer->getRelationshipBuilder('invalid');
+        $serializer->getRelationship(null, 'invalid');
     }
 }
 
@@ -60,12 +61,14 @@ class PostSerializer1 extends AbstractSerializer
         return ['foo' => $post->foo];
     }
 
-    public function comments()
+    public function comments($post)
     {
-        return new ClosureHasManyBuilder(new self, function ($post) {});
+        $element = new Collection([], new self);
+
+        return new Relationship($element);
     }
 
-    public function invalid()
+    public function invalid($post)
     {
         return 'invalid';
     }

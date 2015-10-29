@@ -39,10 +39,11 @@ interface SerializerInterface
     public function getAttributes($model, array $fields = null);
 
     /**
-     * Get a relationship builder for the given relationship.
+     * Get a relationship.
      *
+     * @param mixed $model
      * @param string $name
-     * @return \Tobscure\JsonApi\Relationship\BuilderInterface|null
+     * @return \Tobscure\JsonApi\Relationship|null
      */
-    public function getRelationshipBuilder($name);
+    public function getRelationship($model, $name);
 }
