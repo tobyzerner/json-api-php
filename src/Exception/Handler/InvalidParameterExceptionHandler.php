@@ -11,6 +11,7 @@
 
 namespace Tobscure\JsonApi\Exception\Handler;
 
+use Exception;
 use Tobscure\JsonApi\Exception\InvalidParameterException;
 
 class InvalidParameterExceptionHandler implements ExceptionHandlerInterface
