@@ -89,7 +89,7 @@ class Resource implements ElementInterface
 
     /**
      * Check whether or not this resource is an identifier (i.e. does it have
-     * any data attached?)
+     * any data attached?).
      *
      * @return bool
      */
