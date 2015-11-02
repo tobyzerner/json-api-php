@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1 (released 2015-11-02)
+
+- Improve performance when working with large numbers of resources
+
 ## 0.2.0 (released 2015-10-30)
 
 Completely rewrite to improve all the things.
