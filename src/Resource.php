@@ -88,6 +88,17 @@ class Resource implements ElementInterface
     }
 
     /**
+     * Check whether or not this resource is an identifier (i.e. does it have
+     * any data attached?)
+     *
+     * @return bool
+     */
+    public function isIdentifier()
+    {
+        return ! is_object($this->data) && ! is_array($this->data);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toIdentifier()

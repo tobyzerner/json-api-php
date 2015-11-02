@@ -66,6 +66,10 @@ class Document implements JsonSerializable
         $included = [];
 
         foreach ($element->getResources() as $resource) {
+            if ($resource->isIdentifier()) {
+                continue;
+            }
+
             if ($includeParent) {
                 $included = $this->mergeResource($included, $resource);
             }
@@ -79,7 +83,13 @@ class Document implements JsonSerializable
             }
         }
 
-        return $included;
+        $flattened = [];
+
+        array_walk_recursive($included, function($a) use (&$flattened) {
+            $flattened[] = $a;
+        });
+
+        return $flattened;
     }
 
     /**
@@ -92,15 +102,11 @@ class Document implements JsonSerializable
         $type = $newResource->getType();
         $id = $newResource->getId();
 
-        foreach ($resources as $resource) {
-            if ($resource->getType() === $type && $resource->getId() === $id) {
-                $resource->merge($newResource);
-
-                return $resources;
-            }
+        if (isset($resources[$type][$id])) {
+            $resources[$type][$id]->merge($newResource);
+        } else {
+            $resources[$type][$id] = $newResource;
         }
-
-        $resources[] = $newResource;
 
         return $resources;
     }
