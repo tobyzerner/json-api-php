@@ -85,7 +85,7 @@ class Document implements JsonSerializable
 
         $flattened = [];
 
-        array_walk_recursive($included, function($a) use (&$flattened) {
+        array_walk_recursive($included, function ($a) use (&$flattened) {
             $flattened[] = $a;
         });
 
