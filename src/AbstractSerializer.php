@@ -77,7 +77,8 @@ abstract class AbstractSerializer implements SerializerInterface
      * 
      * @return string New function name
      */
-    private function replaceDashWithUppercase($name) {
+    private function replaceDashWithUppercase($name)
+    {
         return lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
     }
 }
