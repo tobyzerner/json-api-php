@@ -41,7 +41,7 @@ class Collection implements ElementInterface
         $resources = [];
 
         foreach ($data as $resource) {
-            if (!($resource instanceof Resource)) {
+            if (! ($resource instanceof Resource)) {
                 $resource = new Resource($resource, $serializer);
             }
 

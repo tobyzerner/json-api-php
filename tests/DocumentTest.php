@@ -11,7 +11,6 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Resource;
 use Tobscure\Tests\JsonApi\stubs\DocumentTestPostSerializer;

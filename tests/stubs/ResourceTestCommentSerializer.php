@@ -8,4 +8,3 @@ class ResourceTestCommentSerializer extends AbstractSerializer
 {
     protected $type = 'comments';
 }
-
