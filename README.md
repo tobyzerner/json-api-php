@@ -8,7 +8,7 @@
 
 [JSON-API](http://jsonapi.org) responses in PHP.
 
-Works with version 1.0 of the spec.
+Works with version 2.0 of the spec.
 
 ## Install
 
@@ -69,7 +69,7 @@ class PostSerializer extends AbstractSerializer
 {
     protected $type = 'posts';
 
-    protected function getAttributes($post, array $fields = [])
+    public function getAttributes($post, array $fields = [])
     {
         return [
             'title' => $post->title,
@@ -212,7 +212,7 @@ Feel free to send pull requests or create issues if you come across problems or 
 ### Running Tests
 
 ```bash
-$ phpunit
+$ ./vendor/bin/phpunit
 ```
 
 ## License
