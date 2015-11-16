@@ -11,9 +11,9 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Resource;
+use Tobscure\Tests\JsonApi\stubs\DocumentTestPostSerializer;
 
 /**
  * This is the document test class.
@@ -29,8 +29,7 @@ class DocumentTest extends AbstractTestCase
             'foo' => 'bar'
         ];
 
-        $resource = new Resource($post, new PostSerializer2);
-
+        $resource = new Resource($post, new DocumentTestPostSerializer());
         $document = new Document($resource);
 
         $this->assertEquals(['data' => $resource->toArray()], $document->toArray());
@@ -39,15 +38,5 @@ class DocumentTest extends AbstractTestCase
     public function testItCanBeSerializedToJson()
     {
         $this->assertEquals('[]', (string) new Document());
-    }
-}
-
-class PostSerializer2 extends AbstractSerializer
-{
-    protected $type = 'posts';
-
-    public function getAttributes($post, array $fields = null)
-    {
-        return ['foo' => $post->foo];
     }
 }

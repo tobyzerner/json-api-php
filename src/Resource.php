@@ -43,7 +43,7 @@ class Resource implements ElementInterface
     /**
      * An array of Resources that should be merged into this one.
      *
-     * @var Resource[]
+     * @var self[]
      */
     protected $merged = [];
 
@@ -122,7 +122,7 @@ class Resource implements ElementInterface
      */
     public function getType()
     {
-        return $this->serializer->getType($this->data);
+        return $this->serializer->getType();
     }
 
     /**
@@ -158,7 +158,7 @@ class Resource implements ElementInterface
     /**
      * Get the requested fields for this resource type.
      *
-     * @return array|null
+     * @return array
      */
     protected function getOwnFields()
     {
@@ -167,6 +167,8 @@ class Resource implements ElementInterface
         if (isset($this->fields[$type])) {
             return $this->fields[$type];
         }
+
+        return [];
     }
 
     /**

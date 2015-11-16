@@ -23,15 +23,20 @@ abstract class AbstractSerializer implements SerializerInterface
     protected $type;
 
     /**
-     * {@inheritdoc}
+     * Get the type.
+     *
+     * @return string
      */
-    public function getType($model)
+    public function getType()
     {
         return $this->type;
     }
 
     /**
-     * {@inheritdoc}
+     * Get the id.
+     *
+     * @param mixed $model
+     * @return string
      */
     public function getId($model)
     {
@@ -39,17 +44,24 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get the attributes array.
+     *
+     * @param mixed $model
+     * @param array $fields
+     * @return array
      */
-    public function getAttributes($model, array $fields = null)
+    public function getAttributes($model, array $fields = [])
     {
         return [];
     }
 
     /**
-     * {@inheritdoc}
+     * Get a relationship.
      *
+     * @param mixed $model
+     * @param string $name
      * @throws LogicException
+     * @return \Tobscure\JsonApi\Relationship|null
      */
     public function getRelationship($model, $name)
     {
@@ -57,8 +69,7 @@ abstract class AbstractSerializer implements SerializerInterface
             $relationship = $this->$name($model);
 
             if ($relationship !== null && ! ($relationship instanceof Relationship)) {
-                throw new LogicException('Relationship method must return null or an instance of '
-                    .Relationship::class);
+                throw new LogicException('Relationship method must return null or an instance of '.Relationship::class);
             }
 
             return $relationship;

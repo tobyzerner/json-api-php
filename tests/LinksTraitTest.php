@@ -11,7 +11,7 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\LinksTrait;
+use Tobscure\Tests\JsonApi\stubs\LinksTraitDocument;
 
 /**
  * This is the document test class.
@@ -22,7 +22,7 @@ class LinksTraitTest extends AbstractTestCase
 {
     public function testAddPaginationLinks()
     {
-        $document = new Document;
+        $document = new LinksTraitDocument();
         $document->addPaginationLinks('http://example.org', [], 0, 20);
 
         $this->assertEquals([
@@ -30,7 +30,7 @@ class LinksTraitTest extends AbstractTestCase
             'next' => 'http://example.org?page%5Boffset%5D=20'
         ], $document->getLinks());
 
-        $document = new Document;
+        $document = new LinksTraitDocument();
         $document->addPaginationLinks('http://example.org', ['foo' => 'bar', 'page' => ['limit' => 20]], 30, 20, 100);
 
         $this->assertEquals([
@@ -40,7 +40,7 @@ class LinksTraitTest extends AbstractTestCase
             'last' => 'http://example.org?foo=bar&page%5Blimit%5D=20&page%5Boffset%5D=80'
         ], $document->getLinks());
 
-        $document = new Document;
+        $document = new LinksTraitDocument();
         $document->addPaginationLinks('http://example.org', ['page' => ['number' => 2]], 50, 20, 100);
 
         $this->assertEquals([
@@ -50,9 +50,4 @@ class LinksTraitTest extends AbstractTestCase
             'last' => 'http://example.org?page%5Bnumber%5D=5'
         ], $document->getLinks());
     }
-}
-
-class Document
-{
-    use LinksTrait;
 }

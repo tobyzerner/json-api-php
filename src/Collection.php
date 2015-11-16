@@ -52,7 +52,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get the resources array.
+     *
+     * @return array
      */
     public function getResources()
     {
@@ -115,7 +117,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Map to a "resource object" array.
+     *
+     * @return array
      */
     public function toArray()
     {
@@ -125,7 +129,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Map to a "resource object identifier" array.
+     *
+     * @return array
      */
     public function toIdentifier()
     {
