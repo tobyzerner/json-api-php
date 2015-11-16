@@ -16,10 +16,9 @@ interface SerializerInterface
     /**
      * Get the type.
      *
-     * @param mixed $model
      * @return string
      */
-    public function getType($model);
+    public function getType();
 
     /**
      * Get the id.
@@ -33,10 +32,10 @@ interface SerializerInterface
      * Get the attributes array.
      *
      * @param mixed $model
-     * @param array|null $fields
+     * @param array $fields
      * @return array
      */
-    public function getAttributes($model, array $fields = null);
+    public function getAttributes($model, array $fields = []);
 
     /**
      * Get a relationship.

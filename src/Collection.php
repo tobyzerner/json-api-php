@@ -41,7 +41,7 @@ class Collection implements ElementInterface
         $resources = [];
 
         foreach ($data as $resource) {
-            if (! ($resource instanceof Resource)) {
+            if (!($resource instanceof Resource)) {
                 $resource = new Resource($resource, $serializer);
             }
 
@@ -52,7 +52,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get the resources array.
+     *
+     * @return array
      */
     public function getResources()
     {
@@ -115,7 +117,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Map to a "resource object" array.
+     *
+     * @return array
      */
     public function toArray()
     {
@@ -125,7 +129,9 @@ class Collection implements ElementInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Map to a "resource object identifier" array.
+     *
+     * @return array
      */
     public function toIdentifier()
     {

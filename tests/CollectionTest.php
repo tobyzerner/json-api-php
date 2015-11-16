@@ -11,10 +11,10 @@
 
 namespace Tobscure\Tests\JsonApi\Element;
 
-use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Resource;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
+use Tobscure\Tests\JsonApi\stubs\CollectionTestPostSerializer;
 
 /**
  * This is the collection test class.
@@ -25,7 +25,7 @@ class CollectionTest extends AbstractTestCase
 {
     public function testToArrayReturnsArrayOfResources()
     {
-        $serializer = new PostSerializer3;
+        $serializer = new CollectionTestPostSerializer();
 
         $post1 = (object) ['id' => 1, 'foo' => 'bar'];
         $post2 = new Resource((object) ['id' => 2, 'foo' => 'baz'], $serializer);
@@ -40,7 +40,7 @@ class CollectionTest extends AbstractTestCase
 
     public function testToIdentifierReturnsArrayOfResourceIdentifiers()
     {
-        $serializer = new PostSerializer3;
+        $serializer = new CollectionTestPostSerializer();
 
         $post1 = (object) ['id' => 1];
         $post2 = (object) ['id' => 2];
@@ -51,15 +51,5 @@ class CollectionTest extends AbstractTestCase
         $resource2 = new Resource($post2, $serializer);
 
         $this->assertEquals([$resource1->toIdentifier(), $resource2->toIdentifier()], $collection->toIdentifier());
-    }
-}
-
-class PostSerializer3 extends AbstractSerializer
-{
-    protected $type = 'posts';
-
-    public function getAttributes($post, array $fields = null)
-    {
-        return ['foo' => $post->foo];
     }
 }
