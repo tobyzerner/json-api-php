@@ -53,6 +53,10 @@ abstract class AbstractSerializer implements SerializerInterface
      */
     public function getRelationship($model, $name)
     {
+        if (stripos($name, '-')) {
+            $name = $this->replaceDashWithUppercase($name);
+        }
+
         if (method_exists($this, $name)) {
             $relationship = $this->$name($model);
 
@@ -63,5 +67,18 @@ abstract class AbstractSerializer implements SerializerInterface
 
             return $relationship;
         }
+    }
+
+    /**
+     * Removes all dashes from relationsship and uppercases the following letter.
+     * @example If relationship parent-page is needed the the function name will be changed to parentPage
+     * 
+     * @param string Name of the function
+     * 
+     * @return string New function name
+     */
+    private function replaceDashWithUppercase($name)
+    {
+        return lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
     }
 }
