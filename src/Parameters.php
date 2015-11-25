@@ -125,12 +125,13 @@ class Parameters
 
             foreach ($fields as $field) {
                 if (substr($field, 0, 1) === '-') {
-                    $field = substr($field, 1);
                     $order = 'desc';
                 } else {
                     $order = 'asc';
                 }
-
+                
+                $field = substr($field, 1);
+                
                 $sort[$field] = $order;
             }
 
