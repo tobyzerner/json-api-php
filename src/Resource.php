@@ -211,6 +211,16 @@ class Resource implements ElementInterface
 
         return $this->filterFields($relationships);
     }
+    
+    /**
+     * Get the resource relationships without considering requested ones.
+     *
+     * @return Relationship[]
+     */
+    public function getUnfilteredRelationships()
+    {
+        return $this->buildRelationships();
+    }
 
     /**
      * Get the resource relationships as an array.

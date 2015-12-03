@@ -74,7 +74,7 @@ class Document implements JsonSerializable
                 $included = $this->mergeResource($included, $resource);
             }
 
-            foreach ($resource->getRelationships() as $relationship) {
+            foreach ($resource->getUnfilteredRelationships() as $relationship) {
                 $includedElement = $relationship->getData();
 
                 foreach ($this->getIncluded($includedElement, true) as $child) {
