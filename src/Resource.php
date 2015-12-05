@@ -211,7 +211,7 @@ class Resource implements ElementInterface
 
         return $this->filterFields($relationships);
     }
-    
+
     /**
      * Get the resource relationships without considering requested ones.
      *
