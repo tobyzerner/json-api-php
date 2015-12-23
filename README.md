@@ -69,7 +69,7 @@ class PostSerializer extends AbstractSerializer
 {
     protected $type = 'posts';
 
-    protected function getAttributes($post, array $fields = [])
+    public function getAttributes($post, array $fields = [])
     {
         return [
             'title' => $post->title,
@@ -83,7 +83,7 @@ class PostSerializer extends AbstractSerializer
 By default, a Resource object's **id** attribute will be set as the `id` property on the model. A serializer can provide a method to override this:
 
 ```php
-protected function getId($post)
+public function getId($post)
 {
     return $post->someOtherKey;
 }
