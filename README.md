@@ -69,7 +69,7 @@ class PostSerializer extends AbstractSerializer
 {
     protected $type = 'posts';
 
-    public function getAttributes($post, array $fields = [])
+    public function getAttributes($post, array $fields = null)
     {
         return [
             'title' => $post->title,
