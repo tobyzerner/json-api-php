@@ -23,7 +23,7 @@ class ResourceTest extends AbstractTestCase
     {
         $data = (object) ['id' => '123', 'foo' => 'bar', 'baz' => 'qux'];
 
-        $resource = new Resource($data, new PostSerializer4);
+        $resource = new Resource($data, new PostSerializer4WithLinks);
 
         $this->assertEquals([
             'type' => 'posts',
@@ -31,7 +31,10 @@ class ResourceTest extends AbstractTestCase
             'attributes' => [
                 'foo' => 'bar',
                 'baz' => 'qux'
-            ]
+            ],
+            'links' => [
+                'self' => '/posts/123'
+            ],
         ], $resource->toArray());
     }
 
@@ -118,6 +121,27 @@ class ResourceTest extends AbstractTestCase
             ]
         ], $resource1->toArray());
     }
+
+    public function testLinksMergeWithSerializerLinks()
+    {
+        $post1 = (object) ['id' => '123', 'foo' => 'bar', 'comments' => [1]];
+
+        $resource1 = new Resource($post1, new PostSerializer4WithLinks());
+        $resource1->addLink('self', 'overridden/by/resource');
+        $resource1->addLink('related', '/some/other/comment');
+
+        $this->assertEquals([
+            'type' => 'posts',
+            'id' => '123',
+            'attributes' => [
+                'foo' => 'bar'
+            ],
+            'links' => [
+                'self' => 'overridden/by/resource',
+                'related' => '/some/other/comment'
+            ],
+        ], $resource1->toArray());
+    }
 }
 
 class PostSerializer4 extends AbstractSerializer
@@ -141,6 +165,13 @@ class PostSerializer4 extends AbstractSerializer
     public function comments($post)
     {
         return new Relationship(new Collection($post->comments, new CommentSerializer));
+    }
+}
+class PostSerializer4WithLinks extends PostSerializer4
+{
+    public function getLinks($post)
+    {
+        return ['self' => sprintf('/posts/%s', $post->id)];
     }
 }
 

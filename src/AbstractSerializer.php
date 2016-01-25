@@ -48,6 +48,14 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function getLinks($model)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @throws LogicException
      */
@@ -72,9 +80,9 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * Removes all dashes from relationsship and uppercases the following letter.
      * @example If relationship parent-page is needed the the function name will be changed to parentPage
-     * 
+     *
      * @param string Name of the function
-     * 
+     *
      * @return string New function name
      */
     private function replaceDashWithUppercase($name)
