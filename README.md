@@ -115,7 +115,7 @@ $document->setMeta(['key' => 'value']);
 They also allow you to add links in a similar way:
 
 ```php
-$resource = new Resource;
+$resource = new Resource($data, $serializer);
 $resource->addLink('self', 'url');
 $resource->setLinks(['key' => 'value']);
 ```
@@ -131,6 +131,19 @@ $document->addPaginationLinks(
     100    // The total number of results
 );
 ```
+Serializers can provide links as well:
+
+```php
+use Tobscure\JsonApi\AbstractSerializer;
+
+class PostSerializer extends AbstractSerializer
+{
+    // ...
+    
+    public function getLinks($post) {
+        return ['self' => '/posts/' . $post->id];
+    }
+}
 
 ### Parameters
 
