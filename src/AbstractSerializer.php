@@ -67,8 +67,7 @@ abstract class AbstractSerializer implements SerializerInterface
             $relationship = $this->$method($model);
 
             if ($relationship !== null && ! ($relationship instanceof Relationship)) {
-                throw new LogicException('Relationship method must return null or an instance of '
-                    .Relationship::class);
+                throw new LogicException('Relationship method must return null or an instance of Tobscure\JsonApi\Relationship');
             }
 
             return $relationship;
