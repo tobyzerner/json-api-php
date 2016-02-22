@@ -61,12 +61,10 @@ abstract class AbstractSerializer implements SerializerInterface
      */
     public function getRelationship($model, $name)
     {
-        if (stripos($name, '-')) {
-            $name = $this->replaceDashWithUppercase($name);
-        }
+        $method = $this->getRelationshipMethodName($name);
 
-        if (method_exists($this, $name)) {
-            $relationship = $this->$name($model);
+        if (method_exists($this, $method)) {
+            $relationship = $this->$method($model);
 
             if ($relationship !== null && ! ($relationship instanceof Relationship)) {
                 throw new LogicException('Relationship method must return null or an instance of '
@@ -78,15 +76,19 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Removes all dashes from relationsship and uppercases the following letter.
-     * @example If relationship parent-page is needed the the function name will be changed to parentPage
+     * Get the serializer method name for the given relationship.
      *
-     * @param string Name of the function
+     * kebab-case is converted into camelCase.
      *
-     * @return string New function name
+     * @param string $name
+     * @return string
      */
-    private function replaceDashWithUppercase($name)
+    private function getRelationshipMethodName($name)
     {
-        return lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
+    	if (stripos($name, '-')) {
+        	$name = lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
+    	}
+
+    	return $name;
     }
 }
