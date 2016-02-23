@@ -56,6 +56,14 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function getMeta()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @throws LogicException
      */

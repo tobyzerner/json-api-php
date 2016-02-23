@@ -92,6 +92,18 @@ class Resource implements ElementInterface
             $array['links'] = $links;
         }
 
+        $meta = [];
+        if (! empty($this->meta)) {
+            $meta = $this->meta;
+        }
+        $serializerMeta = $this->serializer->getMeta();
+        if (! empty($serializerMeta)) {
+            $meta = array_merge($serializerMeta, $meta);
+        }
+        if (! empty($meta)) {
+            $array['meta'] = $meta;
+        }
+
         return $array;
     }
 

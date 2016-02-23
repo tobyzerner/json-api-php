@@ -23,7 +23,7 @@ class ResourceTest extends AbstractTestCase
     {
         $data = (object) ['id' => '123', 'foo' => 'bar', 'baz' => 'qux'];
 
-        $resource = new Resource($data, new PostSerializer4WithLinks);
+        $resource = new Resource($data, new PostSerializer4WithLinksAndMeta);
 
         $this->assertEquals([
             'type' => 'posts',
@@ -35,6 +35,9 @@ class ResourceTest extends AbstractTestCase
             'links' => [
                 'self' => '/posts/123'
             ],
+            'meta' => [
+                'some-meta' => 'from-serializer'
+            ]
         ], $resource->toArray());
     }
 
@@ -126,7 +129,7 @@ class ResourceTest extends AbstractTestCase
     {
         $post1 = (object) ['id' => '123', 'foo' => 'bar', 'comments' => [1]];
 
-        $resource1 = new Resource($post1, new PostSerializer4WithLinks());
+        $resource1 = new Resource($post1, new PostSerializer4WithLinksAndMeta());
         $resource1->addLink('self', 'overridden/by/resource');
         $resource1->addLink('related', '/some/other/comment');
 
@@ -140,6 +143,31 @@ class ResourceTest extends AbstractTestCase
                 'self' => 'overridden/by/resource',
                 'related' => '/some/other/comment'
             ],
+            'meta' => [
+                'some-meta' => 'from-serializer'
+            ]
+        ], $resource1->toArray());
+    }
+
+    public function testMetaMergeWithSerializerLinks()
+    {
+        $post1 = (object) ['id' => '123', 'foo' => 'bar', 'comments' => [1]];
+
+        $resource1 = new Resource($post1, new PostSerializer4WithLinksAndMeta());
+        $resource1->addMeta('some-meta', 'overridden-by-resource');
+
+        $this->assertEquals([
+            'type' => 'posts',
+            'id' => '123',
+            'attributes' => [
+                'foo' => 'bar'
+            ],
+            'links' => [
+                'self' => '/posts/123'
+            ],
+            'meta' => [
+                'some-meta' => 'overridden-by-resource'
+            ]
         ], $resource1->toArray());
     }
 }
@@ -167,11 +195,16 @@ class PostSerializer4 extends AbstractSerializer
         return new Relationship(new Collection($post->comments, new CommentSerializer));
     }
 }
-class PostSerializer4WithLinks extends PostSerializer4
+class PostSerializer4WithLinksAndMeta extends PostSerializer4
 {
     public function getLinks($post)
     {
         return ['self' => sprintf('/posts/%s', $post->id)];
+    }
+
+    public function getMeta()
+    {
+        return ['some-meta' => 'from-serializer'];
     }
 }
 
