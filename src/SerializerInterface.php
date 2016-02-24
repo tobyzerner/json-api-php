@@ -47,6 +47,14 @@ interface SerializerInterface
     public function getLinks($model);
 
     /**
+     * Get the meta.
+     *
+     * @param mixed $model
+     * @return array
+     */
+    public function getMeta($model);
+
+    /**
      * Get a relationship.
      *
      * @param mixed $model

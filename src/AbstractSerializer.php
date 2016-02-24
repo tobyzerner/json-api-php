@@ -56,6 +56,14 @@ abstract class AbstractSerializer implements SerializerInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function getMeta($model)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @throws LogicException
      */

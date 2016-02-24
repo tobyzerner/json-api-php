@@ -131,7 +131,7 @@ $document->addPaginationLinks(
     100    // The total number of results
 );
 ```
-Serializers can provide links as well:
+Serializers can provide links and/or meta data as well:
 
 ```php
 use Tobscure\JsonApi\AbstractSerializer;
@@ -143,7 +143,13 @@ class PostSerializer extends AbstractSerializer
     public function getLinks($post) {
         return ['self' => '/posts/' . $post->id];
     }
+
+    public function getMeta($post) {
+        return ['some' => 'metadata for ' . $post->id];
+    }
 }
+
+**Note:** Links and metadata of the resource overrule ones with the same key from the serializer!
 
 ### Parameters
 
