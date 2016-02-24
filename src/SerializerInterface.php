@@ -49,9 +49,10 @@ interface SerializerInterface
     /**
      * Get the meta.
      *
+     * @param mixed $model
      * @return array
      */
-    public function getMeta();
+    public function getMeta($model);
 
     /**
      * Get a relationship.

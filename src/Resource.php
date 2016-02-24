@@ -96,7 +96,7 @@ class Resource implements ElementInterface
         if (! empty($this->meta)) {
             $meta = $this->meta;
         }
-        $serializerMeta = $this->serializer->getMeta();
+        $serializerMeta = $this->serializer->getMeta($this->data);
         if (! empty($serializerMeta)) {
             $meta = array_merge($serializerMeta, $meta);
         }

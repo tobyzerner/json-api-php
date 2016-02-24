@@ -36,7 +36,7 @@ class ResourceTest extends AbstractTestCase
                 'self' => '/posts/123'
             ],
             'meta' => [
-                'some-meta' => 'from-serializer'
+                'some-meta' => 'from-serializer-for-123'
             ]
         ], $resource->toArray());
     }
@@ -144,7 +144,7 @@ class ResourceTest extends AbstractTestCase
                 'related' => '/some/other/comment'
             ],
             'meta' => [
-                'some-meta' => 'from-serializer'
+                'some-meta' => 'from-serializer-for-123'
             ]
         ], $resource1->toArray());
     }
@@ -202,9 +202,9 @@ class PostSerializer4WithLinksAndMeta extends PostSerializer4
         return ['self' => sprintf('/posts/%s', $post->id)];
     }
 
-    public function getMeta()
+    public function getMeta($post)
     {
-        return ['some-meta' => 'from-serializer'];
+        return ['some-meta' => sprintf('from-serializer-for-%s', $post->id)];
     }
 }
 

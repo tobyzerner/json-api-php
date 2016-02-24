@@ -144,8 +144,8 @@ class PostSerializer extends AbstractSerializer
         return ['self' => '/posts/' . $post->id];
     }
 
-    public function getMeta() {
-        return ['some' => 'metadata'];
+    public function getMeta($post) {
+        return ['some' => 'metadata for ' . $post->id];
     }
 }
 
