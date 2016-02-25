@@ -148,6 +148,7 @@ class PostSerializer extends AbstractSerializer
         return ['some' => 'metadata for ' . $post->id];
     }
 }
+```
 
 **Note:** Links and metadata of the resource overrule ones with the same key from the serializer!
 
