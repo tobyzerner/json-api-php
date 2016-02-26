@@ -92,10 +92,10 @@ abstract class AbstractSerializer implements SerializerInterface
      */
     private function getRelationshipMethodName($name)
     {
-    	if (stripos($name, '-')) {
-        	$name = lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
-    	}
+        if (stripos($name, '-')) {
+            $name = lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
+        }
 
-    	return $name;
+        return $name;
     }
 }
