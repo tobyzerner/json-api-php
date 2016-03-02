@@ -72,12 +72,22 @@ class Document implements JsonSerializable
 
             if ($includeParent) {
                 $included = $this->mergeResource($included, $resource);
+            } else {
+                $type = $resource->getType();
+                $id = $resource->getId();
             }
 
             foreach ($resource->getUnfilteredRelationships() as $relationship) {
                 $includedElement = $relationship->getData();
 
                 foreach ($this->getIncluded($includedElement, true) as $child) {
+                    // If this resource is the same as the top-level "data"
+                    // resource, then we don't want it to show up again in the
+                    // "included" array.
+                    if (! $includeParent && $child->getType() === $type && $child->getId() === $id) {
+                        continue;
+                    }
+
                     $included = $this->mergeResource($included, $child);
                 }
             }
