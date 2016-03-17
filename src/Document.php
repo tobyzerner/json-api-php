@@ -79,7 +79,11 @@ class Document implements JsonSerializable
 
             foreach ($resource->getUnfilteredRelationships() as $relationship) {
                 $includedElement = $relationship->getData();
-
+                
+                if (!$includedElement instanceof ElementInterface) {
+                    continue;
+                }
+                
                 foreach ($this->getIncluded($includedElement, true) as $child) {
                     // If this resource is the same as the top-level "data"
                     // resource, then we don't want it to show up again in the

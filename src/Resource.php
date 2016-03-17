@@ -271,7 +271,10 @@ class Resource implements ElementInterface
             $relationship = $this->serializer->getRelationship($this->data, $name);
 
             if ($relationship) {
-                $relationship->getData()->with($nested)->fields($this->fields);
+                $relationshipData = $relationship->getData();
+                if ($relationshipData instanceof ElementInterface) {
+                    $relationshipData->with($nested)->fields($this->fields);
+                }
 
                 $relationships[$name] = $relationship;
             }
