@@ -17,6 +17,7 @@ interface SerializerInterface
      * Get the type.
      *
      * @param mixed $model
+     *
      * @return string
      */
     public function getType($model);
@@ -25,6 +26,7 @@ interface SerializerInterface
      * Get the id.
      *
      * @param mixed $model
+     *
      * @return string
      */
     public function getId($model);
@@ -34,6 +36,7 @@ interface SerializerInterface
      *
      * @param mixed $model
      * @param array|null $fields
+     *
      * @return array
      */
     public function getAttributes($model, array $fields = null);
@@ -42,6 +45,7 @@ interface SerializerInterface
      * Get the links array.
      *
      * @param mixed $model
+     *
      * @return array
      */
     public function getLinks($model);
@@ -50,6 +54,7 @@ interface SerializerInterface
      * Get the meta.
      *
      * @param mixed $model
+     *
      * @return array
      */
     public function getMeta($model);
@@ -59,6 +64,7 @@ interface SerializerInterface
      *
      * @param mixed $model
      * @param string $name
+     *
      * @return \Tobscure\JsonApi\Relationship|null
      */
     public function getRelationship($model, $name);

@@ -38,6 +38,7 @@ interface ElementInterface
      * Request a relationship to be included.
      *
      * @param string|array $relationships
+     *
      * @return $this
      */
     public function with($relationships);
@@ -46,6 +47,7 @@ interface ElementInterface
      * Request a restricted set of fields.
      *
      * @param array|null $fields
+     *
      * @return $this
      */
     public function fields($fields);

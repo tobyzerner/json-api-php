@@ -32,8 +32,10 @@ class Parameters
      * Get the includes.
      *
      * @param array $available
+     *
+     * @throws \Tobscure\JsonApi\Exception\InvalidParameterException
+     *
      * @return array
-     * @throws InvalidParameterException
      */
     public function getInclude(array $available = [])
     {
@@ -56,8 +58,10 @@ class Parameters
      * Get number of offset.
      *
      * @param int|null $perPage
+     *
+     * @throws \Tobscure\JsonApi\Exception\InvalidParameterException
+     *
      * @return int
-     * @throws InvalidParameterException
      */
     public function getOffset($perPage = null)
     {
@@ -78,8 +82,10 @@ class Parameters
      * Calculate the offset based on the page[number] parameter.
      *
      * @param int $perPage
+     *
+     * @throws \Tobscure\JsonApi\Exception\InvalidParameterException
+     *
      * @return int
-     * @throws InvalidParameterException
      */
     protected function getOffsetFromNumber($perPage)
     {
@@ -96,6 +102,7 @@ class Parameters
      * Get the limit.
      *
      * @param int|null $max
+     *
      * @return int|null
      */
     public function getLimit($max = null)
@@ -113,8 +120,10 @@ class Parameters
      * Get the sort.
      *
      * @param array $available
+     *
+     * @throws \Tobscure\JsonApi\Exception\InvalidParameterException
+     *
      * @return array
-     * @throws InvalidParameterException
      */
     public function getSort(array $available = [])
     {
@@ -177,6 +186,7 @@ class Parameters
      *
      * @param string $key
      * @param null $default
+     *
      * @return mixed
      */
     protected function getInput($key, $default = null)
@@ -188,6 +198,7 @@ class Parameters
      * Get the page.
      *
      * @param string $key
+     *
      * @return string
      */
     protected function getPage($key)

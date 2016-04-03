@@ -34,6 +34,7 @@ trait MetaTrait
      * Set the meta data array.
      *
      * @param array $meta
+     *
      * @return $this
      */
     public function setMeta(array $meta)
@@ -48,6 +49,7 @@ trait MetaTrait
      *
      * @param string $key
      * @param string $value
+     *
      * @return $this
      */
     public function addMeta($key, $value)

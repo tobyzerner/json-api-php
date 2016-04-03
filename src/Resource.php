@@ -22,7 +22,7 @@ class Resource implements ElementInterface
     protected $data;
 
     /**
-     * @var SerializerInterface
+     * @var \Tobscure\JsonApi\SerializerInterface
      */
     protected $serializer;
 
@@ -43,13 +43,13 @@ class Resource implements ElementInterface
     /**
      * An array of Resources that should be merged into this one.
      *
-     * @var Resource[]
+     * @var \Tobscure\JsonApi\Resource[]
      */
     protected $merged = [];
 
     /**
      * @param mixed $data
-     * @param SerializerInterface $serializer
+     * @param \Tobscure\JsonApi\SerializerInterface $serializer
      */
     public function __construct($data, SerializerInterface $serializer)
     {
@@ -194,6 +194,7 @@ class Resource implements ElementInterface
      * to the requested fieldset.
      *
      * @param array $fields
+     *
      * @return array
      */
     protected function filterFields(array $fields)
@@ -209,6 +210,7 @@ class Resource implements ElementInterface
      * Merge the attributes of merged resources into an array of attributes.
      *
      * @param array $attributes
+     *
      * @return array
      */
     protected function mergeAttributes(array $attributes)
@@ -223,7 +225,7 @@ class Resource implements ElementInterface
     /**
      * Get the resource relationships.
      *
-     * @return Relationship[]
+     * @return \Tobscure\JsonApi\Relationship[]
      */
     public function getRelationships()
     {
@@ -235,7 +237,7 @@ class Resource implements ElementInterface
     /**
      * Get the resource relationships without considering requested ones.
      *
-     * @return Relationship[]
+     * @return \Tobscure\JsonApi\Relationship[]
      */
     public function getUnfilteredRelationships()
     {
@@ -259,7 +261,7 @@ class Resource implements ElementInterface
     /**
      * Get an array of built relationships.
      *
-     * @return Relationship[]
+     * @return \Tobscure\JsonApi\Relationship[]
      */
     protected function buildRelationships()
     {
@@ -288,6 +290,7 @@ class Resource implements ElementInterface
      * relationships.
      *
      * @param array $relationships
+     *
      * @return array
      */
     protected function mergeRelationships(array $relationships)
@@ -302,7 +305,8 @@ class Resource implements ElementInterface
     /**
      * Convert the given array of Relationship objects into an array.
      *
-     * @param Relationship[] $relationships
+     * @param \Tobscure\JsonApi\Relationship[] $relationships
+     *
      * @return array
      */
     protected function convertRelationshipsToArray(array $relationships)
@@ -315,7 +319,9 @@ class Resource implements ElementInterface
     /**
      * Merge a resource into this one.
      *
-     * @param Resource $resource
+     * @param \Tobscure\JsonApi\Resource $resource
+     *
+     * @return void
      */
     public function merge(Resource $resource)
     {
@@ -352,6 +358,8 @@ class Resource implements ElementInterface
 
     /**
      * @param mixed $data
+     *
+     * @return void
      */
     public function setData($data)
     {
@@ -359,7 +367,7 @@ class Resource implements ElementInterface
     }
 
     /**
-     * @return SerializerInterface
+     * @return \Tobscure\JsonApi\SerializerInterface
      */
     public function getSerializer()
     {
@@ -367,7 +375,9 @@ class Resource implements ElementInterface
     }
 
     /**
-     * @param SerializerInterface $serializer
+     * @param \Tobscure\JsonApi\SerializerInterface $serializer
+     *
+     * @return void
      */
     public function setSerializer(SerializerInterface $serializer)
     {

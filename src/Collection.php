@@ -22,7 +22,7 @@ class Collection implements ElementInterface
      * Create a new collection instance.
      *
      * @param mixed $data
-     * @param SerializerInterface $serializer
+     * @param \Tobscure\JsonApi\SerializerInterface $serializer
      */
     public function __construct($data, SerializerInterface $serializer)
     {
@@ -34,7 +34,8 @@ class Collection implements ElementInterface
      *
      * @param mixed $data
      * @param SerializerInterface $serializer
-     * @return Resource[]
+     *
+     * @return \Tobscure\JsonApi\Resource[]
      */
     protected function buildResources($data, SerializerInterface $serializer)
     {
@@ -63,6 +64,8 @@ class Collection implements ElementInterface
      * Set the resources array.
      *
      * @param array $resources
+     *
+     * @return void
      */
     public function setResources($resources)
     {
@@ -73,6 +76,7 @@ class Collection implements ElementInterface
      * Request a relationship to be included for all resources.
      *
      * @param string|array $relationships
+     *
      * @return $this
      */
     public function with($relationships)
@@ -88,6 +92,7 @@ class Collection implements ElementInterface
      * Request a relationship to be identified for all resources.
      *
      * @param string|array $relationships
+     *
      * @return $this
      */
     public function identify($relationships)
@@ -103,6 +108,7 @@ class Collection implements ElementInterface
      * Request a restricted set of fields.
      *
      * @param array|null $fields
+     *
      * @return $this
      */
     public function fields($fields)

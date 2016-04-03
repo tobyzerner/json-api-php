@@ -26,6 +26,7 @@ class Util
      * ['user' => ['employer', 'employer.country'], 'comments' => []]
      *
      * @param array $paths
+     *
      * @return array
      */
     public static function parseRelationshipPaths(array $paths)
