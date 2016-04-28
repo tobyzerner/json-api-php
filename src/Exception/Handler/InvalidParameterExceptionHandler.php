@@ -37,6 +37,11 @@ class InvalidParameterExceptionHandler implements ExceptionHandlerInterface
             $error['code'] = $code;
         }
 
+        $invalidParameter = $e->getInvalidParameter();
+        if ($invalidParameter) {
+            $error['source'] = ['parameter' => $invalidParameter];
+        }
+
         return new ResponseBag($status, [$error]);
     }
 }

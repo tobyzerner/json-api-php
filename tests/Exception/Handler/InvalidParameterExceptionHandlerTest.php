@@ -35,10 +35,10 @@ class InvalidParameterExceptionHandlerTest extends \PHPUnit_Framework_TestCase
     public function testErrorHandling()
     {
         $handler = new InvalidParameterExceptionHandler();
-        $response = $handler->handle(new InvalidParameterException('error', 1));
+        $response = $handler->handle(new InvalidParameterException('error', 1, null, 'include'));
 
         $this->assertInstanceOf(ResponseBag::class, $response);
         $this->assertEquals(400, $response->getStatus());
-        $this->assertEquals([['code' => 1]], $response->getErrors());
+        $this->assertEquals([['code' => 1, 'source' => ['parameter' => 'include']]], $response->getErrors());
     }
 }

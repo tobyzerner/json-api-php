@@ -43,7 +43,12 @@ class Parameters
             $invalid = array_diff($relationships, $available);
 
             if (count($invalid)) {
-                throw new InvalidParameterException('Invalid includes ['.implode(',', $invalid).']', 1);
+                throw new InvalidParameterException(
+                    'Invalid includes ['.implode(',', $invalid).']',
+                    1,
+                    null,
+                    'include'
+                );
             }
 
             return $relationships;
@@ -68,7 +73,7 @@ class Parameters
         $offset = (int) $this->getPage('offset');
 
         if ($offset < 0) {
-            throw new InvalidParameterException('page[offset] must be >=0', 2);
+            throw new InvalidParameterException('page[offset] must be >=0', 2, null, 'page[offset]');
         }
 
         return $offset;
@@ -136,7 +141,12 @@ class Parameters
             $invalid = array_diff(array_keys($sort), $available);
 
             if (count($invalid)) {
-                throw new InvalidParameterException('Invalid sort fields ['.implode(',', $invalid).']', 3);
+                throw new InvalidParameterException(
+                    'Invalid sort fields ['.implode(',', $invalid).']',
+                    3,
+                    null,
+                    'sort'
+                );
             }
         }
 
