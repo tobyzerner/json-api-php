@@ -79,7 +79,6 @@ class Parameters
      *
      * @param int $perPage
      * @return int
-     * @throws InvalidParameterException
      */
     protected function getOffsetFromNumber($perPage)
     {
