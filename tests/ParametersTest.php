@@ -36,6 +36,7 @@ class ParametersTest extends AbstractTestCase
 
     /**
      * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 1
      */
     public function testGetIncludeWithUnallowedField()
     {
@@ -67,6 +68,7 @@ class ParametersTest extends AbstractTestCase
 
     /**
      * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 3
      */
     public function testGetSortWithUnallowedField()
     {
@@ -84,6 +86,7 @@ class ParametersTest extends AbstractTestCase
 
     /**
      * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 2
      */
     public function testGetOffsetIsAtLeastZero()
     {
