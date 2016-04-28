@@ -69,7 +69,7 @@ class ParametersTest extends AbstractTestCase
     {
         $parameters = new Parameters(['page' => ['offset' => -5]]);
 
-        $this->assertEquals(0, $parameters->getOffset());
+        $parameters->getOffset();
     }
 
     public function testGetOffsetParsesThePageNumber()
