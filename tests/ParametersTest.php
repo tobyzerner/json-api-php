@@ -34,6 +34,17 @@ class ParametersTest extends AbstractTestCase
         $this->assertEquals([], $parameters->getInclude(['posts', 'images']));
     }
 
+    /**
+     * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 1
+     */
+    public function testGetIncludeWithUnallowedField()
+    {
+        $parameters = new Parameters(['include' => 'posts,images']);
+
+        $parameters->getInclude(['posts']);
+    }
+
     public function testGetSortReturnsArrayOfFieldToSortDirection()
     {
         $parameters = new Parameters(['sort' => 'firstname']);
@@ -55,6 +66,17 @@ class ParametersTest extends AbstractTestCase
         $this->assertEmpty($parameters->getSort());
     }
 
+    /**
+     * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 3
+     */
+    public function testGetSortWithUnallowedField()
+    {
+        $parameters = new Parameters(['sort' => 'firstname,lastname']);
+
+        $parameters->getSort(['firstname']);
+    }
+
     public function testGetOffsetParsesThePageOffset()
     {
         $parameters = new Parameters(['page' => ['offset' => 10]]);
@@ -64,12 +86,13 @@ class ParametersTest extends AbstractTestCase
 
     /**
      * @expectedException \Tobscure\JsonApi\Exception\InvalidParameterException
+     * @expectedExceptionCode 2
      */
     public function testGetOffsetIsAtLeastZero()
     {
         $parameters = new Parameters(['page' => ['offset' => -5]]);
 
-        $this->assertEquals(0, $parameters->getOffset());
+        $parameters->getOffset();
     }
 
     public function testGetOffsetParsesThePageNumber()
