@@ -237,12 +237,12 @@ class PostSerializer4 extends AbstractSerializer
 
     public function author($post)
     {
-        return new Relationship(new EmptyResource);
+        return new Relationship(new Resource(null, new CommentSerializer));
     }
 
     public function likes($post)
     {
-        return new Relationship(new EmptyCollection);
+        return new Relationship(new Collection([], new CommentSerializer));
     }
 }
 class PostSerializer4WithLinksAndMeta extends PostSerializer4
