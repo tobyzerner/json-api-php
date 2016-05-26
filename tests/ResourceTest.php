@@ -15,6 +15,8 @@ use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
+use Tobscure\JsonApi\EmptyResource;
+use Tobscure\JsonApi\EmptyCollection;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 
 class ResourceTest extends AbstractTestCase
@@ -170,6 +172,44 @@ class ResourceTest extends AbstractTestCase
             ]
         ], $resource1->toArray());
     }
+
+    public function testEmptyToOneRelationships()
+    {
+        $post1 = (object) ['id' => '123', 'foo' => 'bar'];
+
+        $resource1 = new Resource($post1, new PostSerializer4());
+        $resource1->with('author');
+
+        $this->assertEquals([
+            'type' => 'posts',
+            'id' => '123',
+            'attributes' => [
+                'foo' => 'bar'
+            ],
+            'relationships' => [
+                'author' => ['data' => null]
+            ]
+        ], $resource1->toArray());
+    }
+
+    public function testEmptyToManyRelationships()
+    {
+        $post1 = (object) ['id' => '123', 'foo' => 'bar'];
+
+        $resource1 = new Resource($post1, new PostSerializer4());
+        $resource1->with('likes');
+
+        $this->assertEquals([
+            'type' => 'posts',
+            'id' => '123',
+            'attributes' => [
+                'foo' => 'bar'
+            ],
+            'relationships' => [
+                'likes' => ['data' => []]
+            ]
+        ], $resource1->toArray());
+    }
 }
 
 class PostSerializer4 extends AbstractSerializer
@@ -193,6 +233,16 @@ class PostSerializer4 extends AbstractSerializer
     public function comments($post)
     {
         return new Relationship(new Collection($post->comments, new CommentSerializer));
+    }
+
+    public function author($post)
+    {
+        return new Relationship(new EmptyResource);
+    }
+
+    public function likes($post)
+    {
+        return new Relationship(new EmptyCollection);
     }
 }
 class PostSerializer4WithLinksAndMeta extends PostSerializer4
