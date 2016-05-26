@@ -57,9 +57,10 @@ class Document implements JsonSerializable
     /**
      * Get included resources.
      *
-     * @param ElementInterface $element
+     * @param \Tobscure\JsonApi\ElementInterface $element
      * @param bool $includeParent
-     * @return Resource[]
+     *
+     * @return \Tobscure\JsonApi\Resource[]
      */
     protected function getIncluded(ElementInterface $element, $includeParent = false)
     {
@@ -107,9 +108,10 @@ class Document implements JsonSerializable
     }
 
     /**
-     * @param Resource[] $resources
-     * @param Resource $newResource
-     * @return Resource[]
+     * @param \Tobscure\JsonApi\Resource[] $resources
+     * @param \Tobscure\JsonApi\Resource $newResource
+     *
+     * @return \Tobscure\JsonApi\Resource[]
      */
     protected function mergeResource(array $resources, Resource $newResource)
     {
@@ -128,7 +130,8 @@ class Document implements JsonSerializable
     /**
      * Set the data object.
      *
-     * @param ElementInterface $element
+     * @param \Tobscure\JsonApi\ElementInterface $element
+     *
      * @return $this
      */
     public function setData(ElementInterface $element)
@@ -142,6 +145,7 @@ class Document implements JsonSerializable
      * Set the errors array.
      *
      * @param array $errors
+     *
      * @return $this
      */
     public function setErrors($errors)
@@ -155,6 +159,7 @@ class Document implements JsonSerializable
      * Set the jsonapi array.
      *
      * @param array $jsonapi
+     *
      * @return $this
      */
     public function setJsonapi($jsonapi)

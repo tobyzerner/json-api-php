@@ -20,7 +20,7 @@ class ErrorHandler
     /**
      * Stores the valid handlers.
      *
-     * @var ExceptionHandlerInterface[]
+     * @var \Tobscure\JsonApi\Exception\Handler\ExceptionHandlerInterface[]
      */
     private $handlers = [];
 
@@ -28,8 +28,10 @@ class ErrorHandler
      * Handle the exception provided.
      *
      * @param Exception $e
-     * @return \Tobscure\JsonApi\Exception\Handler\ResponseBag
+     *
      * @throws RuntimeException
+     *
+     * @return \Tobscure\JsonApi\Exception\Handler\ResponseBag
      */
     public function handle(Exception $e)
     {
@@ -45,7 +47,9 @@ class ErrorHandler
     /**
      * Register a new exception handler.
      *
-     * @param ExceptionHandlerInterface $handler
+     * @param \Tobscure\JsonApi\Exception\Handler\ExceptionHandlerInterface $handler
+     *
+     * @return void
      */
     public function registerHandler(ExceptionHandlerInterface $handler)
     {

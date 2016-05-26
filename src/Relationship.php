@@ -19,14 +19,14 @@ class Relationship
     /**
      * The data object.
      *
-     * @var ElementInterface|null
+     * @var \Tobscure\JsonApi\ElementInterface|null
      */
     protected $data;
 
     /**
      * Create a new relationship.
      *
-     * @param ElementInterface|null $data
+     * @param \Tobscure\JsonApi\ElementInterface|null $data
      */
     public function __construct(ElementInterface $data = null)
     {
@@ -36,7 +36,7 @@ class Relationship
     /**
      * Get the data object.
      *
-     * @return ElementInterface|null
+     * @return \Tobscure\JsonApi\ElementInterface|null
      */
     public function getData()
     {
@@ -46,7 +46,8 @@ class Relationship
     /**
      * Set the data object.
      *
-     * @param ElementInterface|null $data
+     * @param \Tobscure\JsonApi\ElementInterface|null $data
+     *
      * @return $this
      */
     public function setData($data)

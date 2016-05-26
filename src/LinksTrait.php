@@ -34,6 +34,7 @@ trait LinksTrait
      * Set the links.
      *
      * @param array $links
+     *
      * @return $this
      */
     public function setLinks(array $links)
@@ -48,6 +49,7 @@ trait LinksTrait
      *
      * @param string $key
      * @param string $value
+     *
      * @return $this
      */
     public function addLink($key, $value)
@@ -65,6 +67,8 @@ trait LinksTrait
      * @param int $offset The current offset.
      * @param int $limit The current limit.
      * @param int|null $total The total number of results, or null if unknown.
+     *
+     * @return void
      */
     public function addPaginationLinks($url, array $queryParams, $offset, $limit, $total = null)
     {
@@ -95,6 +99,8 @@ trait LinksTrait
      * @param array $queryParams The query params provided in the request.
      * @param int $offset The offset to link to.
      * @param int $limit The current limit.
+     *
+     * @return void
      */
     protected function addPaginationLink($name, $url, array $queryParams, $offset, $limit)
     {

@@ -65,7 +65,7 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * {@inheritdoc}
      *
-     * @throws LogicException
+     * @throws \LogicException
      */
     public function getRelationship($model, $name)
     {
@@ -88,6 +88,7 @@ abstract class AbstractSerializer implements SerializerInterface
      * kebab-case is converted into camelCase.
      *
      * @param string $name
+     *
      * @return string
      */
     private function getRelationshipMethodName($name)

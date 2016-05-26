@@ -48,8 +48,9 @@ class FallbackExceptionHandler implements ExceptionHandlerInterface
     }
 
     /**
-     * @param Exception $e
+     * @param \Exception $e
      * @param $status
+     *
      * @return array
      */
     private function constructError(Exception $e, $status)
