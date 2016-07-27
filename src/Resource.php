@@ -126,13 +126,13 @@ class Resource implements ElementInterface
         if (! $this->data) {
             return null;
         }
-        
+
         $array = [
             'type' => $this->getType()
         ];
-        
+
         if($this->getId()) {
-            $array['id'] = $this->getId();
+            $array['id'] = (string) $this->getId();
         }
 
         if (! empty($this->meta)) {
@@ -163,7 +163,7 @@ class Resource implements ElementInterface
             return (string) $this->data;
         }
 
-        return $this->serializer->getId($this->data) !== false ? (string) $this->serializer->getId($this->data) : false;
+        return $this->serializer->getId($this->data);
     }
 
     /**
