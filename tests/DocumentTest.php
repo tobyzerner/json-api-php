@@ -12,10 +12,10 @@
 namespace Tobscure\Tests\JsonApi;
 
 use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Resource;
 use Tobscure\JsonApi\Collection;
+use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Relationship;
+use Tobscure\JsonApi\Resource;
 
 /**
  * This is the document test class.

@@ -15,8 +15,6 @@ use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
-use Tobscure\JsonApi\EmptyResource;
-use Tobscure\JsonApi\EmptyCollection;
 use Tobscure\Tests\JsonApi\AbstractTestCase;
 
 class ResourceTest extends AbstractTestCase
