@@ -131,9 +131,9 @@ class Resource implements ElementInterface
     public function toIdentifier()
     {
         if (! $this->data) {
-            return null;
+            return;
         }
-        
+
         $array = [
             'type' => $this->getType(),
             'id' => $this->getId()
