@@ -48,6 +48,11 @@ class Resource implements ElementInterface
     protected $merged = [];
 
     /**
+     * @var \Tobscure\JsonApi\Relationship[]
+     */
+    private $relationships;
+
+    /**
      * @param mixed $data
      * @param \Tobscure\JsonApi\SerializerInterface $serializer
      */
@@ -271,6 +276,10 @@ class Resource implements ElementInterface
      */
     protected function buildRelationships()
     {
+        if (isset($this->relationships)) {
+            return $this->relationships;
+        }
+
         $paths = Util::parseRelationshipPaths($this->includes);
 
         $relationships = [];
@@ -288,7 +297,7 @@ class Resource implements ElementInterface
             }
         }
 
-        return $relationships;
+        return $this->relationships = $relationships;
     }
 
     /**
@@ -340,6 +349,8 @@ class Resource implements ElementInterface
     public function with($relationships)
     {
         $this->includes = array_unique(array_merge($this->includes, (array) $relationships));
+
+        $this->relationships = null;
 
         return $this;
     }
