@@ -14,6 +14,7 @@ namespace Tobscure\Tests\JsonApi;
 use Tobscure\JsonApi\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
+use Tobscure\JsonApi\Resource;
 
 class AbstractSerializerTest extends AbstractTestCase
 {
@@ -41,6 +42,24 @@ class AbstractSerializerTest extends AbstractTestCase
         $this->assertTrue($relationship instanceof Relationship);
     }
 
+    public function testGetRelationshipReturnsRelationshipFromMethodUnderscored()
+    {
+        $serializer = new PostSerializer1;
+
+        $relationship = $serializer->getRelationship(null, 'parent_post');
+
+        $this->assertTrue($relationship instanceof Relationship);
+    }
+
+    public function testGetRelationshipReturnsRelationshipFromMethodKebabCase()
+    {
+        $serializer = new PostSerializer1;
+
+        $relationship = $serializer->getRelationship(null, 'parent-post');
+
+        $this->assertTrue($relationship instanceof Relationship);
+    }
+
     /**
      * @expectedException \LogicException
      */
@@ -64,6 +83,13 @@ class PostSerializer1 extends AbstractSerializer
     public function comments($post)
     {
         $element = new Collection([], new self);
+
+        return new Relationship($element);
+    }
+
+    public function parentPost($post)
+    {
+        $element = new Resource([], new self);
 
         return new Relationship($element);
     }

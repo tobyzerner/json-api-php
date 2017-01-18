@@ -85,7 +85,8 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * Get the serializer method name for the given relationship.
      *
-     * kebab-case is converted into camelCase.
+     *
+     * underscore, kebab-case is converted into camelCase.
      *
      * @param string $name
      *
@@ -95,6 +96,10 @@ abstract class AbstractSerializer implements SerializerInterface
     {
         if (stripos($name, '-')) {
             $name = lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
+        }
+
+        if (stripos($name, '_')) {
+            $name = lcfirst(implode('', array_map('ucfirst', explode('_', $name))));
         }
 
         return $name;
