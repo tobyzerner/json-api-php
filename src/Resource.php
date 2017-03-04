@@ -78,7 +78,10 @@ class Resource implements ElementInterface
         $array = $this->toIdentifier();
 
         if (! $this->isIdentifier()) {
-            $array['attributes'] = $this->getAttributes();
+            $attributes = $this->getAttributes();
+            if ($attributes) {
+                $array['attributes'] = $this->getAttributes();
+            }
         }
 
         $relationships = $this->getRelationshipsAsArray();
