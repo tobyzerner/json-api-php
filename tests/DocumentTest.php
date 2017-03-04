@@ -60,6 +60,19 @@ class DocumentTest extends AbstractTestCase
             ]
         ], $document->toArray());
     }
+
+    public function testNoEmptyAttributes()
+    {
+        $post = (object) [
+            'id' => 1,
+        ];
+
+        $resource = new Resource($post, new PostSerializerEmptyAttributes2);
+
+        $document = new Document($resource);
+
+        $this->assertEquals('{"data":{"type":"posts","id":"1"}}', (string) $document, 'Attributes should be omitted');
+    }
 }
 
 class PostSerializer2 extends AbstractSerializer
@@ -74,6 +87,14 @@ class PostSerializer2 extends AbstractSerializer
     public function comments($post)
     {
         return new Relationship(new Collection($post->comments, new CommentSerializer2));
+    }
+}
+
+class PostSerializerEmptyAttributes2 extends PostSerializer2
+{
+    public function getAttributes($post, array $fields = null)
+    {
+        return [];
     }
 }
 
