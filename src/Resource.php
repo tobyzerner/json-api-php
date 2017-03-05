@@ -80,7 +80,7 @@ class Resource implements ElementInterface
         if (! $this->isIdentifier()) {
             $attributes = $this->getAttributes();
             if ($attributes) {
-                $array['attributes'] = $this->getAttributes();
+                $array['attributes'] = $attributes;
             }
         }
 
