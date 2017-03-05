@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.1] - 2017-03-06
+### Fixed
+- [#114](https://github.com/tobscure/json-api/pull/114): Do not call `getAttributes()` twice. ([@f3ath](https://github.com/f3ath))
+
 ## [0.4.0] - 2017-03-05
 ### Added
 - [#96](https://github.com/tobscure/json-api/pull/96): Improve invalid parameter exceptions with more information about what's invalid. ([@nubs](https://github.com/nubs))
@@ -52,6 +56,7 @@ Completely rewrite to improve all the things.
 ## 0.1.0 - 2015-08-07
 - Initial release
 
+[0.4.1]: https://github.com/tobscure/json-api/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/tobscure/json-api/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tobscure/json-api/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/tobscure/json-api/compare/v0.2.0...v0.2.1
