@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- [#96](https://github.com/tobscure/json-api/pull/96): Improve invalid parameter exceptions with more information about what's invalid. ([@nubs](https://github.com/nubs))
+
+### Changed
+- [#106](https://github.com/tobscure/json-api/pull/106): Convert snake_case relationship names into camelCase serializer methods. ([@ustrugany](https://github.com/ustrugany))
+
+### Fixed
+- [#94](https://github.com/tobscure/json-api/pull/94): Properly support empty to-one relationships.
+- [#99](https://github.com/tobscure/json-api/pull/99): Omit attributes on resource identifier objects. ([@anthonyhendrickson](https://github.com/anthonyhendrickson))
+- [#103](https://github.com/tobscure/json-api/issues/103): Prevent resource relationships from being built twice per resource.
+- [#110](https://github.com/tobscure/json-api/pull/110): Omit empty attributes on resources. ([@f3ath](https://github.com/f3ath))
+
 ## [0.3.0] - 2016-03-31
 ### Added
 - [#79](https://github.com/tobscure/json-api/pull/79), [#81](https://github.com/tobscure/json-api/pull/81): Allow serializers to add links and metadata to resources. ([@bwaidelich](https://github.com/bwaidelich))
@@ -39,6 +52,7 @@ Completely rewrite to improve all the things.
 ## 0.1.0 - 2015-08-07
 - Initial release
 
+[Unreleased]: https://github.com/tobscure/json-api/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/tobscure/json-api/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/tobscure/json-api/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tobscure/json-api/compare/v0.1.1...v0.2.0
