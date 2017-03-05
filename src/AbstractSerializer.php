@@ -85,8 +85,7 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * Get the serializer method name for the given relationship.
      *
-     *
-     * underscore, kebab-case is converted into camelCase.
+     * snake_case and kebab-case are converted into camelCase.
      *
      * @param string $name
      *

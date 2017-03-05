@@ -102,6 +102,15 @@ public function comments($post)
 }
 ```
 
+By default, the `AbstractSerializer` will convert relationship names from `kebab-case` and `snake_case` into a `camelCase` method name and call that on the serializer. If you wish to customize this behaviour, you may override the `getRelationship` method:
+
+```php
+public function getRelationship($model, $name)
+{
+    // resolve Relationship called $name for $model
+}
+```
+
 ### Meta & Links
 
 The `Document`, `Resource`, and `Relationship` classes allow you to add meta information:
