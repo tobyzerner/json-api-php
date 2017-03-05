@@ -89,22 +89,6 @@ class Collection implements ElementInterface
     }
 
     /**
-     * Request a relationship to be identified for all resources.
-     *
-     * @param string|array $relationships
-     *
-     * @return $this
-     */
-    public function identify($relationships)
-    {
-        foreach ($this->resources as $resource) {
-            $resource->identify($relationships);
-        }
-
-        return $this;
-    }
-
-    /**
      * Request a restricted set of fields.
      *
      * @param array|null $fields
