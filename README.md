@@ -52,7 +52,7 @@ A JSON-API Document may contain one primary Element. The primary Element will be
 
 #### Sparse Fieldsets
 
-You can specify which fields (attributes and relationships) to be included on an Element using the `fields` method. You must provide a multidimensional array organized by resource type:
+You can specify which fields (attributes and relationships) are to be included on an Element using the `fields` method. You must provide a multidimensional array organized by resource type:
 
 ```php
 $collection->fields(['posts' => ['title', 'date']]);
