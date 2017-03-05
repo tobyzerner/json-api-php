@@ -2,12 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2017-03-05
 ### Added
 - [#96](https://github.com/tobscure/json-api/pull/96): Improve invalid parameter exceptions with more information about what's invalid. ([@nubs](https://github.com/nubs))
 
 ### Changed
-- [#106](https://github.com/tobscure/json-api/pull/106): Convert snake_case relationship names into camelCase serializer methods. ([@ustrugany](https://github.com/ustrugany))
+- [#106](https://github.com/tobscure/json-api/pull/106): Convert snake_case into camelCase when calling a relationship method. ([@ustrugany](https://github.com/ustrugany))
 
 ### Fixed
 - [#94](https://github.com/tobscure/json-api/pull/94): Properly support empty to-one relationships.
@@ -24,7 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#85](https://github.com/tobscure/json-api/pull/85): Allow creation of relationships without data. ([@josephmcdermott](https://github.com/josephmcdermott))
 
 ### Fixed
-- [#65](https://github.com/tobscure/json-api/pull/65): Convert snake-case into camelCase when calling a relationship method. ([@avoelpel](https://github.com/avoelpel))
+- [#65](https://github.com/tobscure/json-api/pull/65): Convert kebab-case into camelCase when calling a relationship method. ([@avoelpel](https://github.com/avoelpel))
 - [#70](https://github.com/tobscure/json-api/pull/70): Include related resources even if relationship is not listed in sparse fieldset. ([@Damith88](https://github.com/Damith88))
 - [#72](https://github.com/tobscure/json-api/pull/72): Return `null` in `Parameters::getLimit` if no limit is set. ([@byCedric](https://github.com/byCedric))
 - [46142e5](https://github.com/tobscure/json-api/commit/46142e5823da3bebbd9dfc38833af4d808a5e3f3): Prevent primary "data" resources from showing up again in the "included" array. ([@tobscure](https://github.com/tobscure))
@@ -52,7 +52,7 @@ Completely rewrite to improve all the things.
 ## 0.1.0 - 2015-08-07
 - Initial release
 
-[Unreleased]: https://github.com/tobscure/json-api/compare/v0.3.0...HEAD
+[0.4.0]: https://github.com/tobscure/json-api/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tobscure/json-api/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/tobscure/json-api/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tobscure/json-api/compare/v0.1.1...v0.2.0
