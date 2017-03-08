@@ -17,7 +17,7 @@ class Document implements JsonSerializable
 {
     use LinksTrait;
     use MetaTrait;
-    
+
     const MEDIA_TYPE = 'application/vnd.api+json';
 
     /**
