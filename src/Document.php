@@ -12,7 +12,6 @@
 namespace Tobscure\JsonApi;
 
 use JsonSerializable;
-use LogicException;
 
 class Document implements JsonSerializable
 {
@@ -44,14 +43,14 @@ class Document implements JsonSerializable
 
     /**
      * Relationships to include.
-     * 
+     *
      * @var array
      */
     protected $include = [];
 
     /**
      * Sparse fieldsets.
-     * 
+     *
      * @var array
      */
     protected $fields = [];
@@ -66,7 +65,7 @@ class Document implements JsonSerializable
 
     /**
      * Get the data object.
-     * 
+     *
      * @return ResourceInterface|ResourceInterface[]|null $data
      */
     public function getData()
@@ -90,7 +89,7 @@ class Document implements JsonSerializable
 
     /**
      * Get the errors array.
-     * 
+     *
      * @return array|null $errors
      */
     public function getErrors()
@@ -114,7 +113,7 @@ class Document implements JsonSerializable
 
     /**
      * Get the jsonapi array.
-     * 
+     *
      * @return array|null $jsonapi
      */
     public function getJsonapi()
@@ -138,7 +137,7 @@ class Document implements JsonSerializable
 
     /**
      * Get the relationships to include.
-     * 
+     *
      * @return array $include
      */
     public function getInclude()
@@ -148,7 +147,7 @@ class Document implements JsonSerializable
 
     /**
      * Set the relationships to include.
-     * 
+     *
      * @param array $include
      *
      * @return $this
@@ -162,7 +161,7 @@ class Document implements JsonSerializable
 
     /**
      * Get the sparse fieldsets.
-     * 
+     *
      * @return array $fields
      */
     public function getFields()
@@ -172,7 +171,7 @@ class Document implements JsonSerializable
 
     /**
      * Set the sparse fieldsets.
-     * 
+     *
      * @param array $fields
      *
      * @return $this
@@ -267,7 +266,7 @@ class Document implements JsonSerializable
 
     /**
      * Recursively add the given resources and their relationships to a map.
-     * 
+     *
      * @param array &$map The map to merge resources into.
      * @param ResourceInterface[] $resources
      * @param array $include An array of relationship paths to include.
@@ -311,7 +310,7 @@ class Document implements JsonSerializable
      *
      * If it is already present in the map, its properties will be merged into
      * the existing array.
-     * 
+     *
      * @param array &$map
      * @param ResourceInterface $resource
      * @param Relationship[] $resource
@@ -397,9 +396,9 @@ class Document implements JsonSerializable
 
     /**
      * Get the fields that should be included for resources of the given type.
-     * 
+     *
      * @param string $type
-     * 
+     *
      * @return array|null
      */
     private function getFieldsForType($type)
