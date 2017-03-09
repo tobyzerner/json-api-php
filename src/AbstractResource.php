@@ -13,10 +13,13 @@ namespace Tobscure\JsonApi;
 
 use LogicException;
 
-abstract class AbstractSerializer implements SerializerInterface
+abstract class AbstractResource implements ResourceInterface
 {
+    use LinksTrait;
+    use MetaTrait;
+
     /**
-     * The type.
+     * The resource type.
      *
      * @var string
      */
@@ -25,7 +28,7 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function getType($model)
+    public function getType()
     {
         return $this->type;
     }
@@ -33,31 +36,7 @@ abstract class AbstractSerializer implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function getId($model)
-    {
-        return $model->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAttributes($model, array $fields = null)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLinks($model)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMeta($model)
+    public function getAttributes(array $fields = null)
     {
         return [];
     }
@@ -67,12 +46,12 @@ abstract class AbstractSerializer implements SerializerInterface
      *
      * @throws \LogicException
      */
-    public function getRelationship($model, $name)
+    public function getRelationship($name)
     {
         $method = $this->getRelationshipMethodName($name);
 
         if (method_exists($this, $method)) {
-            $relationship = $this->$method($model);
+            $relationship = $this->$method();
 
             if ($relationship !== null && ! ($relationship instanceof Relationship)) {
                 throw new LogicException('Relationship method must return null or an instance of Tobscure\JsonApi\Relationship');
@@ -83,7 +62,7 @@ abstract class AbstractSerializer implements SerializerInterface
     }
 
     /**
-     * Get the serializer method name for the given relationship.
+     * Get the method name for the given relationship.
      *
      * snake_case and kebab-case are converted into camelCase.
      *

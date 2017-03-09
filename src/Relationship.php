@@ -19,16 +19,16 @@ class Relationship
     /**
      * The data object.
      *
-     * @var \Tobscure\JsonApi\ElementInterface|null
+     * @var \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null
      */
     protected $data;
 
     /**
      * Create a new relationship.
      *
-     * @param \Tobscure\JsonApi\ElementInterface|null $data
+     * @param \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null $data
      */
-    public function __construct(ElementInterface $data = null)
+    public function __construct($data = null)
     {
         $this->data = $data;
     }
@@ -36,7 +36,7 @@ class Relationship
     /**
      * Get the data object.
      *
-     * @return \Tobscure\JsonApi\ElementInterface|null
+     * @return \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null
      */
     public function getData()
     {
@@ -46,7 +46,7 @@ class Relationship
     /**
      * Set the data object.
      *
-     * @param \Tobscure\JsonApi\ElementInterface|null $data
+     * @param \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null $data
      *
      * @return $this
      */
@@ -58,7 +58,7 @@ class Relationship
     }
 
     /**
-     * Map everything to an array.
+     * Build the relationship as an array.
      *
      * @return array
      */
@@ -66,18 +66,37 @@ class Relationship
     {
         $array = [];
 
-        if (! empty($this->data)) {
-            $array['data'] = $this->data->toIdentifier();
+        if ($this->data) {
+            if (is_array($this->data)) {
+                $array['data'] = array_map([$this, 'buildIdentifier'], $this->data);
+            } else {
+                $array['data'] = $this->buildIdentifier($this->data);
+            }
         }
 
-        if (! empty($this->meta)) {
+        if ($this->meta) {
             $array['meta'] = $this->meta;
         }
 
-        if (! empty($this->links)) {
+        if ($this->links) {
             $array['links'] = $this->links;
         }
 
         return $array;
+    }
+
+    /**
+     * Build an idenitfier array for the given resource.
+     * 
+     * @param ResourceInterface $resource
+     * 
+     * @return array
+     */
+    private function buildIdentifier(ResourceInterface $resource)
+    {
+        return [
+            'type' => $resource->getType(),
+            'id' => $resource->getId()
+        ];
     }
 }

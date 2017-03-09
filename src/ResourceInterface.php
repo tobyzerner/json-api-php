@@ -11,61 +11,51 @@
 
 namespace Tobscure\JsonApi;
 
-interface SerializerInterface
+interface ResourceInterface
 {
     /**
-     * Get the type.
-     *
-     * @param mixed $model
+     * Get the resource type.
      *
      * @return string
      */
-    public function getType($model);
+    public function getType();
 
     /**
-     * Get the id.
-     *
-     * @param mixed $model
+     * Get the resource ID.
      *
      * @return string
      */
-    public function getId($model);
+    public function getId();
 
     /**
-     * Get the attributes array.
+     * Get the resource attributes.
      *
-     * @param mixed $model
      * @param array|null $fields
      *
      * @return array
      */
-    public function getAttributes($model, array $fields = null);
+    public function getAttributes(array $fields = null);
 
     /**
-     * Get the links array.
-     *
-     * @param mixed $model
+     * Get the resource links.
      *
      * @return array
      */
-    public function getLinks($model);
+    public function getLinks();
 
     /**
-     * Get the meta.
-     *
-     * @param mixed $model
+     * Get the resource meta.
      *
      * @return array
      */
-    public function getMeta($model);
+    public function getMeta();
 
     /**
      * Get a relationship.
      *
-     * @param mixed $model
      * @param string $name
      *
      * @return \Tobscure\JsonApi\Relationship|null
      */
-    public function getRelationship($model, $name);
+    public function getRelationship($name);
 }
