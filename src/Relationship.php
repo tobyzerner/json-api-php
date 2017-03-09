@@ -87,9 +87,9 @@ class Relationship
 
     /**
      * Build an idenitfier array for the given resource.
-     * 
+     *
      * @param ResourceInterface $resource
-     * 
+     *
      * @return array
      */
     private function buildIdentifier(ResourceInterface $resource)
