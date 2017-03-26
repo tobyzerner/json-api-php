@@ -32,21 +32,21 @@ interface ResourceInterface
      *
      * @param array|null $fields
      *
-     * @return array
+     * @return array|null
      */
     public function getAttributes(array $fields = null);
 
     /**
      * Get the resource links.
      *
-     * @return array
+     * @return array|null
      */
     public function getLinks();
 
     /**
      * Get the resource meta.
      *
-     * @return array
+     * @return array|null
      */
     public function getMeta();
 
