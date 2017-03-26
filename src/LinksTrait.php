@@ -102,7 +102,7 @@ trait LinksTrait
      *
      * @return void
      */
-    protected function addPaginationLink($name, $url, array $queryParams, $offset, $limit)
+    private function addPaginationLink($name, $url, array $queryParams, $offset, $limit)
     {
         if (! isset($queryParams['page']) || ! is_array($queryParams['page'])) {
             $queryParams['page'] = [];

@@ -199,7 +199,7 @@ class Parameters
      *
      * @return mixed
      */
-    protected function getInput($key, $default = null)
+    private function getInput($key, $default = null)
     {
         return isset($this->input[$key]) ? $this->input[$key] : $default;
     }
@@ -211,7 +211,7 @@ class Parameters
      *
      * @return string
      */
-    protected function getPage($key)
+    private function getPage($key)
     {
         $page = $this->getInput('page');
 
