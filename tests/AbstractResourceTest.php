@@ -12,9 +12,7 @@
 namespace Tobscure\Tests\JsonApi;
 
 use Tobscure\JsonApi\AbstractResource;
-use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
-use Tobscure\JsonApi\Resource;
 
 class AbstractResourceTest extends AbstractTestCase
 {
