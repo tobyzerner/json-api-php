@@ -16,7 +16,7 @@ use Tobscure\JsonApi\ErrorHandler;
 
 class ErrorHandlerTest extends AbstractTestCase
 {
-    public function test_it_should_throw_an_exception_when_no_handlers_are_present()
+    public function testThrowExceptionWhenNoHandlersPresent()
     {
         $this->setExpectedException('RuntimeException');
 

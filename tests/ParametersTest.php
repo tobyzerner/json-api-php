@@ -13,11 +13,6 @@ namespace Tobscure\Tests\JsonApi;
 
 use Tobscure\JsonApi\Parameters;
 
-/**
- * This is the parameters test class.
- *
- * @author Toby Zerner <toby.zerner@gmail.com>
- */
 class ParametersTest extends AbstractTestCase
 {
     public function testGetIncludeReturnsArrayOfIncludes()
