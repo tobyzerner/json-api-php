@@ -216,8 +216,10 @@ class Document implements JsonSerializable
                 $type = $resource->getType();
                 $id = $resource->getId();
 
-                $primary[] = $map[$type][$id];
-                unset($map[$type][$id]);
+                if (isset($map[$type][$id])) {
+                    $primary[] = $map[$type][$id];
+                    unset($map[$type][$id]);
+                }
             }
 
             $included = call_user_func_array('array_merge', $map);
