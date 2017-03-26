@@ -11,9 +11,9 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\ResourceInterface;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Relationship;
+use Tobscure\JsonApi\ResourceInterface;
 
 class DocumentTest extends AbstractTestCase
 {

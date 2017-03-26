@@ -11,8 +11,8 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\AbstractResource;
+use Tobscure\JsonApi\Relationship;
 
 class RelationshipTest extends AbstractTestCase
 {
