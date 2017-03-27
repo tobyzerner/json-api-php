@@ -156,21 +156,19 @@ By default, the `AbstractResource` implementation will convert included relation
 The `Document`, `Resource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
 
 ```php
-$document = new Document;
 $document->addMeta('key', 'value');
 $document->setMeta(['key' => 'value']);
 ```
 
-They also allow you to add [links](http://jsonapi.org/format/#document-links) in a similar way:
+They also allow you to add [links](http://jsonapi.org/format/#document-links):
 
 ```php
-$resource = new PostResource($post);
 $resource->setSelfLink(new Link('url', ['meta' => 'information']));
 
 $relationship->setRelatedLink('url');
 ```
 
-You can also easily add [pagination](http://jsonapi.org/format/#fetching-pagination) links:
+You can also easily generate [pagination](http://jsonapi.org/format/#fetching-pagination) links:
 
 ```php
 $document->setPaginationLinks(
@@ -194,6 +192,7 @@ class PostResource extends AbstractResource
         $this->post = $post;
 
         $this->setSelfLink('/posts/' . $post->id);
+        
         $this->addMeta('some', 'metadata for ' . $post->id);
     }
 
