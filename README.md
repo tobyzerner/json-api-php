@@ -23,10 +23,10 @@ composer require tobscure/json-api
 ```php
 use Tobscure\JsonApi\Document;
 
-// Create a new resource to represent a post.
+// Create a resource object for a post.
 $resource = new PostResource($post);
 
-// Create a new JSON-API document with that resource as the data.
+// Create a JSON-API document with that resource as the primary data.
 $document = new Document($resource);
 
 // Specify included relationships and sparse fieldsets.
@@ -37,7 +37,7 @@ $document->setFields(['posts' => ['title', 'body']]);
 $document->addMeta('total', count($posts));
 $document->addLink('self', 'http://example.com/api/posts');
 
-// Output the document as JSON.
+// Output the document with the JSON-API media type.
 header('Content-Type: ' . $document::MEDIA_TYPE);
 echo $document;
 ```
