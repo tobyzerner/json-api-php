@@ -273,7 +273,7 @@ A couple of implementations are already provided:
 * `Tobscure\JsonApi\Error\InternalServerErrorResponse` for a generic 500 Internal Server Error response.
 * `Tobscure\JsonApi\Error\InvalidParameterErrorResponse` for an error response corresponding to an `InvalidParameterException`.
 
-A Document containing the errors from an error response can be created and outputted using the `fromErrorResponse` constructor:
+A Document containing the errors from an error response can be created using the `fromErrorResponse` constructor:
 
 ```php
 use Tobscure\JsonApi\Error\InternalServerErrorResponse;
