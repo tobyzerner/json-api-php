@@ -22,17 +22,17 @@ class LinksTraitTest extends AbstractTestCase
 
         $this->assertEquals([
             'first' => 'http://example.org',
-            'next' => 'http://example.org?page[offset]=20'
+            'next' => 'http://example.org?page%5Boffset%5D=20'
         ], $document->getLinks());
 
         $document = new LinksTraitStub;
         $document->addPaginationLinks('http://example.org', ['foo' => 'bar', 'page' => ['limit' => 20]], 30, 20, 100);
 
         $this->assertEquals([
-            'first' => 'http://example.org?foo=bar&page[limit]=20',
-            'prev' => 'http://example.org?foo=bar&page[limit]=20&page[offset]=10',
-            'next' => 'http://example.org?foo=bar&page[limit]=20&page[offset]=50',
-            'last' => 'http://example.org?foo=bar&page[limit]=20&page[offset]=80'
+            'first' => 'http://example.org?foo=bar&page%5Blimit%5D=20',
+            'prev' => 'http://example.org?foo=bar&page%5Blimit%5D=20&page%5Boffset%5D=10',
+            'next' => 'http://example.org?foo=bar&page%5Blimit%5D=20&page%5Boffset%5D=50',
+            'last' => 'http://example.org?foo=bar&page%5Blimit%5D=20&page%5Boffset%5D=80'
         ], $document->getLinks());
 
         $document = new LinksTraitStub;
@@ -40,9 +40,9 @@ class LinksTraitTest extends AbstractTestCase
 
         $this->assertEquals([
             'first' => 'http://example.org',
-            'prev' => 'http://example.org?page[number]=2',
-            'next' => 'http://example.org?page[number]=4',
-            'last' => 'http://example.org?page[number]=5'
+            'prev' => 'http://example.org?page%5Bnumber%5D=2',
+            'next' => 'http://example.org?page%5Bnumber%5D=4',
+            'last' => 'http://example.org?page%5Bnumber%5D=5'
         ], $document->getLinks());
     }
 }
