@@ -327,13 +327,11 @@ class MyCustomErrorResponse implements ErrorResponseInterface
 }
 ```
 
-You can then instantiate the correct error response according to the type of `Exception` that has been caught:
+You can then instantiate the correct error response according to the type of `Exception` that has been caught. The `Tobscure\JsonApi\Error\DefaultErrorResponse` class can be used to automatically handle generation of an `InvalidParameterErrorResponse` and falling back to an `InternalServerErrorResponse`.
 
 ```php
 use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Error\InternalServerErrorResponse;
-use Tobscure\JsonApi\Error\InvalidParameterErrorResponse;
-use Tobscure\JsonApi\Exception\InvalidParameterException;
+use Tobscure\JsonApi\Error\DefaultErrorResponse;
 
 try {
     // API handling code
@@ -343,12 +341,8 @@ try {
             $response = new MyCustomErrorResponse($e);
             break;
 
-        case $e instanceof InvalidParameterException:
-            $response = new InvalidParameterErrorResponse($e);
-            break;
-
         default:
-            $response = new InternalServerErrorResponse;
+            $response = DefaultErrorResponse::forException($e);
     }
 
     $document = Document::fromErrorResponse($response);
