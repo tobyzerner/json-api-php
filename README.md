@@ -26,8 +26,7 @@ use Tobscure\JsonApi\Document;
 // Create a new resource to represent a post.
 $resource = new PostResource($post);
 
-// Create a new JSON-API document with that resource as the data, and specify
-// relationships to be included.
+// Create a new JSON-API document with that resource as the data, and specify relationships to be included.
 $document = new Document($resource);
 $document->setInclude(['author', 'comments']);
 
@@ -36,6 +35,7 @@ $document->addMeta('total', count($posts));
 $document->addLink('self', 'http://example.com/api/posts');
 
 // Output the document as JSON.
+header('Content-Type: ' . $document::MEDIA_TYPE);
 echo $document;
 ```
 
@@ -140,6 +140,12 @@ By default, the `AbstractResource` will convert relationship names from `kebab-c
     {
         // resolve Relationship for $name
     }
+```
+
+Once relationships are defined, you can specify which relationships should be included on the Document:
+
+```php
+$document->setInclude(['author', 'comments', 'comments.author']);
 ```
 
 ### Meta & Links
