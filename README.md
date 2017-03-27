@@ -265,22 +265,95 @@ Get the contents of the [filter](http://jsonapi.org/format/#fetching-filtering) 
 // GET /api?filter[author]=toby
 $filter = $parameters->getFilter(); // ['author' => 'toby']
 ```
+
+### Errors
+
+The `Tobscure\JsonApi\Error\ErrorResponseInterface` interface represents the information required to produce an error response: the HTTP status code to respond with, and an array of [error objects](http://jsonapi.org/format/#error-objects). 
+
+As an example, the implementation for a generic internal server error response would be as follows:
+
+```php
+use Tobscure\JsonApi\Error;
+use Tobscure\JsonApi\Error\ErrorResponseInterface;
+
+class InternalServerErrorResponse implements ErrorResponseInterface
+{
+    public function getStatusCode()
+    {
+        return 500;
+    }
+
+    public function getErrors()
+    {
+        $error = new Error;
+        $error->setStatusCode($this->getStatusCode());
+        $error->setTitle('Internal Server Error');
+
+        return [$error];
+    }
+}
+```
+
+A Document containing the errors can then be created and outputted:
+
+```php
+$response = new InternalServerErrorResponse;
+
+$document = Document::fromErrorResponse($response);
+
+http_response_code($response->getStatusCode());
+header('Content-Type: ' . $document::MEDIA_TYPE);
+echo $document;
+```
+
+In order to easily translate a caught `Exception` into a JSON-API error response, you should implement the `ErrorResponseInterface` for each type of `Exception` you wish to handle:
+
+```php
+class MyCustomErrorResponse implements ErrorResponseInterface
+{
+    protected $e;
+
+    public function __construct(MyCustomException $e)
+    {
+        $this->e = $e;
+    }
+
+    public function getStatusCode()
+    {
+        return 400;
+    }
+
+    public function getErrors()
+    {
+        return [ /* ... */ ];
+    }
+}
+```
+
+You can then instantiate the `Tobscure\JsonApi\Error\ExceptionHandler` class, passing a map of `Exception` subclasses to the `ErrorResponseInterface` classes that should be used to handle them. This map will be iterated through; if the given `Exception` is an instance of the key, then the value will be instantiated and used as the response.
+
+```php
+use Tobscure\JsonApi\Document;
+use Tobscure\JsonApi\Error\ExceptionErrorResponseMap;
+
 try {
     // API handling code
 } catch (Exception $e) {
-    $errors = new ErrorHandler;
+    $map = new ExceptionErrorResponseMap([
+        MyCustomException::class => MyCustomErrorResponse::class
+    ]);
 
-    $errors->registerHandler(new InvalidParameterExceptionHandler);
-    $errors->registerHandler(new FallbackExceptionHandler);
+    $response = $map->errorResponseFor($e);
 
-    $response = $errors->handle($e);
+    $document = Document::fromErrorResponse($response);
 
-    $document = new Document;
-    $document->setErrors($response->getErrors());
-
-    return new JsonResponse($document, $response->getStatus());
+    http_response_code($response->getStatusCode());
+    header('Content-Type: ' . $document::MEDIA_TYPE);
+    echo $document;
 }
 ```
+
+The `ExceptionHandler` class automatically uses a special error response for `InvalidParameterException`s, unless this otherwise specified. It will fall back to an `InternalServerErrorResponse` if no handler is specified for the given exception type.
 
 ## Examples
 
