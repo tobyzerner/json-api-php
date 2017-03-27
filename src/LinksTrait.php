@@ -128,7 +128,7 @@ trait LinksTrait
             $page['limit'] = $limit;
         }
 
-        $queryString = urldecode(http_build_query($queryParams));
+        $queryString = http_build_query($queryParams);
 
         $this->addLink($name, $url.($queryString ? '?'.$queryString : ''));
     }
