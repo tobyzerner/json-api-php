@@ -29,7 +29,7 @@ $resource = new PostResource($post);
 // Create a new JSON-API document with that resource as the data.
 $document = new Document($resource);
 
-// Specify relationships and fields to be included.
+// Specify included relationships and sparse fieldsets.
 $document->setInclude(['author', 'comments']);
 $document->setFields(['posts' => ['title', 'body']]);
 
