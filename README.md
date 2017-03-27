@@ -35,7 +35,7 @@ $document->setFields(['posts' => ['title', 'body']]);
 
 // Add metadata and links.
 $document->addMeta('total', count($posts));
-$document->addLink('self', 'http://example.com/api/posts');
+$document->setSelfLink('http://example.com/api/posts');
 
 // Output the document with the JSON-API media type.
 header('Content-Type: ' . $document::MEDIA_TYPE);
@@ -75,8 +75,6 @@ An instantiated resource object can then be added to the JSON-API document:
 $resource = new PostResource($post);
 
 $document = new Document($resource);
-
-echo $document; // {"data": {"type": "posts", "id": "1"}}
 ```
 
 To output a collection of resources, map your data to an array of Resource objects:
@@ -167,14 +165,15 @@ They also allow you to add [links](http://jsonapi.org/format/#document-links) in
 
 ```php
 $resource = new PostResource($post);
-$resource->addLink('self', 'url');
-$resource->setLinks(['key' => 'value']);
+$resource->setSelfLink(new Link('url', ['meta' => 'information']));
+
+$relationship->setRelatedLink('url');
 ```
 
 You can also easily add [pagination](http://jsonapi.org/format/#fetching-pagination) links:
 
 ```php
-$document->addPaginationLinks(
+$document->setPaginationLinks(
     'url', // The base URL for the links
     $_GET, // The query params provided in the request
     40,    // The current offset
@@ -194,7 +193,7 @@ class PostResource extends AbstractResource
     {
         $this->post = $post;
 
-        $this->addLink('self', '/posts/' . $post->id);
+        $this->setSelfLink('/posts/' . $post->id);
         $this->addMeta('some', 'metadata for ' . $post->id);
     }
 
