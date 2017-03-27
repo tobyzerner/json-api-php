@@ -273,9 +273,10 @@ A couple of implementations are already provided:
 * `Tobscure\JsonApi\Error\InternalServerErrorResponse` for a generic 500 Internal Server Error response.
 * `Tobscure\JsonApi\Error\InvalidParameterErrorResponse` for an error response corresponding to an `InvalidParameterException`.
 
-A Document containing the errors from an error response can be created using the `fromErrorResponse` constructor:
+A Document containing the errors from an error response can be created using the `fromErrorResponse()` constructor:
 
 ```php
+use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Error\InternalServerErrorResponse;
 
 $response = new InternalServerErrorResponse;
@@ -290,6 +291,9 @@ echo $document;
 In order to translate a caught `Exception` into a JSON-API error response, you should implement the `ErrorResponseInterface` for each type of `Exception` you wish to handle:
 
 ```php
+use Tobscure\JsonApi\Error;
+use Tobscure\JsonApi\Error\ErrorResponseInterface;
+
 class MyCustomErrorResponse implements ErrorResponseInterface
 {
     protected $e;
