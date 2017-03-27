@@ -126,6 +126,8 @@ trait LinksTrait
 
         if (isset($page['limit'])) {
             $page['limit'] = $limit;
+        } elseif (isset($page['size'])) {
+            $page['size'] = $limit;
         }
 
         $queryString = http_build_query($queryParams);

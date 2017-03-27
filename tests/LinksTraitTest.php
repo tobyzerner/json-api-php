@@ -44,6 +44,15 @@ class LinksTraitTest extends AbstractTestCase
             'next' => 'http://example.org?page%5Bnumber%5D=4',
             'last' => 'http://example.org?page%5Bnumber%5D=5'
         ], $document->getLinks());
+
+        $document = new LinksTraitStub;
+        $document->addPaginationLinks('http://example.org', ['page' => ['number' => 3, 'size' => 1]], 2, 1, 2);
+
+        $this->assertEquals([
+            'first' => 'http://example.org?page%5Bsize%5D=1',
+            'prev' => 'http://example.org?page%5Bnumber%5D=2&page%5Bsize%5D=1',
+            'last' => 'http://example.org?page%5Bnumber%5D=2&page%5Bsize%5D=1'
+        ], $document->getLinks());
     }
 }
 
