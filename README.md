@@ -26,8 +26,10 @@ use Tobscure\JsonApi\Document;
 // Create a new resource to represent a post.
 $resource = new PostResource($post);
 
-// Create a new JSON-API document with that resource as the data, and specify relationships to be included.
+// Create a new JSON-API document with that resource as the data.
 $document = new Document($resource);
+
+// Specify relationships to be included.
 $document->setInclude(['author', 'comments']);
 
 // Add metadata and links.
