@@ -29,8 +29,9 @@ $resource = new PostResource($post);
 // Create a new JSON-API document with that resource as the data.
 $document = new Document($resource);
 
-// Specify relationships to be included.
+// Specify relationships and fields to be included.
 $document->setInclude(['author', 'comments']);
+$document->setFields(['posts' => ['title', 'body']]);
 
 // Add metadata and links.
 $document->addMeta('total', count($posts));
