@@ -192,7 +192,7 @@ class PostResource extends AbstractResource
         $this->post = $post;
 
         $this->setSelfLink('/posts/' . $post->id);
-        
+
         $this->addMeta('some', 'metadata for ' . $post->id);
     }
 
@@ -266,7 +266,7 @@ $filter = $parameters->getFilter(); // ['author' => 'toby']
 
 ### Errors
 
-The `Tobscure\JsonApi\Error\ErrorResponseInterface` interface represents the information required to produce an error response: the HTTP status code to respond with, and an array of [error objects](http://jsonapi.org/format/#error-objects). 
+The `Tobscure\JsonApi\Error\ErrorResponseInterface` interface represents the information required to produce an error response: a HTTP status code to respond with, and an array of [error objects](http://jsonapi.org/format/#error-objects). 
 
 A couple of implementations are already provided:
 
