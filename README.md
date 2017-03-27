@@ -44,7 +44,9 @@ echo $document;
 
 ### Resources & Collections
 
-The JSON-API spec describes *resource objects* as objects containing information about a single resource. A resource object is represented by the `Tobscure\JsonApi\ResourceInterface` interface. An `AbstractResource` class is provided with some basic functionality. At a minimum, subclasses must specify the resource `$type` and implement the `getId()` method:
+The JSON-API spec describes [resource objects](http://jsonapi.org/format/#document-resource-objects) as objects representing about a single resource. A resource object is represented by the `Tobscure\JsonApi\ResourceInterface` interface.
+
+You should create a class which implements this interface for each resource type in your API. A base `AbstractResource` class is provided with some basic functionality. At a minimum, subclasses must specify the resource `$type` and implement the `getId()` method:
 
 ```php
 use Tobscure\JsonApi\AbstractResource;
@@ -73,9 +75,11 @@ An instantiated resource object can then be added to the JSON-API document:
 $resource = new PostResource($post);
 
 $document = new Document($resource);
+
+echo $document; // {"data": {"type": "posts", "id": "1"}}
 ```
 
-To create a collection of resources, simply map your data to an array of Resource objects:
+To output a collection of resources, map your data to an array of Resource objects:
 
 ```php
 $collection = array_map(function (Post $post) {
@@ -87,7 +91,7 @@ $document = new Document($collection);
 
 #### Attributes & Sparse Fieldsets
 
-Resource objects may implement a `getAttributes()` method to specify attributes:
+To add [attributes](http://jsonapi.org/format/#document-resource-object-attributes) to your resources, you may implement the `getAttributes()` method:
 
 ```php
     public function getAttributes(array $fields = null)
@@ -100,13 +104,13 @@ Resource objects may implement a `getAttributes()` method to specify attributes:
     }
 ```
 
-For sparse fieldsets, you may specify which fields (attributes and relationships) are to be included on the Document. You must provide a multidimensional array organized by resource type:
+To support [sparse fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets), you may specify which [fields](http://jsonapi.org/format/#document-resource-object-fields) (attributes and relationships) are to be included on the Document. You must provide a multidimensional array organized by resource type:
 
 ```php
 $document->setFields(['posts' => ['title', 'body']]);
 ```
 
-The attributes returned by your resources will automatically be filtered according to the sparse fieldset for the resource type. If some attributes are expensive to calculate, then you may use the `$fields` argument to improve performance when sparse fieldsets are used. This argument will be `null` if no sparse fieldset has been specified for the resource type, or an `array` of fields if it has:
+The attributes returned by your Resources will automatically be filtered according to the sparse fieldset for the resource type. However, if some attributes are expensive to calculate, then you may use the `$fields` argument provided to `getAttributes()` to improve performance when sparse fieldsets are used. This argument will be `null` if no sparse fieldset has been specified for the resource type, or an `array` of fields if it has:
 
 ```php
     public function getAttributes(array $fields = null)
@@ -123,12 +127,10 @@ The attributes returned by your resources will automatically be filtered accordi
 
 #### Relationships
 
-A JSON-API Document may contain one primary resource, or a collection of resources. The primary resource(s) will be recursively parsed for relationships with other resources; these resources will be added to the Document as **included** resources.
-
-The `AbstractResource` class allows you to define a public method for each relationship that exists for a resource. A relationship method should return a `Tobscure\JsonApi\Relationship` instance.
+To support the [inclusion of related resources](http://jsonapi.org/format/#fetching-includes) alongside the document's primary resources (and output [compound documents](http://jsonapi.org/format/#document-compound-documents)), first you must define the available relationships on your Resource implementation. The `AbstractResource` base class allows you to define a method for each relationship that exists for a resource type. Relationship methods should return a `Tobscure\JsonApi\Relationship` instance, containing the related Resource(s).
 
 ```php
-    public function author()
+    protected function author()
     {
         $resource = new UserResource($this->post->author);
 
@@ -136,7 +138,13 @@ The `AbstractResource` class allows you to define a public method for each relat
     }
 ```
 
-By default, the `AbstractResource` will convert relationship names from `kebab-case` and `snake_case` into a `camelCase` method name. If you wish to customize this behaviour, you may override the `getRelationship` method:
+You can then specify which relationships should be included on the Document:
+
+```php
+$document->setInclude(['author', 'comments', 'comments.author']);
+```
+
+By default, the `AbstractResource` implementation will convert included relationship names from `kebab-case` and `snake_case` into a `camelCase` method name. If you wish to customize this behaviour, you may override the `getRelationship` method:
 
 ```php
     public function getRelationship($name)
@@ -145,15 +153,9 @@ By default, the `AbstractResource` will convert relationship names from `kebab-c
     }
 ```
 
-Once relationships are defined, you can specify which relationships should be included on the Document:
+### Meta Information & Links
 
-```php
-$document->setInclude(['author', 'comments', 'comments.author']);
-```
-
-### Meta & Links
-
-The `Document`, `Resource`, and `Relationship` classes allow you to add meta information:
+The `Document`, `Resource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
 
 ```php
 $document = new Document;
@@ -161,7 +163,7 @@ $document->addMeta('key', 'value');
 $document->setMeta(['key' => 'value']);
 ```
 
-They also allow you to add links in a similar way:
+They also allow you to add [links](http://jsonapi.org/format/#document-links) in a similar way:
 
 ```php
 $resource = new PostResource($post);
@@ -169,19 +171,19 @@ $resource->addLink('self', 'url');
 $resource->setLinks(['key' => 'value']);
 ```
 
-You can also easily add pagination links:
+You can also easily add [pagination](http://jsonapi.org/format/#fetching-pagination) links:
 
 ```php
 $document->addPaginationLinks(
     'url', // The base URL for the links
-    [],    // The query params provided in the request
+    $_GET, // The query params provided in the request
     40,    // The current offset
     20,    // The current limit
     100    // The total number of results
 );
 ```
 
-To define metadata and/or links on resources implicitly, call the appropriate methods in the constructor:
+To define meta information and/or links globally for a resource type, call the appropriate methods in the constructor:
 
 ```php
 use Tobscure\JsonApi\AbstractResource;
@@ -212,25 +214,29 @@ $parameters = new Parameters($_GET);
 
 #### getInclude
 
-Get the relationships requested for inclusion. Provide an array of available relationship paths; if anything else is present, an `InvalidParameterException` will be thrown.
+Get the relationships requested for [inclusion](http://jsonapi.org/format/#fetching-includes). Provide an array of available relationship paths; if anything else is present, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?include=author,comments
 $include = $parameters->getInclude(['author', 'comments', 'comments.author']); // ['author', 'comments']
+
+$document->setInclude($include);
 ```
 
 #### getFields
 
-Get the fields requested for inclusion, keyed by resource type.
+Get the [sparse fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets) requested for inclusion, keyed by resource type.
 
 ```php
 // GET /api?fields[articles]=title,body
 $fields = $parameters->getFields(); // ['articles' => ['title', 'body']]
+
+$document->setFields($fields);
 ```
 
 #### getSort
 
-Get the requested sort criteria. Provide an array of available fields that can be sorted by; if anything else is present, an `InvalidParameterException` will be thrown.
+Get the requested [sort fields](http://jsonapi.org/format/#fetching-sorting). Provide an array of available fields that can be sorted by; if anything else is present, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?sort=-created,title
@@ -239,7 +245,7 @@ $sort = $parameters->getSort(['title', 'created']); // ['created' => 'desc', 'ti
 
 #### getLimit and getOffset
 
-Get the offset number and the number of resources to display using a page- or offset-based strategy. `getLimit` accepts an optional maximum. If the calculated offset is below zero, an `InvalidParameterException` will be thrown.
+Get the offset number and the number of resources to display using a [page- or offset-based strategy](http://jsonapi.org/format/#fetching-pagination). `getLimit` accepts an optional maximum. If the calculated offset is below zero, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?page[number]=5&page[size]=20
@@ -251,11 +257,14 @@ $limit = $parameters->getLimit(100); // 100
 $offset = $parameters->getOffset(); // 20
 ```
 
-### Error Handling
+#### getFilter
 
-You can transform caught exceptions into JSON-API error documents using the `Tobscure\JsonApi\ErrorHandler` class. You must register the appropriate `Tobscure\JsonApi\Exception\Handler\ExceptionHandlerInterface` instances.
+Get the contents of the [filter](http://jsonapi.org/format/#fetching-filtering) query parameter.
 
 ```php
+// GET /api?filter[author]=toby
+$filter = $parameters->getFilter(); // ['author' => 'toby']
+```
 try {
     // API handling code
 } catch (Exception $e) {
