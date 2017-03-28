@@ -14,8 +14,9 @@ namespace Tobscure\JsonApi;
 trait PaginationLinksTrait
 {
     abstract public function setLink($key, $value);
+
     abstract public function removeLink($key);
-    
+
     /**
      * Set pagination links (first, prev, next, and last).
      *
@@ -90,5 +91,5 @@ trait PaginationLinksTrait
         $queryString = http_build_query($queryParams);
 
         $this->setLink($name, $url.($queryString ? '?'.$queryString : ''));
-    }    
+    }
 }
