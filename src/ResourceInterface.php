@@ -30,7 +30,7 @@ interface ResourceInterface
     /**
      * Get the resource attributes.
      *
-     * @param array|null $fields
+     * @param string[]|null $fields
      *
      * @return array|null
      */
@@ -44,7 +44,7 @@ interface ResourceInterface
     public function getLinks();
 
     /**
-     * Get the resource meta.
+     * Get the resource meta information.
      *
      * @return array|null
      */

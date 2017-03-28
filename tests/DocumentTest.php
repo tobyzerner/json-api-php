@@ -17,20 +17,15 @@ use Tobscure\JsonApi\ResourceInterface;
 
 class DocumentTest extends AbstractTestCase
 {
-    public function testItCanBeSerializedToJson()
-    {
-        $this->assertEquals('[]', (string) new Document());
-    }
-
     public function testResource()
     {
         $resource = $this->mockResource('a', '1');
 
-        $document = new Document($resource);
+        $document = Document::fromData($resource);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => ['type' => 'a', 'id' => '1']
-        ], $document->toArray());
+        ]), json_encode($document));
     }
 
     public function testCollection()
@@ -38,14 +33,14 @@ class DocumentTest extends AbstractTestCase
         $resource1 = $this->mockResource('a', '1');
         $resource2 = $this->mockResource('a', '2');
 
-        $document = new Document([$resource1, $resource2]);
+        $document = Document::fromData([$resource1, $resource2]);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => [
                 ['type' => 'a', 'id' => '1'],
                 ['type' => 'a', 'id' => '2']
             ]
-        ], $document->toArray());
+        ]), json_encode($document));
     }
 
     public function testMergeResource()
@@ -56,9 +51,9 @@ class DocumentTest extends AbstractTestCase
         $resource1 = $this->mockResource('a', '1', $array1, $array1, $array1);
         $resource2 = $this->mockResource('a', '1', $array2, $array2, $array2);
 
-        $document = new Document([$resource1, $resource2]);
+        $document = Document::fromData([$resource1, $resource2]);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => [
                 [
                     'type' => 'a',
@@ -68,7 +63,7 @@ class DocumentTest extends AbstractTestCase
                     'links' => $merged
                 ]
             ]
-        ], $document->toArray());
+        ]), json_encode($document));
     }
 
     public function testSparseFieldsets()
@@ -77,16 +72,16 @@ class DocumentTest extends AbstractTestCase
 
         $resource->expects($this->once())->method('getAttributes')->with($this->equalTo(['present']));
 
-        $document = new Document($resource);
+        $document = Document::fromData($resource);
         $document->setFields(['a' => ['present']]);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => [
                 'type' => 'a',
                 'id' => '1',
                 'attributes' => ['present' => 1]
             ]
-        ], $document->toArray());
+        ]), json_encode($document));
     }
 
     public function testIncludeRelationships()
@@ -99,11 +94,11 @@ class DocumentTest extends AbstractTestCase
 
         $relationshipA = $this->getMock(Relationship::class);
         $relationshipA->method('getData')->willReturn($resource2);
-        $relationshipA->method('toArray')->willReturn($relationshipArray);
+        $relationshipA->method('jsonSerialize')->willReturn($relationshipArray);
 
         $relationshipB = $this->getMock(Relationship::class);
         $relationshipB->method('getData')->willReturn($resource3);
-        $relationshipB->method('toArray')->willReturn($relationshipArray);
+        $relationshipB->method('jsonSerialize')->willReturn($relationshipArray);
 
         $resource1
             ->expects($this->once())
@@ -117,10 +112,10 @@ class DocumentTest extends AbstractTestCase
             ->with($this->equalTo('b'))
             ->willReturn($relationshipB);
 
-        $document = new Document($resource1);
+        $document = Document::fromData($resource1);
         $document->setInclude(['a', 'a.b']);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => [
                 'type' => 'a',
                 'id' => '1',
@@ -137,39 +132,29 @@ class DocumentTest extends AbstractTestCase
                     'relationships' => ['b' => $relationshipArray]
                 ]
             ]
-        ], $document->toArray());
+        ]), json_encode($document));
     }
 
     public function testErrors()
     {
-        $document = new Document();
-        $document->setErrors(['a']);
+        $document = Document::fromErrors(['a']);
 
-        $this->assertEquals(['errors' => ['a']], $document->toArray());
-    }
-
-    public function testJsonapi()
-    {
-        $document = new Document();
-        $document->setJsonapi(['a']);
-
-        $this->assertEquals(['jsonapi' => ['a']], $document->toArray());
+        $this->assertJsonStringEqualsJsonString(json_encode(['errors' => ['a']]), json_encode($document));
     }
 
     public function testLinks()
     {
-        $document = new Document();
-        $document->setLinks(['a']);
+        $document = Document::fromData(null);
+        $document->setLink('a', 'b');
 
-        $this->assertEquals(['links' => ['a']], $document->toArray());
+        $this->assertJsonStringEqualsJsonString(json_encode(['links' => ['a' => 'b']]), json_encode($document));
     }
 
     public function testMeta()
     {
-        $document = new Document();
-        $document->setMeta(['a']);
+        $document = Document::fromMeta(['a' => 'b']);
 
-        $this->assertEquals(['meta' => ['a']], $document->toArray());
+        $this->assertJsonStringEqualsJsonString(json_encode(['meta' => ['a' => 'b']]), json_encode($document));
     }
 
     private function mockResource($type, $id, $attributes = [], $meta = [], $links = [])

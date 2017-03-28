@@ -77,7 +77,12 @@ class Parameters
         $offset = (int) $this->getPage('offset');
 
         if ($offset < 0) {
-            throw new InvalidParameterException('page[offset] must be >=0', 2, null, 'page[offset]');
+            throw new InvalidParameterException(
+                'page[offset] must be >=0',
+                2,
+                null,
+                'page[offset]'
+            );
         }
 
         return $offset;
@@ -92,7 +97,7 @@ class Parameters
      *
      * @return int
      */
-    protected function getOffsetFromNumber($perPage)
+    private function getOffsetFromNumber($perPage)
     {
         $page = (int) $this->getPage('number');
 

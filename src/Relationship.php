@@ -11,9 +11,14 @@
 
 namespace Tobscure\JsonApi;
 
-class Relationship
+use JsonSerializable;
+
+class Relationship implements JsonSerializable
 {
     use LinksTrait;
+    use SelfLinkTrait;
+    use RelatedLinkTrait;
+    use PaginationLinksTrait;
     use MetaTrait;
 
     /**
@@ -47,14 +52,10 @@ class Relationship
      * Set the data object.
      *
      * @param \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null $data
-     *
-     * @return $this
      */
     public function setData($data)
     {
         $this->data = $data;
-
-        return $this;
     }
 
     /**
@@ -62,27 +63,20 @@ class Relationship
      *
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
-        $array = [];
+        $relationship = [];
 
         if ($this->data) {
-            if (is_array($this->data)) {
-                $array['data'] = array_map([$this, 'buildIdentifier'], $this->data);
-            } else {
-                $array['data'] = $this->buildIdentifier($this->data);
-            }
+            $relationship['data'] = is_array($this->data)
+                ? array_map([$this, 'buildIdentifier'], $this->data)
+                : $this->buildIdentifier($this->data);
         }
 
-        if ($this->meta) {
-            $array['meta'] = $this->meta;
-        }
-
-        if ($this->links) {
-            $array['links'] = $this->links;
-        }
-
-        return $array;
+        return array_filter($relationship + [
+            'meta' => $this->meta,
+            'links' => $this->links
+        ]);
     }
 
     /**

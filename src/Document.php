@@ -16,12 +16,15 @@ use JsonSerializable;
 class Document implements JsonSerializable
 {
     use LinksTrait;
+    use SelfLinkTrait;
+    use PaginationLinksTrait;
     use MetaTrait;
 
     const MEDIA_TYPE = 'application/vnd.api+json';
+    const DEFAULT_API_VERSION = '1.0';
 
     /**
-     * The data object.
+     * The primary data.
      *
      * @var ResourceInterface|ResourceInterface[]|null
      */
@@ -30,7 +33,7 @@ class Document implements JsonSerializable
     /**
      * The errors array.
      *
-     * @var array|null
+     * @var Error[]|null
      */
     protected $errors;
 
@@ -56,15 +59,53 @@ class Document implements JsonSerializable
     protected $fields = [];
 
     /**
-     * @param ResourceInterface|ResourceInterface[] $data
+     * Use named constructors instead.
      */
-    public function __construct($data = null)
+    private function __construct()
     {
-        $this->data = $data;
     }
 
     /**
-     * Get the data object.
+     * @param ResourceInterface|ResourceInterface[] $data
+     *
+     * @return self
+     */
+    public static function fromData($data)
+    {
+        $document = new self;
+        $document->setData($data);
+
+        return $document;
+    }
+
+    /**
+     * @param array $meta
+     *
+     * @return self
+     */
+    public static function fromMeta(array $meta)
+    {
+        $document = new self;
+        $document->replaceMeta($meta);
+
+        return $document;
+    }
+
+    /**
+     * @param Error[] $errors
+     *
+     * @return self
+     */
+    public static function fromErrors(array $errors)
+    {
+        $document = new self;
+        $document->setErrors($errors);
+
+        return $document;
+    }
+
+    /**
+     * Get the primary data.
      *
      * @return ResourceInterface|ResourceInterface[]|null $data
      */
@@ -77,20 +118,16 @@ class Document implements JsonSerializable
      * Set the data object.
      *
      * @param ResourceInterface|ResourceInterface[]|null $data
-     *
-     * @return $this
      */
     public function setData($data)
     {
         $this->data = $data;
-
-        return $this;
     }
 
     /**
      * Get the errors array.
      *
-     * @return array|null $errors
+     * @return Error[]|null $errors
      */
     public function getErrors()
     {
@@ -100,45 +137,37 @@ class Document implements JsonSerializable
     /**
      * Set the errors array.
      *
-     * @param array|null $errors
-     *
-     * @return $this
+     * @param Error[]|null $errors
      */
     public function setErrors(array $errors = null)
     {
         $this->errors = $errors;
-
-        return $this;
     }
 
     /**
-     * Get the jsonapi array.
+     * Set the jsonapi version.
      *
-     * @return array|null $jsonapi
+     * @param string $version
      */
-    public function getJsonapi()
+    public function setApiVersion($version)
     {
-        return $this->jsonapi;
+        $this->jsonapi['version'] = $version;
     }
 
     /**
-     * Set the jsonapi array.
-     *
-     * @param array|null $jsonapi
-     *
-     * @return $this
+     * Set the jsonapi meta information.
+     * 
+     * @param array $meta
      */
-    public function setJsonapi(array $jsonapi = null)
+    public function setApiMeta(array $meta)
     {
-        $this->jsonapi = $jsonapi;
-
-        return $this;
+        $this->jsonapi['meta'] = $meta;
     }
 
     /**
      * Get the relationships to include.
      *
-     * @return array $include
+     * @return string[] $include
      */
     public function getInclude()
     {
@@ -148,21 +177,17 @@ class Document implements JsonSerializable
     /**
      * Set the relationships to include.
      *
-     * @param array $include
-     *
-     * @return $this
+     * @param string[] $include
      */
     public function setInclude(array $include)
     {
         $this->include = $include;
-
-        return $this;
     }
 
     /**
      * Get the sparse fieldsets.
      *
-     * @return array $fields
+     * @return array[] $fields
      */
     public function getFields()
     {
@@ -172,29 +197,26 @@ class Document implements JsonSerializable
     /**
      * Set the sparse fieldsets.
      *
-     * @param array $fields
-     *
-     * @return $this
+     * @param array[] $fields
      */
     public function setFields(array $fields)
     {
         $this->fields = $fields;
-
-        return $this;
     }
 
     /**
-     * Build the JSON-API document as an array.
+     * Serialize for JSON usage.
      *
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
-        $document = [];
-
-        if ($this->links) {
-            $document['links'] = $this->links;
-        }
+        $document = [
+            'links' => $this->links,
+            'meta' => $this->meta,
+            'errors' => $this->errors,
+            'jsonapi' => $this->jsonapi
+        ];
 
         if ($this->data) {
             $isCollection = is_array($this->data);
@@ -207,7 +229,7 @@ class Document implements JsonSerializable
             $map = [];
             $resources = $isCollection ? $this->data : [$this->data];
 
-            $this->addResourcesToMap($map, $resources, $this->include);
+            $this->mergeResources($map, $resources, $this->include);
 
             // Now extract the document's primary resource(s) from the resource
             // map, and flatten the map's remaining resources to be included in
@@ -222,28 +244,11 @@ class Document implements JsonSerializable
                 }
             }
 
-            $included = call_user_func_array('array_merge', $map);
-
             $document['data'] = $isCollection ? $primary : $primary[0];
-
-            if ($included) {
-                $document['included'] = $included;
-            }
+            $document['included'] = call_user_func_array('array_merge', $map);
         }
 
-        if ($this->meta) {
-            $document['meta'] = $this->meta;
-        }
-
-        if ($this->errors) {
-            $document['errors'] = $this->errors;
-        }
-
-        if ($this->jsonapi) {
-            $document['jsonapi'] = $this->jsonapi;
-        }
-
-        return $document;
+        return array_filter($document);
     }
 
     /**
@@ -253,17 +258,7 @@ class Document implements JsonSerializable
      */
     public function __toString()
     {
-        return json_encode($this->toArray());
-    }
-
-    /**
-     * Serialize for JSON usage.
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
+        return json_encode($this->jsonSerialize());
     }
 
     /**
@@ -273,7 +268,7 @@ class Document implements JsonSerializable
      * @param ResourceInterface[] $resources
      * @param array $include An array of relationship paths to include.
      */
-    private function addResourcesToMap(array &$map, array $resources, array $include)
+    private function mergeResources(array &$map, array $resources, array $include)
     {
         // Index relationship paths so that we have a list of the direct
         // relationships that will be included on these resources, and arrays
@@ -296,69 +291,52 @@ class Document implements JsonSerializable
                 if ($data = $relationship->getData()) {
                     $children = is_array($data) ? $data : [$data];
 
-                    $this->addResourcesToMap($map, $children, $nested);
+                    $this->mergeResources($map, $children, $nested);
                 }
             }
 
             // Serialize the resource into an array and add it to the map. If
             // it is already present, its properties will be merged into the
             // existing resource.
-            $this->addResourceToMap($map, $resource, $relationships);
+            $this->mergeResource($map, $resource, $relationships);
         }
     }
 
     /**
-     * Serialize the given resource as an array and add it to the given map.
+     * Merge the given resource into a resource map.
      *
      * If it is already present in the map, its properties will be merged into
-     * the existing array.
+     * the existing resource.
      *
      * @param array &$map
      * @param ResourceInterface $resource
-     * @param Relationship[] $resource
+     * @param Relationship[] $relationships
      */
-    private function addResourceToMap(array &$map, ResourceInterface $resource, array $relationships)
+    private function mergeResource(array &$map, ResourceInterface $resource, array $relationships)
     {
         $type = $resource->getType();
         $id = $resource->getId();
+        $meta = $resource->getMeta();
+        $links = $resource->getLinks();
+
+        $fields = isset($this->fields[$type]) ? $this->fields[$type] : null;
+
+        $attributes = $resource->getAttributes($fields);
+
+        if ($fields) {
+            $keys = array_flip($fields);
+
+            $attributes = array_intersect_key($attributes, $keys);
+            $relationships = array_intersect_key($relationships, $keys);
+        }
+
+        $props = array_filter(compact('attributes', 'relationships', 'links', 'meta'));
 
         if (empty($map[$type][$id])) {
-            $map[$type][$id] = [
-                'type' => $type,
-                'id' => $id
-            ];
-        }
-
-        $array = &$map[$type][$id];
-        $fields = $this->getFieldsForType($type);
-
-        if ($meta = $resource->getMeta()) {
-            $array['meta'] = array_replace_recursive(isset($array['meta']) ? $array['meta'] : [], $meta);
-        }
-
-        if ($links = $resource->getLinks()) {
-            $array['links'] = array_replace_recursive(isset($array['links']) ? $array['links'] : [], $links);
-        }
-
-        if ($attributes = $resource->getAttributes($fields)) {
-            if ($fields) {
-                $attributes = array_intersect_key($attributes, array_flip($fields));
-            }
-            if ($attributes) {
-                $array['attributes'] = array_replace_recursive(isset($array['attributes']) ? $array['attributes'] : [], $attributes);
-            }
-        }
-
-        if ($relationships && $fields) {
-            $relationships = array_intersect_key($relationships, array_flip($fields));
-        }
-        if ($relationships) {
-            $relationships = array_map(function ($relationship) {
-                return $relationship->toArray();
-            }, $relationships);
-
-            $array['relationships'] = array_replace_recursive(isset($array['relationships']) ? $array['relationships'] : [], $relationships);
-        }
+            $map[$type][$id] = compact('type', 'id') + $props;
+        } else {
+            $map[$type][$id] = array_replace_recursive($map[$type][$id], $props);
+        }        
     }
 
     /**
@@ -373,9 +351,9 @@ class Document implements JsonSerializable
      *
      * ['user' => ['employer', 'employer.country'], 'comments' => []]
      *
-     * @param array $paths
+     * @param string[] $paths
      *
-     * @return array
+     * @return array[]
      */
     private function indexRelationshipPaths(array $paths)
     {
@@ -394,17 +372,5 @@ class Document implements JsonSerializable
         }
 
         return $tree;
-    }
-
-    /**
-     * Get the fields that should be included for resources of the given type.
-     *
-     * @param string $type
-     *
-     * @return array|null
-     */
-    private function getFieldsForType($type)
-    {
-        return isset($this->fields[$type]) ? $this->fields[$type] : null;
     }
 }

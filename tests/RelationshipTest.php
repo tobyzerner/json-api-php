@@ -16,7 +16,7 @@ use Tobscure\JsonApi\Relationship;
 
 class RelationshipTest extends AbstractTestCase
 {
-    public function testToArray()
+    public function testJsonSerialize()
     {
         $resource1 = new RelationshipResourceStub();
         $resource2 = new RelationshipResourceStub();
@@ -25,7 +25,7 @@ class RelationshipTest extends AbstractTestCase
 
         $this->assertEquals([
             'data' => ['type' => 'stub', 'id' => '1']
-        ], $relationship->toArray());
+        ], $relationship->jsonSerialize());
 
         $relationship = new Relationship([$resource1, $resource2]);
 
@@ -34,7 +34,7 @@ class RelationshipTest extends AbstractTestCase
                 ['type' => 'stub', 'id' => '1'],
                 ['type' => 'stub', 'id' => '1']
             ]
-        ], $relationship->toArray());
+        ], $relationship->jsonSerialize());
     }
 }
 

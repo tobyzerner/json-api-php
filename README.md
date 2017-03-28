@@ -27,14 +27,14 @@ use Tobscure\JsonApi\Document;
 $resource = new PostResource($post);
 
 // Create a JSON-API document with that resource as the primary data.
-$document = new Document($resource);
+$document = Document::fromData($resource);
 
 // Specify included relationships and sparse fieldsets.
 $document->setInclude(['author', 'comments']);
 $document->setFields(['posts' => ['title', 'body']]);
 
 // Add metadata and links.
-$document->addMeta('total', count($posts));
+$document->setMeta('total', count($posts));
 $document->setSelfLink('http://example.com/api/posts');
 
 // Output the document with the JSON-API media type.
@@ -74,7 +74,7 @@ An instantiated resource object can then be added to the JSON-API document:
 ```php
 $resource = new PostResource($post);
 
-$document = new Document($resource);
+$document = Document::fromData($resource);
 ```
 
 To output a collection of resources, map your data to an array of Resource objects:
@@ -84,7 +84,7 @@ $collection = array_map(function (Post $post) {
     return new PostResource($post);
 }, $posts);
 
-$document = new Document($collection);
+$document = Document::fromData($collection);
 ```
 
 #### Attributes & Sparse Fieldsets
@@ -132,7 +132,7 @@ To support the [inclusion of related resources](http://jsonapi.org/format/#fetch
     {
         $resource = new UserResource($this->post->author);
 
-        return new Relationship($resource);
+        return Relationship::fromData($resource);
     }
 ```
 
@@ -156,19 +156,21 @@ By default, the `AbstractResource` implementation will convert included relation
 The `Document`, `Resource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
 
 ```php
-$document->addMeta('key', 'value');
-$document->setMeta(['key' => 'value']);
+$document->setMeta('key', 'value');
+$document->removeMeta('key');
+$document->replaceMeta(['key' => 'value']);
 ```
 
-They also allow you to add [links](http://jsonapi.org/format/#document-links):
+They also allow you to add [links](http://jsonapi.org/format/#document-links). A link's value may be a string, or a `Tobscure\JsonApi\Link` instance.
 
 ```php
-$resource->setSelfLink(new Link('url', ['meta' => 'information']));
+use Tobscure\JsonApi\Link;
 
-$relationship->setRelatedLink('url');
+$resource->setSelfLink('url');
+$relationship->setRelatedLink(new Link('url', ['some' => 'metadata']));
 ```
 
-You can also easily generate [pagination](http://jsonapi.org/format/#fetching-pagination) links:
+You can also easily generate [pagination](http://jsonapi.org/format/#fetching-pagination) links on `Document` and `Relationship` instances:
 
 ```php
 $document->setPaginationLinks(
@@ -192,8 +194,7 @@ class PostResource extends AbstractResource
         $this->post = $post;
 
         $this->setSelfLink('/posts/' . $post->id);
-
-        $this->addMeta('some', 'metadata for ' . $post->id);
+        $this->setMeta('some', 'metadata for ' . $post->id);
     }
 
     // ...
@@ -266,91 +267,24 @@ $filter = $parameters->getFilter(); // ['author' => 'toby']
 
 ### Errors
 
-The `Tobscure\JsonApi\Error\ErrorResponseInterface` interface represents the information required to produce an error response: a HTTP status code to respond with, and an array of [error objects](http://jsonapi.org/format/#error-objects). 
-
-A couple of implementations are already provided:
-
-* `Tobscure\JsonApi\Error\InternalServerErrorResponse` for a generic 500 Internal Server Error response.
-* `Tobscure\JsonApi\Error\InvalidParameterErrorResponse` for an error response corresponding to an `InvalidParameterException`.
-
-A Document containing the errors from an error response can be created using the `fromErrorResponse()` constructor:
-
-```php
-use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Error\InternalServerErrorResponse;
-
-$response = new InternalServerErrorResponse;
-
-$document = Document::fromErrorResponse($response);
-
-http_response_code($response->getStatusCode());
-header('Content-Type: ' . $document::MEDIA_TYPE);
-echo $document;
-```
-
-In order to translate a caught `Exception` into a JSON-API error response, you should implement the `ErrorResponseInterface` for each type of `Exception` you wish to handle:
+You can create a `Document` containing [error objects](http://jsonapi.org/format/#error-objects) using `Tobscure\JsonApi\Error` instances:
 
 ```php
 use Tobscure\JsonApi\Error;
-use Tobscure\JsonApi\Error\ErrorResponseInterface;
 
-class MyCustomErrorResponse implements ErrorResponseInterface
-{
-    protected $e;
+$error = new Error;
 
-    public function __construct(MyCustomException $e)
-    {
-        $this->e = $e;
-    }
+$error->setId('1');
+$error->setAboutLink('url');
+$error->setMeta('key', 'value');
+$error->setStatus(400);
+$error->setCode('123');
+$error->setTitle('Something Went Wrong');
+$error->setDetail('You dun goofed!');
+$error->setSourcePointer('/data/attributes/body');
+$error->setSourceParameter('include');
 
-    public function getStatusCode()
-    {
-        return 400;
-    }
-
-    public function getErrors()
-    {
-        $error = new Error;
-
-        $error->setId('1');
-        $error->setAboutLink('url');
-        $error->setMeta(['key' => 'value']);
-        $error->setStatusCode(400);
-        $error->setErrorCode('my-custom-error-code');
-        $error->setTitle('My Custom Error');
-        $error->setDetail('You dun goofed!');
-        $error->setSourcePointer('/data/attributes/custom');
-        $error->setSourceParameter('include');
-
-        return [$error];
-    }
-}
-```
-
-You can then instantiate the correct error response according to the type of `Exception` that has been caught. The `Tobscure\JsonApi\Error\DefaultErrorResponse` class can be used to automatically handle generation of an `InvalidParameterErrorResponse` and falling back to an `InternalServerErrorResponse`.
-
-```php
-use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Error\DefaultErrorResponse;
-
-try {
-    // API handling code
-} catch (Exception $e) {
-    switch (true) {
-        case $e instanceof MyCustomException:
-            $response = new MyCustomErrorResponse($e);
-            break;
-
-        default:
-            $response = DefaultErrorResponse::forException($e);
-    }
-
-    $document = Document::fromErrorResponse($response);
-
-    http_response_code($response->getStatusCode());
-    header('Content-Type: ' . $document::MEDIA_TYPE);
-    echo $document;
-}
+$document = Document::fromErrors([$error]);
 ```
 
 ## Examples

@@ -16,6 +16,7 @@ use LogicException;
 abstract class AbstractResource implements ResourceInterface
 {
     use LinksTrait;
+    use SelfLinkTrait;
     use MetaTrait;
 
     /**
