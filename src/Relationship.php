@@ -28,14 +28,36 @@ class Relationship implements JsonSerializable
      */
     protected $data;
 
-    /**
-     * Create a new relationship.
-     *
-     * @param \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null $data
-     */
-    public function __construct($data = null)
+    private function __construct()
     {
-        $this->data = $data;
+    }
+
+    public static function fromMeta($meta)
+    {
+        $r = new self;
+        $r->replaceMeta($meta);
+        return $r;
+    }
+
+    public static function fromSelfLink($link)
+    {
+        $r = new self;
+        $r->setSelfLink($link);
+        return $r;
+    }
+
+    public static function fromRelatedLink($link)
+    {
+        $r = new self;
+        $r->setRelatedLink($link);
+        return $r;
+    }
+
+    public static function fromData($data)
+    {
+        $r = new self;
+        $r->data = $data;
+        return $r;
     }
 
     /**

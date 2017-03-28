@@ -92,11 +92,11 @@ class DocumentTest extends AbstractTestCase
 
         $relationshipArray = ['data' => 'stub'];
 
-        $relationshipA = $this->getMock(Relationship::class);
+        $relationshipA = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
         $relationshipA->method('getData')->willReturn($resource2);
         $relationshipA->method('jsonSerialize')->willReturn($relationshipArray);
 
-        $relationshipB = $this->getMock(Relationship::class);
+        $relationshipB = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
         $relationshipB->method('getData')->willReturn($resource3);
         $relationshipB->method('jsonSerialize')->willReturn($relationshipArray);
 
