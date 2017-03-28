@@ -34,7 +34,7 @@ class InvalidParameterException extends Exception
 
     /**
      * Get the parameter that caused this exception.
-     * 
+     *
      * @return string
      */
     public function getInvalidParameter()

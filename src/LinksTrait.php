@@ -53,7 +53,7 @@ trait LinksTrait
 
     /**
      * Remove a link.
-     * 
+     *
      * @param string $key
      */
     public function removeLink($key)

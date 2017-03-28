@@ -14,6 +14,7 @@ namespace Tobscure\JsonApi;
 trait RelatedLinkTrait
 {
     abstract public function setLink($key, $value);
+
     abstract public function removeLink($key);
 
     /**

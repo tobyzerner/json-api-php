@@ -156,7 +156,7 @@ class Document implements JsonSerializable
 
     /**
      * Set the jsonapi meta information.
-     * 
+     *
      * @param array $meta
      */
     public function setApiMeta(array $meta)
@@ -336,7 +336,7 @@ class Document implements JsonSerializable
             $map[$type][$id] = compact('type', 'id') + $props;
         } else {
             $map[$type][$id] = array_replace_recursive($map[$type][$id], $props);
-        }        
+        }
     }
 
     /**
