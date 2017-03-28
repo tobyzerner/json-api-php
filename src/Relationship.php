@@ -36,6 +36,7 @@ class Relationship implements JsonSerializable
     {
         $r = new self;
         $r->replaceMeta($meta);
+
         return $r;
     }
 
@@ -43,6 +44,7 @@ class Relationship implements JsonSerializable
     {
         $r = new self;
         $r->setSelfLink($link);
+
         return $r;
     }
 
@@ -50,6 +52,7 @@ class Relationship implements JsonSerializable
     {
         $r = new self;
         $r->setRelatedLink($link);
+
         return $r;
     }
 
@@ -57,6 +60,7 @@ class Relationship implements JsonSerializable
     {
         $r = new self;
         $r->data = $data;
+
         return $r;
     }
 
