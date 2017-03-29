@@ -15,52 +15,17 @@ use JsonSerializable;
 
 class Document implements JsonSerializable
 {
-    use LinksTrait;
-    use SelfLinkTrait;
-    use PaginationLinksTrait;
-    use MetaTrait;
+    use LinksTrait, SelfLinkTrait, PaginationLinksTrait, MetaTrait;
 
     const MEDIA_TYPE = 'application/vnd.api+json';
-    const DEFAULT_API_VERSION = '1.0';
 
-    /**
-     * The primary data.
-     *
-     * @var ResourceInterface|ResourceInterface[]|null
-     */
-    protected $data;
+    private $data;
+    private $errors;
+    private $jsonapi;
 
-    /**
-     * The errors array.
-     *
-     * @var Error[]|null
-     */
-    protected $errors;
+    private $include = [];
+    private $fields = [];
 
-    /**
-     * The jsonapi array.
-     *
-     * @var array|null
-     */
-    protected $jsonapi;
-
-    /**
-     * Relationships to include.
-     *
-     * @var array
-     */
-    protected $include = [];
-
-    /**
-     * Sparse fieldsets.
-     *
-     * @var array
-     */
-    protected $fields = [];
-
-    /**
-     * Use named constructors instead.
-     */
     private function __construct()
     {
     }
@@ -86,7 +51,7 @@ class Document implements JsonSerializable
     public static function fromMeta(array $meta)
     {
         $document = new self;
-        $document->replaceMeta($meta);
+        $document->setMeta($meta);
 
         return $document;
     }
@@ -105,33 +70,13 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Get the primary data.
-     *
-     * @return ResourceInterface|ResourceInterface[]|null $data
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Set the data object.
+     * Set the primary data.
      *
      * @param ResourceInterface|ResourceInterface[]|null $data
      */
     public function setData($data)
     {
         $this->data = $data;
-    }
-
-    /**
-     * Get the errors array.
-     *
-     * @return Error[]|null $errors
-     */
-    public function getErrors()
-    {
-        return $this->errors;
     }
 
     /**
@@ -165,41 +110,21 @@ class Document implements JsonSerializable
     }
 
     /**
-     * Get the relationships to include.
-     *
-     * @return string[] $include
-     */
-    public function getInclude()
-    {
-        return $this->include;
-    }
-
-    /**
-     * Set the relationships to include.
-     *
+     * Set the relationship paths to include.
+     * 
      * @param string[] $include
      */
-    public function setInclude(array $include)
+    public function setInclude($include)
     {
         $this->include = $include;
     }
 
     /**
-     * Get the sparse fieldsets.
-     *
-     * @return array[] $fields
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    /**
      * Set the sparse fieldsets.
-     *
-     * @param array[] $fields
+     * 
+     * @param array $fields
      */
-    public function setFields(array $fields)
+    public function setFields($fields)
     {
         $this->fields = $fields;
     }
@@ -220,67 +145,38 @@ class Document implements JsonSerializable
 
         if ($this->data) {
             $isCollection = is_array($this->data);
-
-            // Build a multi-dimensional map of all of the distinct resources
-            // that are present in the document, indexed by type and ID. This is
-            // done by recursively looping through each of the resources and
-            // their included relationships. We do this so that any resources
-            // that are duplicated may be merged back into a single instance.
-            $map = [];
             $resources = $isCollection ? $this->data : [$this->data];
 
-            $this->mergeResources($map, $resources, $this->include);
+            $map = $this->buildResourceMap($resources);
 
-            // Now extract the document's primary resource(s) from the resource
-            // map, and flatten the map's remaining resources to be included in
-            // the document's "included" array.
-            foreach ($resources as $resource) {
-                $type = $resource->getType();
-                $id = $resource->getId();
-
-                if (isset($map[$type][$id])) {
-                    $primary[] = $map[$type][$id];
-                    unset($map[$type][$id]);
-                }
-            }
+            $primary = $this->extractResourcesFromMap($map, $resources);
 
             $document['data'] = $isCollection ? $primary : $primary[0];
-            $document['included'] = call_user_func_array('array_merge', $map);
+
+            if ($map) {
+                $document['included'] = call_user_func_array('array_merge', $map);
+            }
         }
 
-        return array_filter($document);
+        return (object) array_filter($document);
     }
 
-    /**
-     * Build the JSON-API document and encode it as a JSON string.
-     *
-     * @return string
-     */
-    public function __toString()
+    private function buildResourceMap(array $resources)
     {
-        return json_encode($this->jsonSerialize());
+        $map = [];
+
+        $include = $this->buildRelationshipTree($this->include);
+
+        $this->mergeResources($map, $resources, $include);
+
+        return $map;
     }
 
-    /**
-     * Recursively add the given resources and their relationships to a map.
-     *
-     * @param array &$map The map to merge resources into.
-     * @param ResourceInterface[] $resources
-     * @param array $include An array of relationship paths to include.
-     */
     private function mergeResources(array &$map, array $resources, array $include)
     {
-        // Index relationship paths so that we have a list of the direct
-        // relationships that will be included on these resources, and arrays
-        // of their respective nested relationships.
-        $include = $this->indexRelationshipPaths($include);
-
         foreach ($resources as $resource) {
             $relationships = [];
 
-            // Get each of the relationships we're including on this resource,
-            // and add their resources (and their relationships, and so on) to
-            // the map.
             foreach ($include as $name => $nested) {
                 if (! ($relationship = $resource->getRelationship($name))) {
                     continue;
@@ -295,29 +191,16 @@ class Document implements JsonSerializable
                 }
             }
 
-            // Serialize the resource into an array and add it to the map. If
-            // it is already present, its properties will be merged into the
-            // existing resource.
             $this->mergeResource($map, $resource, $relationships);
         }
     }
 
-    /**
-     * Merge the given resource into a resource map.
-     *
-     * If it is already present in the map, its properties will be merged into
-     * the existing resource.
-     *
-     * @param array &$map
-     * @param ResourceInterface $resource
-     * @param Relationship[] $relationships
-     */
     private function mergeResource(array &$map, ResourceInterface $resource, array $relationships)
     {
         $type = $resource->getType();
         $id = $resource->getId();
-        $meta = $resource->getMeta();
         $links = $resource->getLinks();
+        $meta = $resource->getMeta();
 
         $fields = isset($this->fields[$type]) ? $this->fields[$type] : null;
 
@@ -330,44 +213,47 @@ class Document implements JsonSerializable
             $relationships = array_intersect_key($relationships, $keys);
         }
 
-        $props = array_filter(compact('attributes', 'relationships', 'links', 'meta'));
-
         if (empty($map[$type][$id])) {
-            $map[$type][$id] = compact('type', 'id') + $props;
-        } else {
-            $map[$type][$id] = array_replace_recursive($map[$type][$id], $props);
+            $map[$type][$id] = new ResourceObject($type, $id);
         }
+
+        array_map([$map[$type][$id], 'setAttribute'], array_keys($attributes), $attributes);
+        array_map([$map[$type][$id], 'setRelationship'], array_keys($relationships), $relationships);
+        array_map([$map[$type][$id], 'setLink'], array_keys($links), $links);
+        array_map([$map[$type][$id], 'setMetaItem'], array_keys($meta), $meta);
     }
 
-    /**
-     * Index relationship paths by top-level relationships.
-     *
-     * Given an array of relationship paths such as:
-     *
-     * ['user', 'user.employer', 'user.employer.country', 'comments']
-     *
-     * Returns an array with key-value pairs of top-level relationships and
-     * their nested relationships:
-     *
-     * ['user' => ['employer', 'employer.country'], 'comments' => []]
-     *
-     * @param string[] $paths
-     *
-     * @return array[]
-     */
-    private function indexRelationshipPaths(array $paths)
+    private function extractResourcesFromMap(array &$map, array $resources)
+    {
+        return array_filter(
+            array_map(function ($resource) use (&$map) {
+                $type = $resource->getType();
+                $id = $resource->getId();
+
+                if (isset($map[$type][$id])) {
+                    $resource = $map[$type][$id];
+                    unset($map[$type][$id]);
+
+                    return $resource;
+                }
+            }, $resources)
+        );        
+    }
+
+    private function buildRelationshipTree(array $paths)
     {
         $tree = [];
 
         foreach ($paths as $path) {
-            list($primary, $nested) = array_pad(explode('.', $path, 2), 2, null);
+            $keys = explode('.', $path);
+            $array = &$tree;
 
-            if (! isset($tree[$primary])) {
-                $tree[$primary] = [];
-            }
+            foreach ($keys as $key) {
+                if (! isset($array[$key])) {
+                    $array[$key] = [];
+                }
 
-            if ($nested) {
-                $tree[$primary][] = $nested;
+                $array = &$array[$key];
             }
         }
 

@@ -63,12 +63,12 @@ class AbstractResourceStub extends AbstractResource
     {
     }
 
-    public function valid()
+    public function getValidRelationship()
     {
         return Relationship::fromData(null);
     }
 
-    public function invalid()
+    public function getInvalidRelationship()
     {
         return 'invalid';
     }

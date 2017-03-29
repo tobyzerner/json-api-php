@@ -61,4 +61,9 @@ class PaginationLinksTraitStub
 {
     use LinksTrait;
     use PaginationLinksTrait;
+
+    public function getLinks()
+    {
+        return $this->links;
+    }
 }

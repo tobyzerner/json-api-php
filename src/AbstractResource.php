@@ -15,9 +15,7 @@ use LogicException;
 
 abstract class AbstractResource implements ResourceInterface
 {
-    use LinksTrait;
-    use SelfLinkTrait;
-    use MetaTrait;
+    use LinksTrait, SelfLinkTrait, MetaTrait;
 
     /**
      * The resource type.
@@ -43,23 +41,41 @@ abstract class AbstractResource implements ResourceInterface
     }
 
     /**
+     * Get the links.
+     *
+     * @return array
+     */
+    public function getLinks()
+    {
+        return $this->links;
+    }
+    
+    /**
+     * Get the meta data.
+     *
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta;
+    }
+
+    /**
      * {@inheritdoc}
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function getRelationship($name)
     {
         $method = $this->getRelationshipMethodName($name);
 
-        if (method_exists($this, $method)) {
-            $relationship = $this->$method();
+        $relationship = $this->$method();
 
-            if ($relationship !== null && ! ($relationship instanceof Relationship)) {
-                throw new LogicException('Relationship method must return null or an instance of Tobscure\JsonApi\Relationship');
-            }
-
-            return $relationship;
+        if ($relationship !== null && ! ($relationship instanceof Relationship)) {
+            throw new LogicException('Relationship method must return null or an instance of Tobscure\JsonApi\Relationship');
         }
+
+        return $relationship;
     }
 
     /**
@@ -73,14 +89,6 @@ abstract class AbstractResource implements ResourceInterface
      */
     private function getRelationshipMethodName($name)
     {
-        if (stripos($name, '-')) {
-            $name = lcfirst(implode('', array_map('ucfirst', explode('-', $name))));
-        }
-
-        if (stripos($name, '_')) {
-            $name = lcfirst(implode('', array_map('ucfirst', explode('_', $name))));
-        }
-
-        return $name;
+        return 'get'.implode(array_map('ucfirst', preg_split('/[-_]/', $name))).'Relationship';
     }
 }

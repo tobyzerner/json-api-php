@@ -94,11 +94,11 @@ class DocumentTest extends AbstractTestCase
 
         $relationshipA = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
         $relationshipA->method('getData')->willReturn($resource2);
-        $relationshipA->method('jsonSerialize')->willReturn($relationshipArray);
+        $relationshipA->method('jsonSerialize')->willReturn($relationshipJson);
 
         $relationshipB = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
         $relationshipB->method('getData')->willReturn($resource3);
-        $relationshipB->method('jsonSerialize')->willReturn($relationshipArray);
+        $relationshipB->method('jsonSerialize')->willReturn($relationshipJson);
 
         $resource1
             ->expects($this->once())
@@ -119,7 +119,7 @@ class DocumentTest extends AbstractTestCase
             'data' => [
                 'type' => 'a',
                 'id' => '1',
-                'relationships' => ['a' => $relationshipArray]
+                'relationships' => ['a' => $relationshipJson]
             ],
             'included' => [
                 [
@@ -129,7 +129,7 @@ class DocumentTest extends AbstractTestCase
                 [
                     'type' => 'a',
                     'id' => '2',
-                    'relationships' => ['b' => $relationshipArray]
+                    'relationships' => ['b' => $relationshipJson]
                 ]
             ]
         ]), json_encode($document));
@@ -144,7 +144,7 @@ class DocumentTest extends AbstractTestCase
 
     public function testLinks()
     {
-        $document = Document::fromData(null);
+        $document = Document::fromMeta([]);
         $document->setLink('a', 'b');
 
         $this->assertJsonStringEqualsJsonString(json_encode(['links' => ['a' => 'b']]), json_encode($document));

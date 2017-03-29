@@ -25,11 +25,6 @@ class Link implements JsonSerializable
         $this->meta = $meta;
     }
 
-    public function getHref()
-    {
-        return $this->href;
-    }
-
     public function setHref($href)
     {
         $this->href = $href;

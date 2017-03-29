@@ -13,29 +13,14 @@ namespace Tobscure\JsonApi;
 
 trait MetaTrait
 {
-    /**
-     * The meta data.
-     *
-     * @var array
-     */
-    protected $meta = [];
-
-    /**
-     * Get the meta data.
-     *
-     * @return array
-     */
-    public function getMeta()
-    {
-        return $this->meta;
-    }
+    private $meta = [];
 
     /**
      * Set the meta data.
      *
      * @param array $meta
      */
-    public function replaceMeta(array $meta)
+    public function setMeta(array $meta)
     {
         $this->meta = $meta;
     }
@@ -46,7 +31,7 @@ trait MetaTrait
      * @param string $key
      * @param mixed $value
      */
-    public function setMeta($key, $value)
+    public function setMetaItem($key, $value)
     {
         $this->meta[$key] = $value;
     }
@@ -57,7 +42,7 @@ trait MetaTrait
      * @param string $key
      * @param mixed $value
      */
-    public function removeMeta($key)
+    public function removeMetaItem($key)
     {
         unset($this->meta[$key]);
     }

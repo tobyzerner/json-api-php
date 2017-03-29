@@ -23,30 +23,23 @@ composer require tobscure/json-api
 ```php
 use Tobscure\JsonApi\Document;
 
-// Create a resource object for a post.
 $resource = new PostResource($post);
 
-// Create a JSON-API document with that resource as the primary data.
 $document = Document::fromData($resource);
 
-// Specify included relationships and sparse fieldsets.
 $document->setInclude(['author', 'comments']);
 $document->setFields(['posts' => ['title', 'body']]);
 
-// Add metadata and links.
-$document->setMeta('total', count($posts));
-$document->setSelfLink('http://example.com/api/posts');
+$document->setMetaItem('total', count($posts));
+$document->setSelfLink('http://example.com/api/posts/1');
 
-// Output the document with the JSON-API media type.
 header('Content-Type: ' . $document::MEDIA_TYPE);
-echo $document;
+echo json_encode($document);
 ```
 
-### Resources & Collections
+### Resources
 
-The JSON-API spec describes [resource objects](http://jsonapi.org/format/#document-resource-objects) as objects representing about a single resource. A resource object is represented by the `Tobscure\JsonApi\ResourceInterface` interface.
-
-You should create a class which implements this interface for each resource type in your API. A base `AbstractResource` class is provided with some basic functionality. At a minimum, subclasses must specify the resource `$type` and implement the `getId()` method:
+Resources are used to create JSON-API [resource objects](http://jsonapi.org/format/#document-resource-objects). They must implement `Tobscure\JsonApi\ResourceInterface`. An `AbstractResource` class is provided with some basic functionality. Subclasses must specify the resource `$type` and implement the `getId()` method:
 
 ```php
 use Tobscure\JsonApi\AbstractResource;
@@ -69,7 +62,7 @@ class PostResource extends AbstractResource
 }
 ```
 
-An instantiated resource object can then be added to the JSON-API document:
+A JSON-API document can then be created from an instantiated resource:
 
 ```php
 $resource = new PostResource($post);
@@ -77,19 +70,19 @@ $resource = new PostResource($post);
 $document = Document::fromData($resource);
 ```
 
-To output a collection of resources, map your data to an array of Resource objects:
+To output a collection of resource objects, map your data to an array of resources:
 
 ```php
-$collection = array_map(function (Post $post) {
+$resources = array_map(function (Post $post) {
     return new PostResource($post);
 }, $posts);
 
-$document = Document::fromData($collection);
+$document = Document::fromData($resources);
 ```
 
 #### Attributes & Sparse Fieldsets
 
-To add [attributes](http://jsonapi.org/format/#document-resource-object-attributes) to your resources, you may implement the `getAttributes()` method:
+To add [attributes](http://jsonapi.org/format/#document-resource-object-attributes) to your resource objects, you may implement the `getAttributes()` method in your resource:
 
 ```php
     public function getAttributes(array $fields = null)
@@ -102,13 +95,13 @@ To add [attributes](http://jsonapi.org/format/#document-resource-object-attribut
     }
 ```
 
-To support [sparse fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets), you may specify which [fields](http://jsonapi.org/format/#document-resource-object-fields) (attributes and relationships) are to be included on the Document. You must provide a multidimensional array organized by resource type:
+To output resource objects with a [sparse fieldset](http://jsonapi.org/format/#fetching-sparse-fieldsets), pass in an array of [fields](http://jsonapi.org/format/#document-resource-object-fields) (attributes and relationships), organised by resource type:
 
 ```php
 $document->setFields(['posts' => ['title', 'body']]);
 ```
 
-The attributes returned by your Resources will automatically be filtered according to the sparse fieldset for the resource type. However, if some attributes are expensive to calculate, then you may use the `$fields` argument provided to `getAttributes()` to improve performance when sparse fieldsets are used. This argument will be `null` if no sparse fieldset has been specified for the resource type, or an `array` of fields if it has:
+The attributes returned by your resources will automatically be filtered according to the sparse fieldset for the resource type. However, if some attributes are expensive to calculate, then you can use the `$fields` argument provided to `getAttributes()`. This will be an `array` of fields, or `null` if no sparse fieldset has been specified.
 
 ```php
     public function getAttributes(array $fields = null)
@@ -125,10 +118,10 @@ The attributes returned by your Resources will automatically be filtered accordi
 
 #### Relationships
 
-To support the [inclusion of related resources](http://jsonapi.org/format/#fetching-includes) alongside the document's primary resources (and output [compound documents](http://jsonapi.org/format/#document-compound-documents)), first you must define the available relationships on your Resource implementation. The `AbstractResource` base class allows you to define a method for each relationship that exists for a resource type. Relationship methods should return a `Tobscure\JsonApi\Relationship` instance, containing the related Resource(s).
+You can [include related resources](http://jsonapi.org/format/#document-compound-documents) alongside the document's primary data. First you must define the available relationships on your resource. The `AbstractResource` base class allows you to define a method for each relationship. Relationship methods should return a `Tobscure\JsonApi\Relationship` instance, containing the related resource(s).
 
 ```php
-    protected function author()
+    protected function getAuthorRelationship()
     {
         $resource = new UserResource($this->post->author);
 
@@ -136,13 +129,13 @@ To support the [inclusion of related resources](http://jsonapi.org/format/#fetch
     }
 ```
 
-You can then specify which relationships should be included on the Document:
+You can then specify which relationship paths should be included on the document:
 
 ```php
 $document->setInclude(['author', 'comments', 'comments.author']);
 ```
 
-By default, the `AbstractResource` implementation will convert included relationship names from `kebab-case` and `snake_case` into a `camelCase` method name. If you wish to customize this behaviour, you may override the `getRelationship` method:
+By default, the `AbstractResource` implementation will convert included relationship names from `kebab-case` and `snake_case` into a `getCamelCaseRelationship` method name. If you wish to customize this behaviour, you may override the `getRelationship` method:
 
 ```php
     public function getRelationship($name)
@@ -153,12 +146,12 @@ By default, the `AbstractResource` implementation will convert included relation
 
 ### Meta Information & Links
 
-The `Document`, `Resource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
+The `Document`, `AbstractResource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
 
 ```php
-$document->setMeta('key', 'value');
-$document->removeMeta('key');
-$document->replaceMeta(['key' => 'value']);
+$document->setMeta(['key' => 'value']);
+$document->setMetaItem('key', 'value');
+$document->removeMetaItem('key');
 ```
 
 They also allow you to add [links](http://jsonapi.org/format/#document-links). A link's value may be a string, or a `Tobscure\JsonApi\Link` instance.
@@ -170,7 +163,7 @@ $resource->setSelfLink('url');
 $relationship->setRelatedLink(new Link('url', ['some' => 'metadata']));
 ```
 
-You can also easily generate [pagination](http://jsonapi.org/format/#fetching-pagination) links on `Document` and `Relationship` instances:
+You can also easily generate [pagination links](http://jsonapi.org/format/#fetching-pagination) on `Document` and `Relationship` instances:
 
 ```php
 $document->setPaginationLinks(
@@ -194,7 +187,7 @@ class PostResource extends AbstractResource
         $this->post = $post;
 
         $this->setSelfLink('/posts/' . $post->id);
-        $this->setMeta('some', 'metadata for ' . $post->id);
+        $this->setMetaItem('some', 'metadata for ' . $post->id);
     }
 
     // ...

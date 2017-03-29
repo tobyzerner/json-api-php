@@ -23,18 +23,18 @@ class RelationshipTest extends AbstractTestCase
 
         $relationship = Relationship::fromData($resource1);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => ['type' => 'stub', 'id' => '1']
-        ], $relationship->jsonSerialize());
+        ]), json_encode($relationship));
 
         $relationship = Relationship::fromData([$resource1, $resource2]);
 
-        $this->assertEquals([
+        $this->assertJsonStringEqualsJsonString(json_encode([
             'data' => [
                 ['type' => 'stub', 'id' => '1'],
                 ['type' => 'stub', 'id' => '1']
             ]
-        ], $relationship->jsonSerialize());
+        ]), json_encode($relationship));
     }
 }
 

@@ -15,18 +15,9 @@ use JsonSerializable;
 
 class Relationship implements JsonSerializable
 {
-    use LinksTrait;
-    use SelfLinkTrait;
-    use RelatedLinkTrait;
-    use PaginationLinksTrait;
-    use MetaTrait;
+    use LinksTrait, SelfLinkTrait, RelatedLinkTrait, PaginationLinksTrait, MetaTrait;
 
-    /**
-     * The data object.
-     *
-     * @var \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null
-     */
-    protected $data;
+    private $data;
 
     private function __construct()
     {
@@ -64,31 +55,16 @@ class Relationship implements JsonSerializable
         return $r;
     }
 
-    /**
-     * Get the data object.
-     *
-     * @return \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null
-     */
     public function getData()
     {
         return $this->data;
     }
 
-    /**
-     * Set the data object.
-     *
-     * @param \Tobscure\JsonApi\ResourceInterface|\Tobscure\JsonApi\ResourceInterface[]|null $data
-     */
     public function setData($data)
     {
         $this->data = $data;
     }
 
-    /**
-     * Build the relationship as an array.
-     *
-     * @return array
-     */
     public function jsonSerialize()
     {
         $relationship = [];
@@ -105,18 +81,11 @@ class Relationship implements JsonSerializable
         ]);
     }
 
-    /**
-     * Build an idenitfier array for the given resource.
-     *
-     * @param ResourceInterface $resource
-     *
-     * @return array
-     */
     private function buildIdentifier(ResourceInterface $resource)
     {
-        return [
-            'type' => $resource->getType(),
-            'id' => $resource->getId()
-        ];
+        $id = new ResourceIdentifier($resource->getType(), $resource->getId());
+        $id->setMeta($resource->getMeta());
+
+        return $id;
     }
 }

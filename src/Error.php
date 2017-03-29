@@ -15,8 +15,7 @@ use JsonSerializable;
 
 class Error implements JsonSerializable
 {
-    use LinksTrait;
-    use MetaTrait;
+    use LinksTrait, MetaTrait;
 
     private $id;
     private $status;
@@ -67,15 +66,17 @@ class Error implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return array_filter([
-            'id' => $this->id,
-            'links' => $this->links,
-            'status' => $this->status,
-            'code' => $this->code,
-            'title' => $this->title,
-            'detail' => $this->detail,
-            'source' => $this->source,
-            'meta' => $this->meta
-        ]);
+        return array_filter(
+            [
+                'id' => $this->id,
+                'links' => $this->links,
+                'status' => $this->status,
+                'code' => $this->code,
+                'title' => $this->title,
+                'detail' => $this->detail,
+                'source' => $this->source,
+                'meta' => $this->meta
+            ]
+        );
     }
 }

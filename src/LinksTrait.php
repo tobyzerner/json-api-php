@@ -13,29 +13,14 @@ namespace Tobscure\JsonApi;
 
 trait LinksTrait
 {
-    /**
-     * The links.
-     *
-     * @var array
-     */
-    protected $links = [];
+    private $links = [];
 
     /**
-     * Get the links.
-     *
-     * @return array
-     */
-    public function getLinks()
-    {
-        return $this->links;
-    }
-
-    /**
-     * Replace the links.
+     * Set the links.
      *
      * @param array $links
      */
-    public function replaceLinks(array $links)
+    public function setLinks(array $links)
     {
         $this->links = $links;
     }
