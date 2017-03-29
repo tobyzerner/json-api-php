@@ -12,7 +12,6 @@
 namespace Tobscure\JsonApi;
 
 use JsonSerializable;
-use Tobscure\JsonApi\MetaTrait;
 
 class ResourceIdentifier implements JsonSerializable
 {

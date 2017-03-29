@@ -49,7 +49,7 @@ abstract class AbstractResource implements ResourceInterface
     {
         return $this->links;
     }
-    
+
     /**
      * Get the meta data.
      *

@@ -111,7 +111,7 @@ class Document implements JsonSerializable
 
     /**
      * Set the relationship paths to include.
-     * 
+     *
      * @param string[] $include
      */
     public function setInclude($include)
@@ -121,7 +121,7 @@ class Document implements JsonSerializable
 
     /**
      * Set the sparse fieldsets.
-     * 
+     *
      * @param array $fields
      */
     public function setFields($fields)
@@ -237,7 +237,7 @@ class Document implements JsonSerializable
                     return $resource;
                 }
             }, $resources)
-        );        
+        );
     }
 
     private function buildRelationshipTree(array $paths)

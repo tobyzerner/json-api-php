@@ -11,8 +11,8 @@
 
 namespace Tobscure\JsonApi;
 
-use LogicException;
 use InvalidArgumentException;
+use LogicException;
 
 class ResourceObject extends ResourceIdentifier
 {
