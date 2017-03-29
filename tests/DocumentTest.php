@@ -90,7 +90,7 @@ class DocumentTest extends AbstractTestCase
         $resource2 = $this->mockResource('a', '2');
         $resource3 = $this->mockResource('b', '1');
 
-        $relationshipArray = ['data' => 'stub'];
+        $relationshipJson = ['data' => 'stub'];
 
         $relationshipA = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
         $relationshipA->method('getData')->willReturn($resource2);
