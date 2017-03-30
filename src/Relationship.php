@@ -26,7 +26,7 @@ class Relationship implements JsonSerializable
     public static function fromMeta($meta)
     {
         $r = new self;
-        $r->replaceMeta($meta);
+        $r->setMeta($meta);
 
         return $r;
     }
@@ -50,7 +50,7 @@ class Relationship implements JsonSerializable
     public static function fromData($data)
     {
         $r = new self;
-        $r->data = $data;
+        $r->setData($data);
 
         return $r;
     }
