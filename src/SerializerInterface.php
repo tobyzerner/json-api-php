@@ -20,7 +20,7 @@ interface SerializerInterface
      *
      * @return string
      */
-    public function getType($model);
+    public function getType($model = null);
 
     /**
      * Get the id.
