@@ -23,9 +23,12 @@ class DocumentTest extends AbstractTestCase
 
         $document = Document::fromData($resource);
 
-        $this->assertJsonStringEqualsJsonString(json_encode([
-            'data' => ['type' => 'a', 'id' => '1']
-        ]), json_encode($document));
+        $this->assertProduceSameJson(
+            [
+                'data' => ['type' => 'a', 'id' => '1'],
+            ],
+            $document
+        );
     }
 
     public function testCollection()
@@ -35,12 +38,15 @@ class DocumentTest extends AbstractTestCase
 
         $document = Document::fromData([$resource1, $resource2]);
 
-        $this->assertJsonStringEqualsJsonString(json_encode([
-            'data' => [
-                ['type' => 'a', 'id' => '1'],
-                ['type' => 'a', 'id' => '2']
-            ]
-        ]), json_encode($document));
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    ['type' => 'a', 'id' => '1'],
+                    ['type' => 'a', 'id' => '2'],
+                ],
+            ],
+            $document
+        );
     }
 
     public function testMergeResource()
@@ -53,17 +59,20 @@ class DocumentTest extends AbstractTestCase
 
         $document = Document::fromData([$resource1, $resource2]);
 
-        $this->assertJsonStringEqualsJsonString(json_encode([
-            'data' => [
-                [
-                    'type' => 'a',
-                    'id' => '1',
-                    'attributes' => $merged = array_merge($array1, $array2),
-                    'meta' => $merged,
-                    'links' => $merged
-                ]
-            ]
-        ]), json_encode($document));
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    [
+                        'type' => 'a',
+                        'id' => '1',
+                        'attributes' => $merged = array_merge($array1, $array2),
+                        'meta' => $merged,
+                        'links' => $merged,
+                    ],
+                ],
+            ],
+            $document
+        );
     }
 
     public function testSparseFieldsets()
@@ -75,13 +84,16 @@ class DocumentTest extends AbstractTestCase
         $document = Document::fromData($resource);
         $document->setFields(['a' => ['present']]);
 
-        $this->assertJsonStringEqualsJsonString(json_encode([
-            'data' => [
-                'type' => 'a',
-                'id' => '1',
-                'attributes' => ['present' => 1]
-            ]
-        ]), json_encode($document));
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    'type' => 'a',
+                    'id' => '1',
+                    'attributes' => ['present' => 1],
+                ],
+            ],
+            $document
+        );
     }
 
     public function testIncludeRelationships()
@@ -115,31 +127,34 @@ class DocumentTest extends AbstractTestCase
         $document = Document::fromData($resource1);
         $document->setInclude(['a', 'a.b']);
 
-        $this->assertJsonStringEqualsJsonString(json_encode([
-            'data' => [
-                'type' => 'a',
-                'id' => '1',
-                'relationships' => ['a' => $relationshipJson]
-            ],
-            'included' => [
-                [
-                    'type' => 'b',
-                    'id' => '1'
-                ],
-                [
+        $this->assertProduceSameJson(
+            [
+                'data' => [
                     'type' => 'a',
-                    'id' => '2',
-                    'relationships' => ['b' => $relationshipJson]
-                ]
-            ]
-        ]), json_encode($document));
+                    'id' => '1',
+                    'relationships' => ['a' => $relationshipJson],
+                ],
+                'included' => [
+                    [
+                        'type' => 'b',
+                        'id' => '1',
+                    ],
+                    [
+                        'type' => 'a',
+                        'id' => '2',
+                        'relationships' => ['b' => $relationshipJson],
+                    ],
+                ],
+            ],
+            $document
+        );
     }
 
     public function testErrors()
     {
         $document = Document::fromErrors(['a']);
 
-        $this->assertJsonStringEqualsJsonString(json_encode(['errors' => ['a']]), json_encode($document));
+        $this->assertProduceSameJson(['errors' => ['a']], $document);
     }
 
     public function testLinks()
@@ -147,14 +162,14 @@ class DocumentTest extends AbstractTestCase
         $document = Document::fromMeta([]);
         $document->setLink('a', 'b');
 
-        $this->assertJsonStringEqualsJsonString(json_encode(['links' => ['a' => 'b']]), json_encode($document));
+        $this->assertProduceSameJson(['links' => ['a' => 'b']], $document);
     }
 
     public function testMeta()
     {
         $document = Document::fromMeta(['a' => 'b']);
 
-        $this->assertJsonStringEqualsJsonString(json_encode(['meta' => ['a' => 'b']]), json_encode($document));
+        $this->assertProduceSameJson(['meta' => ['a' => 'b']], $document);
     }
 
     private function mockResource($type, $id, $attributes = [], $meta = [], $links = [])
