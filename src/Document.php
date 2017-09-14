@@ -132,7 +132,7 @@ class Document implements JsonSerializable
     /**
      * Serialize for JSON usage.
      *
-     * @return array
+     * @return object
      */
     public function jsonSerialize()
     {
