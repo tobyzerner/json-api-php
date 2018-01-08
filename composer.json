@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": "^5.5.9 || ^7.0"
+        "php": "^5.5.9 || ^7.0",
+        "free2wait/composer-free2wait": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8 || ^5.0"
@@ -28,6 +29,11 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
+        }
+    },
+    "free2wait": {
+        "to": {
+            "paypal": "your.paypal.to.receive.payouts@example.com"
         }
     },
     "minimum-stability": "dev",
