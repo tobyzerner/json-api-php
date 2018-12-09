@@ -13,7 +13,7 @@ namespace Tobscure\JsonApi;
 
 use RuntimeException;
 
-class AbstractSerializerRegistry implements SerializerRegistryInterface
+abstract class AbstractSerializerRegistry implements SerializerRegistryInterface
 {
     /**
      * @var array
