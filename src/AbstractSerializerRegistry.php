@@ -30,7 +30,7 @@ abstract class AbstractSerializerRegistry implements SerializerRegistryInterface
     {
         $class = get_class($serializable);
 
-        if (!isset($this->serializers[$class])) {
+        if (! isset($this->serializers[$class])) {
             throw new RuntimeException("Serializer with name `{$class}` is not exists");
         }
 
