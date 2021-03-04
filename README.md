@@ -10,6 +10,8 @@
 
 Works with version 1.0 of the spec.
 
+**⚠️ The project is no longer maintained.** Check out [tobyzerner/json-api-server](https://github.com/tobyzerner/json-api-server) instead.
+
 ## Install
 
 via Composer:
