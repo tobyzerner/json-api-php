@@ -112,7 +112,15 @@ class Parameters
      */
     public function getLimit($max = null)
     {
-        $limit = $this->getPage('limit') ?: $this->getPage('size') ?: null;
+        $limit = (int) $this->getPage('limit');
+
+        if (! $limit) {
+            $limit = (int) $this->getPage('size');
+        }
+
+        if (! $limit) {
+            $limit = null;
+        }
 
         if ($limit && $max) {
             $limit = min($max, $limit);
