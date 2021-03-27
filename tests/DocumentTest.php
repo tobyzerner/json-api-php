@@ -11,99 +11,177 @@
 
 namespace Tobscure\Tests\JsonApi;
 
-use Tobscure\JsonApi\AbstractSerializer;
-use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Relationship;
-use Tobscure\JsonApi\Resource;
+use Tobscure\JsonApi\ResourceInterface;
 
-/**
- * This is the document test class.
- *
- * @author Toby Zerner <toby.zerner@gmail.com>
- */
 class DocumentTest extends AbstractTestCase
 {
-    public function testToArrayIncludesTheResourcesRepresentation()
+    public function testResource()
     {
-        $post = (object) [
-            'id' => 1,
-            'foo' => 'bar'
-        ];
+        $resource = $this->mockResource('a', '1');
 
-        $resource = new Resource($post, new PostSerializer2);
+        $document = Document::fromData($resource);
 
-        $document = new Document($resource);
-
-        $this->assertEquals(['data' => $resource->toArray()], $document->toArray());
+        $this->assertProduceSameJson(
+            [
+                'data' => ['type' => 'a', 'id' => '1'],
+            ],
+            $document
+        );
     }
 
-    public function testItCanBeSerializedToJson()
+    public function testCollection()
     {
-        $this->assertEquals('[]', (string) new Document());
+        $resource1 = $this->mockResource('a', '1');
+        $resource2 = $this->mockResource('a', '2');
+
+        $document = Document::fromData([$resource1, $resource2]);
+
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    ['type' => 'a', 'id' => '1'],
+                    ['type' => 'a', 'id' => '2'],
+                ],
+            ],
+            $document
+        );
     }
 
-    public function testToArrayIncludesIncludedResources()
+    public function testMergeResource()
     {
-        $comment = (object) ['id' => 1, 'foo' => 'bar'];
-        $post = (object) ['id' => 1, 'foo' => 'bar', 'comments' => [$comment]];
+        $array1 = ['a' => 1, 'b' => 1];
+        $array2 = ['a' => 2, 'c' => 2];
 
-        $resource = new Resource($post, new PostSerializer2);
-        $includedResource = new Resource($comment, new CommentSerializer2);
+        $resource1 = $this->mockResource('a', '1', $array1, $array1, $array1);
+        $resource2 = $this->mockResource('a', '1', $array2, $array2, $array2);
 
-        $document = new Document($resource->with('comments'));
+        $document = Document::fromData([$resource1, $resource2]);
 
-        $this->assertEquals([
-            'data' => $resource->toArray(),
-            'included' => [
-                $includedResource->toArray()
-            ]
-        ], $document->toArray());
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    [
+                        'type' => 'a',
+                        'id' => '1',
+                        'attributes' => $merged = array_merge($array1, $array2),
+                        'meta' => $merged,
+                        'links' => $merged,
+                    ],
+                ],
+            ],
+            $document
+        );
     }
 
-    public function testNoEmptyAttributes()
+    public function testSparseFieldsets()
     {
-        $post = (object) [
-            'id' => 1,
-        ];
+        $resource = $this->mockResource('a', '1', ['present' => 1, 'absent' => 1]);
 
-        $resource = new Resource($post, new PostSerializerEmptyAttributes2);
+        $resource->expects($this->once())->method('getAttributes')->with($this->equalTo(['present']));
 
-        $document = new Document($resource);
+        $document = Document::fromData($resource);
+        $document->setFields(['a' => ['present']]);
 
-        $this->assertEquals('{"data":{"type":"posts","id":"1"}}', (string) $document, 'Attributes should be omitted');
-    }
-}
-
-class PostSerializer2 extends AbstractSerializer
-{
-    protected $type = 'posts';
-
-    public function getAttributes($post, array $fields = null)
-    {
-        return ['foo' => $post->foo];
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    'type' => 'a',
+                    'id' => '1',
+                    'attributes' => ['present' => 1],
+                ],
+            ],
+            $document
+        );
     }
 
-    public function comments($post)
+    public function testIncludeRelationships()
     {
-        return new Relationship(new Collection($post->comments, new CommentSerializer2));
+        $resource1 = $this->mockResource('a', '1');
+        $resource2 = $this->mockResource('a', '2');
+        $resource3 = $this->mockResource('b', '1');
+
+        $relationshipJson = ['data' => 'stub'];
+
+        $relationshipA = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
+        $relationshipA->method('getData')->willReturn($resource2);
+        $relationshipA->method('jsonSerialize')->willReturn($relationshipJson);
+
+        $relationshipB = $this->getMockBuilder(Relationship::class)->disableOriginalConstructor()->getMock();
+        $relationshipB->method('getData')->willReturn($resource3);
+        $relationshipB->method('jsonSerialize')->willReturn($relationshipJson);
+
+        $resource1
+            ->expects($this->once())
+            ->method('getRelationship')
+            ->with($this->equalTo('a'))
+            ->willReturn($relationshipA);
+
+        $resource2
+            ->expects($this->once())
+            ->method('getRelationship')
+            ->with($this->equalTo('b'))
+            ->willReturn($relationshipB);
+
+        $document = Document::fromData($resource1);
+        $document->setInclude(['a', 'a.b']);
+
+        $this->assertProduceSameJson(
+            [
+                'data' => [
+                    'type' => 'a',
+                    'id' => '1',
+                    'relationships' => ['a' => $relationshipJson],
+                ],
+                'included' => [
+                    [
+                        'type' => 'b',
+                        'id' => '1',
+                    ],
+                    [
+                        'type' => 'a',
+                        'id' => '2',
+                        'relationships' => ['b' => $relationshipJson],
+                    ],
+                ],
+            ],
+            $document
+        );
     }
-}
 
-class PostSerializerEmptyAttributes2 extends PostSerializer2
-{
-    public function getAttributes($post, array $fields = null)
+    public function testErrors()
     {
-        return [];
+        $document = Document::fromErrors(['a']);
+
+        $this->assertProduceSameJson(['errors' => ['a']], $document);
     }
-}
 
-class CommentSerializer2 extends AbstractSerializer
-{
-    protected $type = 'comments';
-
-    public function getAttributes($comment, array $fields = null)
+    public function testLinks()
     {
-        return ['foo' => $comment->foo];
+        $document = Document::fromMeta([]);
+        $document->setLink('a', 'b');
+
+        $this->assertProduceSameJson(['links' => ['a' => 'b']], $document);
+    }
+
+    public function testMeta()
+    {
+        $document = Document::fromMeta(['a' => 'b']);
+
+        $this->assertProduceSameJson(['meta' => ['a' => 'b']], $document);
+    }
+
+    private function mockResource($type, $id, $attributes = [], $meta = [], $links = [])
+    {
+        $mock = $this->getMock(ResourceInterface::class);
+
+        $mock->method('getType')->willReturn($type);
+        $mock->method('getId')->willReturn($id);
+        $mock->method('getAttributes')->willReturn($attributes);
+        $mock->method('getMeta')->willReturn($meta);
+        $mock->method('getLinks')->willReturn($links);
+
+        return $mock;
     }
 }

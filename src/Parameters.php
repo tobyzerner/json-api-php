@@ -77,7 +77,12 @@ class Parameters
         $offset = (int) $this->getPage('offset');
 
         if ($offset < 0) {
-            throw new InvalidParameterException('page[offset] must be >=0', 2, null, 'page[offset]');
+            throw new InvalidParameterException(
+                'page[offset] must be >=0',
+                2,
+                null,
+                'page[offset]'
+            );
         }
 
         return $offset;
@@ -92,7 +97,7 @@ class Parameters
      *
      * @return int
      */
-    protected function getOffsetFromNumber($perPage)
+    private function getOffsetFromNumber($perPage)
     {
         $page = (int) $this->getPage('number');
 
@@ -199,7 +204,7 @@ class Parameters
      *
      * @return mixed
      */
-    protected function getInput($key, $default = null)
+    private function getInput($key, $default = null)
     {
         return isset($this->input[$key]) ? $this->input[$key] : $default;
     }
@@ -211,7 +216,7 @@ class Parameters
      *
      * @return string
      */
-    protected function getPage($key)
+    private function getPage($key)
     {
         $page = $this->getInput('page');
 

@@ -15,219 +15,248 @@ use JsonSerializable;
 
 class Document implements JsonSerializable
 {
-    use LinksTrait;
-    use MetaTrait;
+    use LinksTrait, SelfLinkTrait, PaginationLinksTrait, MetaTrait;
 
     const MEDIA_TYPE = 'application/vnd.api+json';
 
-    /**
-     * The included array.
-     *
-     * @var array
-     */
-    protected $included = [];
+    private $data;
+    private $errors;
+    private $jsonapi;
 
-    /**
-     * The errors array.
-     *
-     * @var array
-     */
-    protected $errors;
+    private $include = [];
+    private $fields = [];
 
-    /**
-     * The jsonapi array.
-     *
-     * @var array
-     */
-    protected $jsonapi;
-
-    /**
-     * The data object.
-     *
-     * @var ElementInterface
-     */
-    protected $data;
-
-    /**
-     * @param ElementInterface $data
-     */
-    public function __construct(ElementInterface $data = null)
+    private function __construct()
     {
-        $this->data = $data;
     }
 
     /**
-     * Get included resources.
+     * @param ResourceInterface|ResourceInterface[] $data
      *
-     * @param \Tobscure\JsonApi\ElementInterface $element
-     * @param bool $includeParent
-     *
-     * @return \Tobscure\JsonApi\Resource[]
+     * @return self
      */
-    protected function getIncluded(ElementInterface $element, $includeParent = false)
+    public static function fromData($data)
     {
-        $included = [];
-
-        foreach ($element->getResources() as $resource) {
-            if ($resource->isIdentifier()) {
-                continue;
-            }
-
-            if ($includeParent) {
-                $included = $this->mergeResource($included, $resource);
-            } else {
-                $type = $resource->getType();
-                $id = $resource->getId();
-            }
-
-            foreach ($resource->getUnfilteredRelationships() as $relationship) {
-                $includedElement = $relationship->getData();
-
-                if (! $includedElement instanceof ElementInterface) {
-                    continue;
-                }
-
-                foreach ($this->getIncluded($includedElement, true) as $child) {
-                    // If this resource is the same as the top-level "data"
-                    // resource, then we don't want it to show up again in the
-                    // "included" array.
-                    if (! $includeParent && $child->getType() === $type && $child->getId() === $id) {
-                        continue;
-                    }
-
-                    $included = $this->mergeResource($included, $child);
-                }
-            }
-        }
-
-        $flattened = [];
-
-        array_walk_recursive($included, function ($a) use (&$flattened) {
-            $flattened[] = $a;
-        });
-
-        return $flattened;
-    }
-
-    /**
-     * @param \Tobscure\JsonApi\Resource[] $resources
-     * @param \Tobscure\JsonApi\Resource $newResource
-     *
-     * @return \Tobscure\JsonApi\Resource[]
-     */
-    protected function mergeResource(array $resources, Resource $newResource)
-    {
-        $type = $newResource->getType();
-        $id = $newResource->getId();
-
-        if (isset($resources[$type][$id])) {
-            $resources[$type][$id]->merge($newResource);
-        } else {
-            $resources[$type][$id] = $newResource;
-        }
-
-        return $resources;
-    }
-
-    /**
-     * Set the data object.
-     *
-     * @param \Tobscure\JsonApi\ElementInterface $element
-     *
-     * @return $this
-     */
-    public function setData(ElementInterface $element)
-    {
-        $this->data = $element;
-
-        return $this;
-    }
-
-    /**
-     * Set the errors array.
-     *
-     * @param array $errors
-     *
-     * @return $this
-     */
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-
-        return $this;
-    }
-
-    /**
-     * Set the jsonapi array.
-     *
-     * @param array $jsonapi
-     *
-     * @return $this
-     */
-    public function setJsonapi($jsonapi)
-    {
-        $this->jsonapi = $jsonapi;
-
-        return $this;
-    }
-
-    /**
-     * Map everything to arrays.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $document = [];
-
-        if (! empty($this->links)) {
-            $document['links'] = $this->links;
-        }
-
-        if (! empty($this->data)) {
-            $document['data'] = $this->data->toArray();
-
-            $resources = $this->getIncluded($this->data);
-
-            if (count($resources)) {
-                $document['included'] = array_map(function (Resource $resource) {
-                    return $resource->toArray();
-                }, $resources);
-            }
-        }
-
-        if (! empty($this->meta)) {
-            $document['meta'] = $this->meta;
-        }
-
-        if (! empty($this->errors)) {
-            $document['errors'] = $this->errors;
-        }
-
-        if (! empty($this->jsonapi)) {
-            $document['jsonapi'] = $this->jsonapi;
-        }
+        $document = new self;
+        $document->setData($data);
 
         return $document;
     }
 
     /**
-     * Map to string.
+     * @param array $meta
      *
-     * @return string
+     * @return self
      */
-    public function __toString()
+    public static function fromMeta(array $meta)
     {
-        return json_encode($this->toArray());
+        $document = new self;
+        $document->setMeta($meta);
+
+        return $document;
+    }
+
+    /**
+     * @param Error[] $errors
+     *
+     * @return self
+     */
+    public static function fromErrors(array $errors)
+    {
+        $document = new self;
+        $document->setErrors($errors);
+
+        return $document;
+    }
+
+    /**
+     * Set the primary data.
+     *
+     * @param ResourceInterface|ResourceInterface[]|null $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Set the errors array.
+     *
+     * @param Error[]|null $errors
+     */
+    public function setErrors(array $errors = null)
+    {
+        $this->errors = $errors;
+    }
+
+    /**
+     * Set the jsonapi version.
+     *
+     * @param string $version
+     */
+    public function setApiVersion($version)
+    {
+        $this->jsonapi['version'] = $version;
+    }
+
+    /**
+     * Set the jsonapi meta information.
+     *
+     * @param array $meta
+     */
+    public function setApiMeta(array $meta)
+    {
+        $this->jsonapi['meta'] = $meta;
+    }
+
+    /**
+     * Set the relationship paths to include.
+     *
+     * @param string[] $include
+     */
+    public function setInclude($include)
+    {
+        $this->include = $include;
+    }
+
+    /**
+     * Set the sparse fieldsets.
+     *
+     * @param array $fields
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
     }
 
     /**
      * Serialize for JSON usage.
      *
-     * @return array
+     * @return object
      */
     public function jsonSerialize()
     {
-        return $this->toArray();
+        $document = [
+            'links' => $this->links,
+            'meta' => $this->meta,
+            'errors' => $this->errors,
+            'jsonapi' => $this->jsonapi
+        ];
+
+        if ($this->data) {
+            $isCollection = is_array($this->data);
+            $resources = $isCollection ? $this->data : [$this->data];
+
+            $map = $this->buildResourceMap($resources);
+
+            $primary = $this->extractResourcesFromMap($map, $resources);
+
+            $document['data'] = $isCollection ? $primary : $primary[0];
+
+            if ($map) {
+                $document['included'] = call_user_func_array('array_merge', $map);
+            }
+        }
+
+        return (object) array_filter($document);
+    }
+
+    private function buildResourceMap(array $resources)
+    {
+        $map = [];
+
+        $include = $this->buildRelationshipTree($this->include);
+
+        $this->mergeResources($map, $resources, $include);
+
+        return $map;
+    }
+
+    private function mergeResources(array &$map, array $resources, array $include)
+    {
+        foreach ($resources as $resource) {
+            $relationships = [];
+
+            foreach ($include as $name => $nested) {
+                if (! ($relationship = $resource->getRelationship($name))) {
+                    continue;
+                }
+
+                $relationships[$name] = $relationship;
+
+                if ($data = $relationship->getData()) {
+                    $children = is_array($data) ? $data : [$data];
+
+                    $this->mergeResources($map, $children, $nested);
+                }
+            }
+
+            $this->mergeResource($map, $resource, $relationships);
+        }
+    }
+
+    private function mergeResource(array &$map, ResourceInterface $resource, array $relationships)
+    {
+        $type = $resource->getType();
+        $id = $resource->getId();
+        $links = $resource->getLinks();
+        $meta = $resource->getMeta();
+
+        $fields = isset($this->fields[$type]) ? $this->fields[$type] : null;
+
+        $attributes = $resource->getAttributes($fields);
+
+        if ($fields) {
+            $keys = array_flip($fields);
+
+            $attributes = array_intersect_key($attributes, $keys);
+            $relationships = array_intersect_key($relationships, $keys);
+        }
+
+        if (empty($map[$type][$id])) {
+            $map[$type][$id] = new ResourceObject($type, $id);
+        }
+
+        array_map([$map[$type][$id], 'setAttribute'], array_keys($attributes), $attributes);
+        array_map([$map[$type][$id], 'setRelationship'], array_keys($relationships), $relationships);
+        array_map([$map[$type][$id], 'setLink'], array_keys($links), $links);
+        array_map([$map[$type][$id], 'setMetaItem'], array_keys($meta), $meta);
+    }
+
+    private function extractResourcesFromMap(array &$map, array $resources)
+    {
+        return array_filter(
+            array_map(function ($resource) use (&$map) {
+                $type = $resource->getType();
+                $id = $resource->getId();
+
+                if (isset($map[$type][$id])) {
+                    $resource = $map[$type][$id];
+                    unset($map[$type][$id]);
+
+                    return $resource;
+                }
+            }, $resources)
+        );
+    }
+
+    private function buildRelationshipTree(array $paths)
+    {
+        $tree = [];
+
+        foreach ($paths as $path) {
+            $keys = explode('.', $path);
+            $array = &$tree;
+
+            foreach ($keys as $key) {
+                if (! isset($array[$key])) {
+                    $array[$key] = [];
+                }
+
+                $array = &$array[$key];
+            }
+        }
+
+        return $tree;
     }
 }

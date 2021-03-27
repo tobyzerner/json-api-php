@@ -24,144 +24,177 @@ composer require tobscure/json-api
 
 ```php
 use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Collection;
 
-// Create a new collection of posts, and specify relationships to be included.
-$collection = (new Collection($posts, new PostSerializer))
-    ->with(['author', 'comments']);
+$resource = new PostResource($post);
 
-// Create a new JSON-API document with that collection as the data.
-$document = new Document($collection);
+$document = Document::fromData($resource);
 
-// Add metadata and links.
-$document->addMeta('total', count($posts));
-$document->addLink('self', 'http://example.com/api/posts');
+$document->setInclude(['author', 'comments']);
+$document->setFields(['posts' => ['title', 'body']]);
 
-// Output the document as JSON.
+$document->setMetaItem('total', count($posts));
+$document->setSelfLink('http://example.com/api/posts/1');
+
+header('Content-Type: ' . $document::MEDIA_TYPE);
 echo json_encode($document);
 ```
 
-### Elements
+### Resources
 
-The JSON-API spec describes *resource objects* as objects containing information about a single resource, and *collection objects* as objects containing information about many resources. In this package:
-
-- `Tobscure\JsonApi\Resource` represents a *resource object*
-- `Tobscure\JsonApi\Collection` represents a *collection object*
-
-Both Resources and Collections are termed as *Elements*. In conceptually the same way that the JSON-API spec describes, a Resource may have **relationships** with any number of other Elements (Resource for has-one relationships, Collection for has-many). Similarly, a Collection may contain many Resources.
-
-A JSON-API Document may contain one primary Element. The primary Element will be recursively parsed for relationships with other Elements; these Elements will be added to the Document as **included** resources.
-
-#### Sparse Fieldsets
-
-You can specify which fields (attributes and relationships) are to be included on an Element using the `fields` method. You must provide a multidimensional array organized by resource type:
+Resources are used to create JSON-API [resource objects](http://jsonapi.org/format/#document-resource-objects). They must implement `Tobscure\JsonApi\ResourceInterface`. An `AbstractResource` class is provided with some basic functionality. Subclasses must specify the resource `$type` and implement the `getId()` method:
 
 ```php
-$collection->fields(['posts' => ['title', 'date']]);
-```
+use Tobscure\JsonApi\AbstractResource;
 
-### Serializers
-
-A Serializer is responsible for building attributes and relationships for a certain resource type. Serializers must implement `Tobscure\JsonApi\SerializerInterface`. An `AbstractSerializer` is provided with some basic functionality. At a minimum, a serializer must specify its **type** and provide a method to transform **attributes**:
-
-```php
-use Tobscure\JsonApi\AbstractSerializer;
-
-class PostSerializer extends AbstractSerializer
+class PostResource extends AbstractResource
 {
     protected $type = 'posts';
 
-    public function getAttributes($post, array $fields = null)
+    protected $post;
+
+    public function __construct(Post $post)
     {
-        return [
-            'title' => $post->title,
-            'body'  => $post->body,
-            'date'  => $post->date
-        ];
+        $this->post = $post;
+    }
+
+    public function getId()
+    {
+        return $this->post->id;
     }
 }
 ```
 
-By default, a Resource object's **id** attribute will be set as the `id` property on the model. A serializer can provide a method to override this:
+A JSON-API document can then be created from an instantiated resource:
 
 ```php
-public function getId($post)
-{
-    return $post->someOtherKey;
-}
+$resource = new PostResource($post);
+
+$document = Document::fromData($resource);
 ```
 
-#### Relationships 
-
-The `AbstractSerializer` allows you to define a public method for each relationship that exists for a resource. A relationship method should return a `Tobscure\JsonApi\Relationship` instance.
+To output a collection of resource objects, map your data to an array of resources:
 
 ```php
-public function comments($post)
-{
-    $element = new Collection($post->comments, new CommentSerializer);
+$resources = array_map(function (Post $post) {
+    return new PostResource($post);
+}, $posts);
 
-    return new Relationship($element);
-}
+$document = Document::fromData($resources);
 ```
 
-By default, the `AbstractSerializer` will convert relationship names from `kebab-case` and `snake_case` into a `camelCase` method name and call that on the serializer. If you wish to customize this behaviour, you may override the `getRelationship` method:
+#### Attributes & Sparse Fieldsets
+
+To add [attributes](http://jsonapi.org/format/#document-resource-object-attributes) to your resource objects, you may implement the `getAttributes()` method in your resource:
 
 ```php
-public function getRelationship($model, $name)
-{
-    // resolve Relationship called $name for $model
-}
+    public function getAttributes(array $fields = null)
+    {
+        return [
+            'title' => $this->post->title,
+            'body'  => $this->post->body,
+            'date'  => $this->post->date
+        ];
+    }
 ```
 
-### Meta & Links
-
-The `Document`, `Resource`, and `Relationship` classes allow you to add meta information:
+To output resource objects with a [sparse fieldset](http://jsonapi.org/format/#fetching-sparse-fieldsets), pass in an array of [fields](http://jsonapi.org/format/#document-resource-object-fields) (attributes and relationships), organised by resource type:
 
 ```php
-$document = new Document;
-$document->addMeta('key', 'value');
+$document->setFields(['posts' => ['title', 'body']]);
+```
+
+The attributes returned by your resources will automatically be filtered according to the sparse fieldset for the resource type. However, if some attributes are expensive to calculate, then you can use the `$fields` argument provided to `getAttributes()`. This will be an `array` of fields, or `null` if no sparse fieldset has been specified.
+
+```php
+    public function getAttributes(array $fields = null)
+    {
+        // Calculate the "expensive" attribute only if this field will show up
+        // in the final output
+        if ($fields === null || in_array('expensive', $fields)) {
+            $attributes['expensive'] = $this->getExpensiveAttribute();
+        }
+
+        return $attributes;
+    }
+```
+
+#### Relationships
+
+You can [include related resources](http://jsonapi.org/format/#document-compound-documents) alongside the document's primary data. First you must define the available relationships on your resource. The `AbstractResource` base class allows you to define a method for each relationship. Relationship methods should return a `Tobscure\JsonApi\Relationship` instance, containing the related resource(s).
+
+```php
+    protected function getAuthorRelationship()
+    {
+        $resource = new UserResource($this->post->author);
+
+        return Relationship::fromData($resource);
+    }
+```
+
+You can then specify which relationship paths should be included on the document:
+
+```php
+$document->setInclude(['author', 'comments', 'comments.author']);
+```
+
+By default, the `AbstractResource` implementation will convert included relationship names from `kebab-case` and `snake_case` into a `getCamelCaseRelationship` method name. If you wish to customize this behaviour, you may override the `getRelationship` method:
+
+```php
+    public function getRelationship($name)
+    {
+        // resolve Relationship for $name
+    }
+```
+
+### Meta Information & Links
+
+The `Document`, `AbstractResource`, and `Relationship` classes allow you to add [meta information](http://jsonapi.org/format/#document-meta):
+
+```php
 $document->setMeta(['key' => 'value']);
+$document->setMetaItem('key', 'value');
+$document->removeMetaItem('key');
 ```
 
-They also allow you to add links in a similar way:
+They also allow you to add [links](http://jsonapi.org/format/#document-links). A link's value may be a string, or a `Tobscure\JsonApi\Link` instance.
 
 ```php
-$resource = new Resource($data, $serializer);
-$resource->addLink('self', 'url');
-$resource->setLinks(['key' => 'value']);
+use Tobscure\JsonApi\Link;
+
+$resource->setSelfLink('url');
+$relationship->setRelatedLink(new Link('url', ['some' => 'metadata']));
 ```
 
-You can also easily add pagination links:
+You can also easily generate [pagination links](http://jsonapi.org/format/#fetching-pagination) on `Document` and `Relationship` instances:
 
 ```php
-$document->addPaginationLinks(
+$document->setPaginationLinks(
     'url', // The base URL for the links
-    [],    // The query params provided in the request
+    $_GET, // The query params provided in the request
     40,    // The current offset
     20,    // The current limit
     100    // The total number of results
 );
 ```
-Serializers can provide links and/or meta data as well:
+
+To define meta information and/or links globally for a resource type, call the appropriate methods in the constructor:
 
 ```php
-use Tobscure\JsonApi\AbstractSerializer;
+use Tobscure\JsonApi\AbstractResource;
 
-class PostSerializer extends AbstractSerializer
-{
+class PostResource extends AbstractResource
+{    
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+
+        $this->setSelfLink('/posts/' . $post->id);
+        $this->setMetaItem('some', 'metadata for ' . $post->id);
+    }
+
     // ...
-    
-    public function getLinks($post) {
-        return ['self' => '/posts/' . $post->id];
-    }
-
-    public function getMeta($post) {
-        return ['some' => 'metadata for ' . $post->id];
-    }
 }
 ```
-
-**Note:** Links and metadata of the resource overrule ones with the same key from the serializer!
 
 ### Parameters
 
@@ -175,25 +208,29 @@ $parameters = new Parameters($_GET);
 
 #### getInclude
 
-Get the relationships requested for inclusion. Provide an array of available relationship paths; if anything else is present, an `InvalidParameterException` will be thrown.
+Get the relationships requested for [inclusion](http://jsonapi.org/format/#fetching-includes). Provide an array of available relationship paths; if anything else is present, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?include=author,comments
 $include = $parameters->getInclude(['author', 'comments', 'comments.author']); // ['author', 'comments']
+
+$document->setInclude($include);
 ```
 
 #### getFields
 
-Get the fields requested for inclusion, keyed by resource type.
+Get the [sparse fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets) requested for inclusion, keyed by resource type.
 
 ```php
 // GET /api?fields[articles]=title,body
 $fields = $parameters->getFields(); // ['articles' => ['title', 'body']]
+
+$document->setFields($fields);
 ```
 
 #### getSort
 
-Get the requested sort criteria. Provide an array of available fields that can be sorted by; if anything else is present, an `InvalidParameterException` will be thrown.
+Get the requested [sort fields](http://jsonapi.org/format/#fetching-sorting). Provide an array of available fields that can be sorted by; if anything else is present, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?sort=-created,title
@@ -202,7 +239,7 @@ $sort = $parameters->getSort(['title', 'created']); // ['created' => 'desc', 'ti
 
 #### getLimit and getOffset
 
-Get the offset number and the number of resources to display using a page- or offset-based strategy. `getLimit` accepts an optional maximum. If the calculated offset is below zero, an `InvalidParameterException` will be thrown.
+Get the offset number and the number of resources to display using a [page- or offset-based strategy](http://jsonapi.org/format/#fetching-pagination). `getLimit` accepts an optional maximum. If the calculated offset is below zero, an `InvalidParameterException` will be thrown.
 
 ```php
 // GET /api?page[number]=5&page[size]=20
@@ -214,27 +251,40 @@ $limit = $parameters->getLimit(100); // 100
 $offset = $parameters->getOffset(); // 20
 ```
 
-### Error Handling
+#### getFilter
 
-You can transform caught exceptions into JSON-API error documents using the `Tobscure\JsonApi\ErrorHandler` class. You must register the appropriate `Tobscure\JsonApi\Exception\Handler\ExceptionHandlerInterface` instances.
+Get the contents of the [filter](http://jsonapi.org/format/#fetching-filtering) query parameter.
 
 ```php
-try {
-    // API handling code
-} catch (Exception $e) {
-    $errors = new ErrorHandler;
-
-    $errors->registerHandler(new InvalidParameterExceptionHandler);
-    $errors->registerHandler(new FallbackExceptionHandler);
-
-    $response = $errors->handle($e);
-
-    $document = new Document;
-    $document->setErrors($response->getErrors());
-
-    return new JsonResponse($document, $response->getStatus());
-}
+// GET /api?filter[author]=toby
+$filter = $parameters->getFilter(); // ['author' => 'toby']
 ```
+
+### Errors
+
+You can create a `Document` containing [error objects](http://jsonapi.org/format/#error-objects) using `Tobscure\JsonApi\Error` instances:
+
+```php
+use Tobscure\JsonApi\Error;
+
+$error = new Error;
+
+$error->setId('1');
+$error->setAboutLink('url');
+$error->setMeta('key', 'value');
+$error->setStatus(400);
+$error->setCode('123');
+$error->setTitle('Something Went Wrong');
+$error->setDetail('You dun goofed!');
+$error->setSourcePointer('/data/attributes/body');
+$error->setSourceParameter('include');
+
+$document = Document::fromErrors([$error]);
+```
+
+## Examples
+
+* [Flarum](https://github.com/flarum/core/tree/master/src/Api) is forum software that uses tobscure/json-api to power its API.
 
 ## Contributing
 
@@ -243,7 +293,7 @@ Feel free to send pull requests or create issues if you come across problems or 
 ### Running Tests
 
 ```bash
-$ phpunit
+$ vendor/bin/phpunit
 ```
 
 ## License

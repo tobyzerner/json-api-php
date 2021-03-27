@@ -11,73 +11,81 @@
 
 namespace Tobscure\JsonApi;
 
-class Relationship
+use JsonSerializable;
+
+class Relationship implements JsonSerializable
 {
-    use LinksTrait;
-    use MetaTrait;
+    use LinksTrait, SelfLinkTrait, RelatedLinkTrait, PaginationLinksTrait, MetaTrait;
 
-    /**
-     * The data object.
-     *
-     * @var \Tobscure\JsonApi\ElementInterface|null
-     */
-    protected $data;
+    private $data;
 
-    /**
-     * Create a new relationship.
-     *
-     * @param \Tobscure\JsonApi\ElementInterface|null $data
-     */
-    public function __construct(ElementInterface $data = null)
+    private function __construct()
     {
-        $this->data = $data;
     }
 
-    /**
-     * Get the data object.
-     *
-     * @return \Tobscure\JsonApi\ElementInterface|null
-     */
+    public static function fromMeta($meta)
+    {
+        $r = new self;
+        $r->setMeta($meta);
+
+        return $r;
+    }
+
+    public static function fromSelfLink($link)
+    {
+        $r = new self;
+        $r->setSelfLink($link);
+
+        return $r;
+    }
+
+    public static function fromRelatedLink($link)
+    {
+        $r = new self;
+        $r->setRelatedLink($link);
+
+        return $r;
+    }
+
+    public static function fromData($data)
+    {
+        $r = new self;
+        $r->setData($data);
+
+        return $r;
+    }
+
     public function getData()
     {
         return $this->data;
     }
 
-    /**
-     * Set the data object.
-     *
-     * @param \Tobscure\JsonApi\ElementInterface|null $data
-     *
-     * @return $this
-     */
     public function setData($data)
     {
         $this->data = $data;
-
-        return $this;
     }
 
-    /**
-     * Map everything to an array.
-     *
-     * @return array
-     */
-    public function toArray()
+    public function jsonSerialize()
     {
-        $array = [];
+        $relationship = [];
 
-        if (! empty($this->data)) {
-            $array['data'] = $this->data->toIdentifier();
+        if ($this->data) {
+            $relationship['data'] = is_array($this->data)
+                ? array_map([$this, 'buildIdentifier'], $this->data)
+                : $this->buildIdentifier($this->data);
         }
 
-        if (! empty($this->meta)) {
-            $array['meta'] = $this->meta;
-        }
+        return array_filter($relationship + [
+            'meta' => $this->meta,
+            'links' => $this->links
+        ]);
+    }
 
-        if (! empty($this->links)) {
-            $array['links'] = $this->links;
-        }
+    private function buildIdentifier(ResourceInterface $resource)
+    {
+        $id = new ResourceIdentifier($resource->getType(), $resource->getId());
+        $id->setMeta($resource->getMeta());
 
-        return $array;
+        return $id;
     }
 }
